@@ -1,11 +1,12 @@
+API_DC_FILE = api/docker-compose.yml
+
 .PHONY: start
 
-start:
-	cd api; \
-	yarn concurrently \
-		--names bsb,node \
-		--prefix-colors blue.bold,yellow.bold \
-		--kill-others \
-		--kill-others-on-fail \
-			"yarn watch-bsb" "yarn watch-node"; \
-	cd ..;
+start-api:
+	docker-compose -f ${API_DC_FILE} up
+
+build-api:
+	docker-compose -f ${API_DC_FILE} build
+
+connect-api:
+	docker-compose -f ${API_DC_FILE} run api /bin/sh

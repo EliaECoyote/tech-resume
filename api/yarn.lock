@@ -696,10 +696,10 @@ bs-node@reasonml-community/bs-node:
   version "0.0.1"
   resolved "https://codeload.github.com/reasonml-community/bs-node/tar.gz/ba6564678fd90c259ee1998d501350d61bf74548"
 
-bs-platform@^5.0.6:
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-5.0.6.tgz#88c13041fb020479800de3d82c680bf971091425"
-  integrity sha512-6Boa2VEcWJp2WJr38L7bp3J929nYha7gDarjxb070jWzgfPJ/WbzjipmSfnu2eqqk1MfjEIpBipbPz6n1NISwA==
+bs-platform@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-6.2.0.tgz#a6a4f3dab8bedc9daf6efc864865654efe49e65d"
+  integrity sha512-UU/X6LvOLzDZ8QEDTzANvAhuztD9rqbATodWW1bUwAtgHKLT7KCXdhX/UmVwHU3j4+fAE4rExdVfXb7FqnsLdg==
 
 bser@^2.0.0:
   version "2.1.0"

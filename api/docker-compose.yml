@@ -1,0 +1,16 @@
+version: "3.4"
+
+services:
+  api:
+    command: sh ./scripts/startup.sh
+    build:
+      context: .
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./scripts:/usr/src/app/scripts
+      - ./package.json:/usr/src/app/package.json
+      - ./yarn.lock:/usr/src/app/yarn.lock
+      - ./bsconfig.json:/usr/src/app/bsconfig.json
+    ports:
+      - "3000:3000"
+      - "9229:9229"

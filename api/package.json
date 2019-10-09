@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "markdown2cv api service",
   "scripts": {
-    "clean": "yarn bsb -clean-world",
-    "build": "yarn bsb -make-world",
+    "clean-bsb": "yarn bsb -clean-world",
+    "build-bsb": "yarn bsb -make-world",
     "watch-bsb": "yarn bsb -make-world -w",
     "watch-node": "nodemon --watch lib/js lib/js/src/index.bs.js"
   },
@@ -12,13 +12,13 @@
   "license": "ISC",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.9",
+    "bs-express": "^0.12.1",
     "bs-node": "reasonml-community/bs-node",
-    "bs-platform": "^5.0.6",
+    "bs-platform": "^6.2.0",
     "concurrently": "^4.1.2",
     "nodemon": "^1.19.3"
   },
   "dependencies": {
-    "bs-express": "^0.12.1",
     "express": "^4.17.1"
   }
 }
