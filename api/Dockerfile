@@ -2,6 +2,7 @@ FROM node:10-alpine
 
 ENV APPDIR=/usr/src/app
 ENV PORT=3000
+ENV NINJA_FORCE_ANSI=1
 
 WORKDIR ${APPDIR}
 
