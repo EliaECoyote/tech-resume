@@ -1,3 +1,25 @@
+# Logs
+*.log
+yarn-debug.log*
+
+
+# dotenv environment variables file
+.env
+
+# Bsb & reasonML compilation
 lib
-node_modules
+.merlin
+
+# Dependency directories
+node_modules/
+
+# Yarn
 yarn-error.log
+.yarn-integrity
+
+# gatsby files
+.cache/
+public
+
+# Mac files
+.DS_Store
