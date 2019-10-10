@@ -1,70 +1,67 @@
+# Stage that builds pandoc
+FROM alpine AS pandoc-builder
+# Install pandoc deps
+RUN apk --no-cache add \
+  alpine-sdk \
+  bash \
+  ca-certificates \
+  cabal \
+  fakeroot \
+  ghc \
+  git \
+  gmp-dev \
+  lua5.3-dev \
+  pkgconfig \
+  zlib-dev
+# Install newer cabal-install version
+COPY cabal.root.config /root/.cabal/config
+RUN cabal update \
+  && cabal install cabal-install \
+  && mv /root/.cabal/bin/cabal /usr/local/bin/cabal
+# Get pandoc sources
+ARG pandoc_commit=master
+RUN git clone --branch=$pandoc_commit --depth=1 --quiet \
+  https://github.com/jgm/pandoc /usr/src/pandoc
+# Install Haskell deps
+WORKDIR /usr/src/pandoc
+RUN cabal --version \
+  && ghc --version \
+  && cabal new-update \
+  && cabal new-clean \
+  && cabal new-configure \
+      --flag embed_data_files \
+      --flag bibutils \
+      --constraint 'hslua +system-lua +pkg-config' \
+      --enable-tests \
+      . pandoc-citeproc \
+  && cabal new-build . pandoc-citeproc
+
+
+# Stage that extracts pandoc binaries
+FROM pandoc-builder AS pandoc-binaries
+RUN find dist-newstyle \
+  -name 'pandoc*' -type f -perm +400 \
+  -exec cp '{}' /usr/bin/ ';' \
+  && strip /usr/bin/pandoc /usr/bin/pandoc-citeproc
+
+
+# Final stage
 FROM node:10-alpine
 
+# Testing: NINJA_FORCE_ANSI env should enable colors for concurrently package
+ENV NINJA_FORCE_ANSI=1
 ENV APPDIR=/usr/src/app
 ENV PORT=3000
 
-ENV PANDOC_VERSION 2.7.3
-ENV PANDOC_DOWNLOAD_URL https://hackage.haskell.org/package/pandoc-$PANDOC_VERSION/pandoc-$PANDOC_VERSION.tar.gz
-ENV PANDOC_ROOT /usr/local/pandoc
-
-ENV BUILD_DEPS \
-    alpine-sdk \
-    cabal \
-    coreutils \
-    ghc \
-    libffi \
-    musl-dev \
-    zlib-dev
-ENV PERSISTENT_DEPS \
-    gmp \
-    graphviz \
-    openjdk11-jre \
-    python \
-    py2-pip \
-    sed \
-    ttf-droid \
-    ttf-droid-nonlatin
-
-ENV PATH $PATH:$PANDOC_ROOT/bin
-
-ENV NINJA_FORCE_ANSI=1
-
-
-# adds pandoc package and remove build dependencies
-RUN apk upgrade --update && \
-    apk add --virtual .build-deps $BUILD_DEPS && \
-    apk add --virtual .persistent-deps $PERSISTENT_DEPS && \
-    mkdir -p /pandoc-build \
-             /var/docs && \
-    cd /pandoc-build && \
-    curl -fsSL "$PANDOC_DOWNLOAD_URL" | tar -xzf - && \
-    cd pandoc-$PANDOC_VERSION && \
-    cabal update && \
-    cabal install --only-dependencies && \
-    cabal configure --prefix=$PANDOC_ROOT && \
-    cabal build && \
-    cabal copy && \
-    cd / && \
-    rm -Rf /pandoc-build \
-           $PANDOC_ROOT/lib \
-           /root/.cabal \
-           /root/.ghc && \
-    set -x && \
-    addgroup -g 82 -S pandoc && \
-    adduser -u 82 -D -S -G pandoc pandoc && \
-    apk del .build-deps
-
-
-
 WORKDIR ${APPDIR}
 
+COPY --from=pandoc-binaries /usr/bin/pandoc* /usr/bin/
+COPY package.json yarn.lock ./
+
 RUN apk --no-cache add \
+  # File watcher package, necessary for live reloading
   inotify-tools \
   # bsb ninja build dependencies
   python g++ make
-
-COPY package.json yarn.lock ./
-
 RUN yarn install
-
 COPY ./src ./scripts bsconfig.json ./
