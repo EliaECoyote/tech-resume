@@ -1,5 +1,5 @@
 let mainMiddleware =
   Express.Middleware.from((next, req) => {
-    Test.runTest();
+    Pandoc.run();
     Express.Response.sendString("hello world");
   });
