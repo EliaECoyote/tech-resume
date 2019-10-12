@@ -33,7 +33,7 @@ let getFileKindValue = kind =>
 //   };
 // };
 
-let cmd = {j|pandoc --version|j};
+let cmd = "/usr/local/bin/pandoc";
 
 let test = () => {
   Js.log("\n\nexecuting test:\n");
