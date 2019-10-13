@@ -35,17 +35,16 @@ let getFileKindValue = kind =>
 
 let cmd = "/usr/local/bin/pandoc";
 
-let test = () => {
-  Js.log("\n\nexecuting test:\n");
-  let encoding = Node.Child_process.option(~cwd=".", ~encoding="utf8", ());
-  let testExecSync = Node.Child_process.execSync(cmd, encoding);
-  Js.log2(testExecSync, "\ntest completed \n\n");
-};
+// let test = () => {
+//   Js.log("\n\nexecuting test:\n");
+//   let encoding = Node.Child_process.option(~cwd=".", ~encoding="utf8", ());
+//   let testExecSync = Node.Child_process.execSync(cmd, encoding);
+//   Js.log2(testExecSync, "\ntest completed \n\n");
+// };
 
 let run =
     (~src: string, ~fromKind: fileKind, ~toKind: fileKind)
     : Js.Promise.t(ChildProcess.result) => {
-
   let fromValue = getFileKindValue(fromKind);
   let toValue = getFileKindValue(toKind);
   let args = [|"-f", fromValue, "-t", toValue|];
