@@ -1,5 +1,5 @@
 let buildExpressResponse =
-    (res: Express.Response.t, result: ChildProcess.result) => {
+    (res: Express.Response.t, result: ChildProcess.spawnResult) => {
   switch (result) {
   | Belt.Result.Ok(data) => Express.Response.sendString(data, res)
   | Belt.Result.Error(data) =>
