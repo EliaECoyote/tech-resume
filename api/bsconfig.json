@@ -1,6 +1,7 @@
 {
   "name": "api",
   "version": "0.1.0",
+  "bsc-flags": ["-bs-super-errors"],
   "sources": {
     "dir": "src",
     "subdirs": true

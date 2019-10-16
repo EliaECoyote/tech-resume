@@ -7,10 +7,11 @@ ENV PORT=3000
 
 WORKDIR ${APPDIR}
 
-COPY --from=pandoc/core /usr/bin/pandoc* /usr/bin/
+COPY --from=pandoc/core /usr/bin/* /usr/bin/
 COPY package.json yarn.lock ./
 
-RUN apk --no-cache add \
+RUN apk add --no-cache \
+  lua5.3 \
   # File watcher package, necessary for live reloading
   inotify-tools \
   # bsb ninja build dependencies
