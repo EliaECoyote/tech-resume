@@ -13,6 +13,7 @@
     "gatsby-plugin-sharp": "^2.2.29",
     "gatsby-source-filesystem": "^2.1.31",
     "gatsby-transformer-sharp": "^2.2.21",
+    "monaco-editor": "^0.18.1",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
@@ -42,6 +43,7 @@
     "@glennsl/bs-jest": "^0.4.9",
     "bs-platform": "^6.2.0",
     "concurrently": "^5.0.0",
+    "monaco-editor-webpack-plugin": "^1.7.0",
     "reason-react": "^0.7.0"
   }
 }
