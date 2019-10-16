@@ -1,8 +1,8 @@
 let buildExpressResponse =
     (res: Express.Response.t, result: ChildProcess.spawnResult) => {
   switch (result) {
-  | Belt.Result.Ok(data) => Express.Response.sendString(data, res)
-  | Belt.Result.Error(data) =>
+  | Ok(data) => Express.Response.sendString(data, res)
+  | Error(data) =>
     Express.Response.status(Express.Response.StatusCode.BadRequest, res)
     |> Express.Response.sendString("Incorrect request data. Error: " ++ data)
   };
