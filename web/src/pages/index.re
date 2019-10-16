@@ -1,5 +1,4 @@
 [@react.component]
-let default = () =>
-  <div>
-    {React.string("Hello!")}
-  </div>;
+let make = () => <div> {React.string("Hello!")} </div>;
+
+let default = make;

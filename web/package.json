@@ -23,9 +23,11 @@
   ],
   "license": "MIT",
   "scripts": {
+    "clean-bsb": "yarn bsb -clean-world",
+    "build-bsb": "yarn bsb -make-world",
     "watch-bsb": "yarn bsb -make-world -w",
     "build": "yarn gatsby build",
-    "start": "yarn gatsby develop",
+    "develop": "yarn gatsby develop",
     "serve": "yarn gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing \""
   },
@@ -40,7 +42,6 @@
     "@glennsl/bs-jest": "^0.4.9",
     "bs-platform": "^6.2.0",
     "concurrently": "^5.0.0",
-    "gatsby-plugin-reason": "^2.0.1",
     "reason-react": "^0.7.0"
   }
 }
