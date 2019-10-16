@@ -23,10 +23,10 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
-    "start": "npm run develop",
-    "serve": "gatsby serve",
+    "watch-bsb": "yarn bsb -make-world -w",
+    "build": "yarn gatsby build",
+    "start": "yarn gatsby develop",
+    "serve": "yarn gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing \""
   },
   "repository": {
@@ -35,5 +35,12 @@
   },
   "bugs": {
     "url": "https://github.com/gatsbyjs/gatsby/issues"
+  },
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.9",
+    "bs-platform": "^6.2.0",
+    "concurrently": "^5.0.0",
+    "gatsby-plugin-reason": "^2.0.1",
+    "reason-react": "^0.7.0"
   }
 }

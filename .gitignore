@@ -9,6 +9,7 @@ yarn-debug.log*
 # Bsb & reasonML compilation
 lib
 .merlin
+*.bs.js
 
 # Dependency directories
 node_modules/
