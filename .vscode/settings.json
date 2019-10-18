@@ -1,0 +1,9 @@
+{
+  "search.exclude": {
+    "**/node_modules": true,
+    "web/src/**/*.js": true,
+    "**/.cache": true,
+    "**/lib": true,
+    "**/public": true,
+  }
+}
