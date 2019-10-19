@@ -8,21 +8,19 @@ type monacoOptions = {
 };
 
 module Theme = {
-  type t =
-    | Standard
-    | Dark
-    | Black;
-  let stringOfColors = color =>
+  let stringOfColors = (color: Themes.t) =>
     switch (color) {
     | Standard => "vs"
-    | Dark => "vs-dar"
+    | Dark => "vs-dark"
     | Black => "hc-black"
     };
 };
 
 [@bs.module "monaco-editor"] [@bs.scope "editor"]
-external startupMonaco: (Dom.element, monacoOptions) => monaco = "create";
+external create: (Dom.element, monacoOptions) => monaco = "create";
 
-[@bs.send] external setTheme: (monaco, string) => unit = "setTheme";
-let setTheme = (monaco, color) =>
-  Theme.stringOfColors(color) |> setTheme(monaco);
+[@bs.module "monaco-editor"] [@bs.scope "editor"]
+external setTheme: string => unit = "setTheme";
+let setTheme = theme => Theme.stringOfColors(theme)->setTheme;
+
+[@bs.send] external dispose: monaco => unit = "dispose";
