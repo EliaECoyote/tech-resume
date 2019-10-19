@@ -1,0 +1,32 @@
+version: "3.4"
+
+services:
+  web:
+    command: sh ./scripts/startup.sh
+    build:
+      context: ./web
+    volumes:
+      - ./web/src:/usr/src/app/src
+      - ./web/scripts:/usr/src/app/scripts
+      - ./web/package.json:/usr/src/app/package.json
+      - ./web/yarn.lock:/usr/src/app/yarn.lock
+      - ./web/bsconfig.json:/usr/src/app/bsconfig.json
+      - ./web/gatsby-browser.js:/usr/src/app/gatsby-browser.js
+      - ./web/gatsby-config.js:/usr/src/app/gatsby-config.js
+      - ./web/gatsby-node.js:/usr/src/app/gatsby-node.js
+      - ./web/gatsby-ssr.js:/usr/src/app/gatsby-ssr.js
+    ports:
+      - "8000:8000"
+  api:
+    command: sh ./scripts/startup.sh
+    build:
+      context: ./api
+    volumes:
+      - ./api/src:/usr/src/app/src
+      - ./api/scripts:/usr/src/app/scripts
+      - ./api/package.json:/usr/src/app/package.json
+      - ./api/yarn.lock:/usr/src/app/yarn.lock
+      - ./api/bsconfig.json:/usr/src/app/bsconfig.json
+    ports:
+      - "3000:3000"
+      - "3001:3001"

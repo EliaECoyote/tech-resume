@@ -13,10 +13,11 @@
   "suffix": ".js",
   "bs-dependencies": [
     "@glennsl/bs-jest",
-    "reason-react"
+    "reason-react",
+    "bs-css"
   ],
   "reason": {
-    "react-jsx": 2
+    "react-jsx": 3
   },
   "ppx-flags": [],
   "refmt": 3

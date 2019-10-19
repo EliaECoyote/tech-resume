@@ -7,7 +7,7 @@
     "clean-bsb": "yarn bsb -clean-world",
     "build-bsb": "yarn bsb -make-world",
     "watch-bsb": "yarn bsb -make-world -w",
-    "watch-node": "nodemon --watch lib/js lib/js/src/index.bs.js"
+    "watch-node": "nodemon --watch lib/js --inspect=3001 lib/js/src/index.bs.js"
   },
   "license": "ISC",
   "devDependencies": {
