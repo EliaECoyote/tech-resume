@@ -5,8 +5,8 @@
  */
 
 const React = require('react');
-const ThemeContext = require('./src/context/ThemeContext').make;
+const App = require('./src/App').make;
 
 exports.wrapPageElement = ({ element }) => {
-  return <ThemeContext>{element}</ThemeContext>
+  return <App>{element}</App>
 }
