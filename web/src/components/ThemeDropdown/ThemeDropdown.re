@@ -5,14 +5,14 @@ type detail = {
 };
 
 let themesDetails = [
-  {id: 0, theme: Themes.Standard, description: "standard"},
-  {id: 1, theme: Themes.Dark, description: "dark"},
-  {id: 2, theme: Themes.Black, description: "black"},
+  {id: 0, theme: Themes.Standard, description: "STANDARD"},
+  {id: 1, theme: Themes.Dark, description: "DARK"},
+  {id: 2, theme: Themes.Black, description: "BLACK"},
 ];
 
 [@react.component]
 let make = () => {
-  let (state, dispatch) = React.useContext(ConfigContext.context);
+  let (state, dispatch) = React.useContext(ThemeContext.context);
   let dropdownItems =
     themesDetails
     |> List.map(details =>
@@ -27,7 +27,7 @@ let make = () => {
   let onChange = (event: ReactEvent.Form.t) => {
     let value = ReactEvent.Form.target(event)##value->int_of_string;
     let details = themesDetails |> List.find(details => details.id === value);
-    dispatch(ConfigContext.ChangeTheme(details.theme));
+    dispatch(ThemeContext.ChangeTheme(details.theme));
   };
 
   let value =

@@ -1,7 +1,7 @@
 type colors = {
-  primaryColor: string,
-  backgroundColor: string,
-  accent: string,
+  primary: Css.Types.Color.t,
+  background: Css.Types.Color.t,
+  accent: Css.Types.Color.t,
 };
 
 type state = {
@@ -15,23 +15,23 @@ type actions =
 let getColors = theme =>
   switch (theme) {
   | Themes.Black => {
-      primaryColor: "#fff",
-      backgroundColor: "#000",
-      accent: "#f38518",
+      primary: `hex("fff"),
+      background: `hex("000"),
+      accent: `hex("f38518"),
     }
   | Themes.Dark => {
-      primaryColor: "#d4d4d4",
-      backgroundColor: "#1e1e1e",
-      accent: "#c6c6c6",
+      primary: `hex("d4d4d4"),
+      background: `hex("1e1e1e"),
+      accent: `hex("c6c6c6"),
     }
   | Themes.Standard => {
-      primaryColor: "#000",
-      backgroundColor: "#fffffe",
-      accent: "#c6c6c6",
+      primary: `hex("000"),
+      background: `hex("fffffe"),
+      accent: `hex("c6c6c6"),
     }
   };
 
-let defaultTheme = Themes.Standard;
+let defaultTheme = Themes.Dark;
 let defaultDispatcher: actions => unit = _ => ();
 let initialState: state = {
   theme: defaultTheme,

@@ -1,12 +1,12 @@
 module Styles = {
   open Css;
 
-  let app = style([height(px(200)), backgroundColor(blue)]);
+  let app = style([]);
 };
 
 [@react.component]
 let make = () => {
-  <div> <ThemeDropdown /> <Editor /> </div>;
+  <div className=Styles.app> <Editor /> </div>;
 };
 
 let default = make;

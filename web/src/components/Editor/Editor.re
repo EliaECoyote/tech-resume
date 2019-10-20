@@ -1,33 +1,13 @@
 module Styles = {
-  /* Open the Css module, so we can access the style properties below without prefixing them with Css. */
   open Css;
 
-  let editor =
+  let editorContainer = (colors: ThemeContext.colors) =>
     style([
-      height(px(200)),
-      backgroundColor(blue),
-      // display(flexBox),
-      // flexDirection(column),
-      // alignItems(stretch),
-      // backgroundColor(white),
-      // boxShadow(Shadow.box(~y=px(3), ~blur=px(5), rgba(0, 0, 0, 0.3))),
-      /* You can add non-standard and other unsafe style declarations using the `unsafe` function, with strings as the two arguments. */
-      // unsafe("-webkit-overflow-scrolling", "touch"),
-      /* You can place all your theme styles in Theme.re and access as normal Reason module */
-      // padding(Theme.basePadding)
+      padding(`px(10)),
+      border(`px(2), `solid, colors.accent),
     ]);
-  // let title = style([
-  //   fontSize(rem(1.5)),
-  //   color(Theme.textColor),
-  //   marginBottom(Theme.basePadding)
-  // ]);
-  // let actionButton = disabled =>
-  //   style([
-  //     background(disabled ? darkgray : white),
-  //     color(black),
-  //     border(px(1), solid, black),
-  //     borderRadius(px(3)),
-  //   ])
+
+  let editor = style([height(`vh(80.0))]);
 };
 
 [@react.component]
@@ -35,7 +15,7 @@ let make = () => {
   let editorRef = React.useRef(Js.Nullable.null);
   let monacoInstanceRef = React.useRef(None);
 
-  let (state, _) = React.useContext(ConfigContext.context);
+  let (state, _) = React.useContext(ThemeContext.context);
 
   React.useEffect1(
     () => {
@@ -66,7 +46,7 @@ let make = () => {
     Some(disposeOfMonacoInstance);
   });
 
-  <div>
+  <div className={Styles.editorContainer(state.colors)}>
     <div className=Styles.editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
   </div>;
 };

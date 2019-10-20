@@ -1,44 +1,31 @@
 module Styles = {
-  /* Open the Css module, so we can access the style properties below without prefixing them with Css. */
   open Css;
 
-  let dropdown =
+  let dropdown = (colors: ThemeContext.colors) =>
     style([
-      height(px(200)),
-      backgroundColor(blue),
-      // display(flexBox),
-      // flexDirection(column),
-      // alignItems(stretch),
-      // backgroundColor(white),
-      // boxShadow(Shadow.box(~y=px(3), ~blur=px(5), rgba(0, 0, 0, 0.3))),
-      /* You can add non-standard and other unsafe style declarations using the `unsafe` function, with strings as the two arguments. */
-      // unsafe("-webkit-overflow-scrolling", "touch"),
-      /* You can place all your theme styles in Theme.re and access as normal Reason module */
-      // padding(Theme.basePadding)
+      padding2(~v=`px(6), ~h=`px(20)),
+      backgroundColor(colors.background),
+      border(`px(1), `solid, colors.accent),
+      borderRadius(`px(0)),
+      position(`relative),
+      unsafe("-webkit-appearance", "none"),
+      unsafe("-moz-appearance", "none"),
+      textIndent(`px(1)),
+      textOverflow(`string("")),
+      color(colors.primary),
+      fontFamily("'Montserrat', sans-serif"),
     ]);
-  // let title = style([
-  //   fontSize(rem(1.5)),
-  //   color(Theme.textColor),
-  //   marginBottom(Theme.basePadding)
-  // ]);
-  // let actionButton = disabled =>
-  //   style([
-  //     background(disabled ? darkgray : white),
-  //     color(black),
-  //     border(px(1), solid, black),
-  //     borderRadius(px(3)),
-  //   ])
 };
 
 [@react.component]
 let make =
-    (
-      ~children: ReasonReact.reactElement,
-      ~onChange=_ => (),
-      ~name="",
-      ~value,
-    ) =>
-  <select onChange name value> children </select>;
+    (~children: ReasonReact.reactElement, ~onChange=_ => (), ~name="", ~value) => {
+  let (state, _) = React.useContext(ThemeContext.context);
+
+  <select className={Styles.dropdown(state.colors)} onChange name value>
+    children
+  </select>;
+};
 
 module Item = {
   [@react.component]
