@@ -2,7 +2,7 @@ module Styles = {
   /* Open the Css module, so we can access the style properties below without prefixing them with Css. */
   open Css;
 
-  let editor =
+  let dropdown =
     style([
       height(px(200)),
       backgroundColor(blue),
@@ -31,8 +31,14 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~children: ReasonReact.reactElement, ~onChange=_ => ()) =>
-  <select onChange> children </select>;
+let make =
+    (
+      ~children: ReasonReact.reactElement,
+      ~onChange=_ => (),
+      ~name="",
+      ~value,
+    ) =>
+  <select onChange name value> children </select>;
 
 module Item = {
   [@react.component]
