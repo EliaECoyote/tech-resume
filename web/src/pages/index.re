@@ -6,7 +6,7 @@ module Styles = {
 
 [@react.component]
 let make = () => {
-  <ConfigContext> <div> <ThemeDropdown /> <Editor /> </div> </ConfigContext>;
+  <div> <ThemeDropdown /> <Editor /> </div>;
 };
 
 let default = make;

@@ -9,5 +9,5 @@ exports.onCreateWebpackConfig = ({
   getConfig,
 }) => {
   const config = getConfig();
-  config.plugins = config.plugins.concat(new MonacoWebpackPlugin()) 
+  config.plugins = config.plugins.concat(new MonacoWebpackPlugin())
 }

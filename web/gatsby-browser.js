@@ -4,4 +4,9 @@
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
 
-// You can delete this file if you're not using it
+const React = require('react');
+const ThemeContext = require('./src/context/ThemeContext').make;
+
+exports.wrapPageElement = ({ element }) => {
+  return <ThemeContext>{element}</ThemeContext>
+}
