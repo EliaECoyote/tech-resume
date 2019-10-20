@@ -2,10 +2,12 @@ module AppContent = {
   [@react.component]
   let make = (~children) => {
     let (state, _) = React.useContext(ThemeContext.context);
-    let bgColorString = Css.Types.Color.toString(state.colors.background);
+    let background = Css.Types.Color.toString(state.colors.background);
+    let primary = Css.Types.Color.toString(state.colors.primary);
     let globalStyle = {j|
       body {
-        background-color: $bgColorString;
+        color: $primary;
+        background-color: $background;
         font-family: 'Montserrat', sans-serif;
       }
       * { box-sizing: border-box; }

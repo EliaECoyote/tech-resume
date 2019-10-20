@@ -6,17 +6,14 @@ module Styles = {
       justifyContent(`spaceBetween),
       alignItems(`center),
     ]);
-  let headerTitle = (colors: ThemeContext.colors) =>
-    style([color(colors.primary)]);
+  let headerTitle = style([]);
 };
 
 [@react.component]
 let make = () => {
   let (state, _) = React.useContext(ThemeContext.context);
   <header className=Styles.header>
-    <h1 className={Styles.headerTitle(state.colors)}>
-      {React.string("Markdown 2 cv")}
-    </h1>
+    <h1 className=Styles.headerTitle> {React.string("Markdown 2 cv")} </h1>
     <ThemeDropdown />
   </header>;
 };
