@@ -2,9 +2,14 @@ type monaco;
 type t = monaco;
 
 [@bs.deriving abstract]
+type monacoMinimap = {enabled: bool};
+
+[@bs.deriving abstract]
 type monacoOptions = {
   value: string,
   language: string,
+  automaticLayout: bool,
+  minimap: monacoMinimap,
 };
 
 module Theme = {

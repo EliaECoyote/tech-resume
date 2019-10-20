@@ -46,7 +46,13 @@ let make = () => {
   );
 
   React.useEffect0(() => {
-    let monacoOptions = Monaco.monacoOptions(~value="", ~language="markdown");
+    let monacoOptions =
+      Monaco.monacoOptions(
+        ~value="",
+        ~language="markdown",
+        ~automaticLayout=true,
+        ~minimap=Monaco.monacoMinimap(~enabled=false),
+      );
 
     React.Ref.current(editorRef)
     ->Js.Nullable.toOption
