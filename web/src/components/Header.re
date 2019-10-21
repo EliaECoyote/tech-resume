@@ -10,10 +10,8 @@ module Styles = {
 };
 
 [@react.component]
-let make = () => {
-  let (state, _) = React.useContext(ThemeContext.context);
+let make = () =>
   <header className=Styles.header>
     <h1 className=Styles.headerTitle> {React.string("Markdown 2 cv")} </h1>
     <ThemeDropdown />
   </header>;
-};
