@@ -1,4 +1,5 @@
 {
+  "editor.formatOnSave": true,
   "search.exclude": {
     "**/node_modules": true,
     "web/src/**/*.js": true,
