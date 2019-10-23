@@ -25,9 +25,9 @@
   ],
   "license": "MIT",
   "scripts": {
-    "clean-bsb": "yarn bsb -clean-world",
+    "clean": "yarn bsb -clean-world && yarn gatsby clean",
     "build-bsb": "yarn bsb -make-world",
-    "watch-bsb": "yarn bsb -make-world -w",
+    "watch-bsb": "yarn bsb -verbose -w",
     "build": "yarn gatsby build",
     "develop": "yarn gatsby develop -H 0.0.0.0",
     "serve": "yarn gatsby serve",
