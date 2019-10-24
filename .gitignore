@@ -2,7 +2,6 @@
 *.log
 yarn-debug.log*
 
-
 # dotenv environment variables file
 .env
 
@@ -16,6 +15,7 @@ web/src/**/*.js
 node_modules/
 
 # Yarn
+./yarn.lock
 yarn-error.log
 .yarn-integrity
 

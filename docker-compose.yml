@@ -6,15 +6,15 @@ services:
     build:
       context: ./web
     volumes:
-      - ./web/src:/usr/src/app/src:ro,cached
-      - ./web/scripts:/usr/src/app/scripts:ro,cached
-      - ./web/package.json:/usr/src/app/package.json:ro,cached
-      - ./web/yarn.lock:/usr/src/app/yarn.lock:ro,cached
-      - ./web/bsconfig.json:/usr/src/app/bsconfig.json:ro,cached
-      - ./web/gatsby-browser.js:/usr/src/app/gatsby-browser.js:ro,cached
-      - ./web/gatsby-config.js:/usr/src/app/gatsby-config.js:ro,cached
-      - ./web/gatsby-node.js:/usr/src/app/gatsby-node.js:ro,cached
-      - ./web/gatsby-ssr.js:/usr/src/app/gatsby-ssr.js:ro,cached
+      - ./web/src:/usr/src/app/src:cached
+      - ./web/scripts:/usr/src/app/scripts:cached
+      - ./web/package.json:/usr/src/app/package.json:cached
+      - ./web/yarn.lock:/usr/src/app/yarn.lock:cached
+      - ./web/bsconfig.json:/usr/src/app/bsconfig.json:cached
+      - ./web/gatsby-browser.js:/usr/src/app/gatsby-browser.js:cached
+      - ./web/gatsby-config.js:/usr/src/app/gatsby-config.js:cached
+      - ./web/gatsby-node.js:/usr/src/app/gatsby-node.js:cached
+      - ./web/gatsby-ssr.js:/usr/src/app/gatsby-ssr.js:cached
     ports:
       - "8000:8000"
   api:
@@ -22,11 +22,11 @@ services:
     build:
       context: ./api
     volumes:
-      - ./api/src:/usr/src/app/src:ro,cached
-      - ./api/scripts:/usr/src/app/scripts:ro,cached
-      - ./api/package.json:/usr/src/app/package.json:ro,cached
-      - ./api/yarn.lock:/usr/src/app/yarn.lock:ro,cached
-      - ./api/bsconfig.json:/usr/src/app/bsconfig.json:ro,cached
+      - ./api/src:/usr/src/app/src:cached
+      - ./api/scripts:/usr/src/app/scripts:cached
+      - ./api/package.json:/usr/src/app/package.json:cached
+      - ./api/yarn.lock:/usr/src/app/yarn.lock:cached
+      - ./api/bsconfig.json:/usr/src/app/bsconfig.json:cached
     ports:
       - "3000:3000"
       - "3001:3001"

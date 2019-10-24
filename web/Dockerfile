@@ -13,6 +13,8 @@ RUN apk add --no-cache \
   # File watcher package, necessary for live reloading
   inotify-tools \
   # bsb ninja build dependencies
-  python g++ make
+  python g++ make \
+  # gatsby dependencies
+  util-linux
 RUN yarn install
-COPY ./src ./scripts bsconfig.json gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js ./
+COPY ./src ./scripts bsconfig.json .eslintrc gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js ./
