@@ -6,7 +6,7 @@
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "dependencies": {
     "bs-css": "^10.0.1",
-    "gatsby": "^2.15.34",
+    "gatsby": "^2.17.1",
     "gatsby-image": "^2.2.25",
     "gatsby-plugin-manifest": "^2.2.21",
     "gatsby-plugin-offline": "^3.0.13",
@@ -27,7 +27,7 @@
   "scripts": {
     "clean": "yarn bsb -clean-world && yarn gatsby clean",
     "build-bsb": "yarn bsb -make-world",
-    "watch-bsb": "yarn bsb -verbose -w",
+    "watch-bsb": "yarn nodemon --watch src/ --ext re --exec \"bsb\"",
     "build": "yarn gatsby build",
     "develop": "yarn gatsby develop -H 0.0.0.0",
     "serve": "yarn gatsby serve",
@@ -45,6 +45,7 @@
     "bs-platform": "^6.2.0",
     "concurrently": "^5.0.0",
     "monaco-editor-webpack-plugin": "^1.7.0",
+    "nodemon": "^1.19.4",
     "reason-react": "^0.7.0"
   }
 }
