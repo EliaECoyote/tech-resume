@@ -30,12 +30,40 @@ external on:
 
 type t = childProcess;
 
+module NodeProcessTypes = {
+  type modulePath = string; // The command to run.
+  type args = array(string); // List of string arguments.
+  [@bs.deriving abstract]
+  type options = {
+    [@bs.optional]
+    cwd: string,
+    [@bs.optional]
+    stdio: [ | `Str(string) | `Array(array(string))],
+    [@bs.optional]
+    detached: bool,
+    [@bs.optional]
+    uid: int,
+    [@bs.optional]
+    gid: int,
+    [@bs.optional]
+    shell: [ | `Bool(bool) | `Str(string)],
+  };
+};
+
 [@bs.module "child_process"]
-external spawn: (string, array(string)) => childProcess = "spawn";
+external spawn:
+  (
+    NodeProcessTypes.modulePath,
+    NodeProcessTypes.args,
+    NodeProcessTypes.options
+  ) =>
+  childProcess =
+  "spawn";
 let spawn =
     (~path: string, ~args: array(string), ~src: string)
     : Js.Promise.t(spawnResult) => {
-  let p = spawn(path, args);
+  let options = NodeProcessTypes.options(~cwd="", ());
+  let p = spawn(path, args, options);
   Js.Promise.make((~resolve, ~reject as _) => {
     let outputData = ref("");
     let errorData = ref("");

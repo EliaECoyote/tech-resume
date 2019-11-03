@@ -11,10 +11,13 @@ COPY --from=pandoc/core /usr/bin/* /usr/bin/
 COPY package.json yarn.lock ./
 
 RUN apk add --no-cache \
+  # pandoc dependencies
   lua5.3 \
   # File watcher package, necessary for live reloading
   inotify-tools \
   # bsb ninja build dependencies
-  python g++ make
+  python g++ make \
+  # mtxrun dependencies
+  texlive texlive-luatex
 RUN yarn install
-COPY ./src ./scripts bsconfig.json ./
+COPY ./src ./styles ./scripts bsconfig.json ./

@@ -18,8 +18,5 @@ connect-api:
 connect-web:
 	docker-compose -f ${DC_FILE} run web /bin/sh
 
-ps-api:
-	docker top markdown2cv_api_1
-
-ps-web:
-	docker top markdown2cv_web_1
+test:
+	docker-compose -f ${DC_FILE} run api ls -la src

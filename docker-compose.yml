@@ -3,6 +3,7 @@ version: "3.4"
 services:
   web:
     command: sh ./scripts/startup.sh
+    container_name: web
     build:
       context: ./web
     volumes:
@@ -19,10 +20,12 @@ services:
       - "8000:8000"
   api:
     command: sh ./scripts/startup.sh
+    container_name: api
     build:
       context: ./api
     volumes:
       - ./api/src:/usr/src/app/src:cached
+      - ./api/styles:/usr/src/app/styles:cached
       - ./api/scripts:/usr/src/app/scripts:cached
       - ./api/package.json:/usr/src/app/package.json:cached
       - ./api/yarn.lock:/usr/src/app/yarn.lock:cached

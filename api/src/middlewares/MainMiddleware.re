@@ -10,8 +10,13 @@ let buildExpressResponse =
 
 let mainMiddleware =
   Express.PromiseMiddleware.from((_, _, res) =>
-    Pandoc.run(~src="# Test", ~fromKind=Pandoc.Markdown, ~toKind=Pandoc.Html)
-    |> Js.Promise.then_(result =>
+    Pandoc.run(
+      ~src="# Test",
+      ~fromKind=Pandoc.Markdown,
+      ~toKind=Pandoc.Context,
+      ~template=Pandoc.Standard,
+    )
+    |> Js.Promise.then_((result: ChildProcess.spawnResult) =>
          buildExpressResponse(res, result)->Js.Promise.resolve
        )
   );
