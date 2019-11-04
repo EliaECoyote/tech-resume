@@ -17,6 +17,3 @@ connect-api:
 
 connect-web:
 	docker-compose -f ${DC_FILE} run web /bin/sh
-
-test:
-	docker-compose -f ${DC_FILE} run api ls -la src
