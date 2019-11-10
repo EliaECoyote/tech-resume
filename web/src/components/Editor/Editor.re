@@ -2,10 +2,7 @@ module Styles = {
   open Css;
 
   let editorContainer = (colors: ThemeContext.colors) =>
-    style([
-      padding(`px(10)),
-      border(`px(2), `solid, colors.accent),
-    ]);
+    style([padding(`px(10)), border(`px(2), `solid, colors.accent)]);
 
   let editor = style([height(`vh(80.0))]);
 };
@@ -26,24 +23,37 @@ let make = () => {
   );
 
   React.useEffect0(() => {
-    let monacoOptions =
-      Monaco.monacoOptions(
+    let options =
+      Monaco.Types.options(
         ~value="",
         ~language="markdown",
         ~automaticLayout=true,
-        ~minimap=Monaco.monacoMinimap(~enabled=false),
+        ~minimap=Monaco.Types.mMinimap(~enabled=false),
       );
 
+    // create and save monaco instance
     React.Ref.current(editorRef)
     ->Js.Nullable.toOption
-    ->Belt.Option.map(value => Monaco.create(value, monacoOptions))
+    ->Belt.Option.map(value => Monaco.create(value, options))
     |> React.Ref.setCurrent(monacoInstanceRef);
 
-    let disposeOfMonacoInstance = () =>
+    // listen for editor content changes
+    let changeListener =
       React.Ref.current(monacoInstanceRef)
-      ->Belt.Option.map(value => Monaco.dispose(value))
+      ->Belt.Option.map(monaco =>
+          Monaco.onDidChangeModelContent(monaco, _ =>
+            Js.log(Monaco.getValue(~monaco, ~options=None))
+          )
+        );
+
+    // dispose of monaco instance and change listener as effect cleanup
+    let cleanup = () => {
+      changeListener->Belt.Option.map(Monaco.dispose)->(_ => ());
+      React.Ref.current(monacoInstanceRef)
+      ->Belt.Option.map(value => Monaco.toDisposable(value)->Monaco.dispose)
       ->(_ => ());
-    Some(disposeOfMonacoInstance);
+    };
+    Some(cleanup);
   });
 
   <div className={Styles.editorContainer(state.colors)}>
