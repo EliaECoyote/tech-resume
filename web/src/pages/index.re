@@ -11,9 +11,10 @@ module Styles = {
 
 [@react.component]
 let make = () => {
+  let content = "<div>some text</div>";
   <div className=Styles.app>
     <div> <p> {React.string("source (md)")} </p> <Editor /> </div>
-    <div> <p> {React.string("output")} </p> </div>
+    <div> <p> {React.string("output")} </p> <Output /> </div>
   </div>;
 };
 
