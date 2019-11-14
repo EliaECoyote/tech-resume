@@ -16,6 +16,7 @@
   "bs-dependencies": [
     "@glennsl/bs-jest",
     "reason-react",
+    "bs-fetch",
     "bs-css"
   ],
   "reason": {
