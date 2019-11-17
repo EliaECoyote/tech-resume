@@ -11,7 +11,6 @@ let getTemplatePath = template =>
 let transform: string => Js.Promise.t(string) = [%bs.raw
   {|
       (src) => {
-        var vfile = require('to-vfile')
         var unified = require('unified')
         var markdown = require('remark-parse')
         var remark2rehype = require('remark-rehype')
