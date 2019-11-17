@@ -165,7 +165,7 @@ let setResponseHeaders = (headers: array(Types.header), response: Response.t) =>
   headers |> Array.iter(setSingleResponseHeader);
 };
 
-let middlewareFactory = (options: Types.corsOptions) =>
+let middlewareFactory = (~options: Types.corsOptions=defaultOptions, ()) =>
   Middleware.from((next: Middleware.next, req: Request.t, res: Response.t) => {
     let method = Request.httpMethod(req);
     switch (method) {

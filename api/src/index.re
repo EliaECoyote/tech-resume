@@ -14,8 +14,8 @@ let startupBackend = () => {
     | _ => Js.log @@ {j|Listening at $protocol://$host:$port|j}
     };
 
-  Express.App.get(app, ~path="/", MainMiddleware.mainMiddleware);
-
+  Express.App.use(app, CorsMiddleware.middlewareFactory());
+  Express.App.get(app, ~path="/", MainMiddleware.middleware);
   Express.App.listen(app, ~port, ~onListen, ());
 };
 
