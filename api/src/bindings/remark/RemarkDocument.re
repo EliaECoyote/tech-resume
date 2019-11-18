@@ -1,0 +1,1 @@
+[@bs.module] external doc: Unified.Types.plugin = "rehype-document";

@@ -1,0 +1,1 @@
+[@bs.module] external markdown: Unified.Types.plugin = "remark-parse";
