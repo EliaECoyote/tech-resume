@@ -1,12 +1,7 @@
 module Types = {
   type processor;
   type plugin;
-  type processCallback =
-    (
-      Js.nullable(Js.Exn.t),
-      [@bs.unwrap] [ | `Str(string) | `Buf(Buffer.t)]
-    ) =>
-    unit;
+  type processCallback = (Js.nullable(Js.Exn.t), VFile.vFile) => unit;
 };
 
 /**

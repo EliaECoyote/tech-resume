@@ -9,23 +9,19 @@ let getTemplatePath = template =>
   };
 
 let transform = (src: string): Js.Promise.t(ChildProcess.spawnResult) =>
-  Js.Promise.make((~resolve, ~reject) => {
+  Js.Promise.make((~resolve, ~reject as _) => {
     let processCallback: Unified.Types.processCallback =
       (error, data) => {
         switch (Js.Nullable.toOption(error)) {
         | Some(value) =>
           Js.Exn.message(value)
-          ->Belt.Option.getWithDefault("generic md2html error")
+          ->Belt.Option.getWithDefault("generic converter error")
           ->ChildProcess.Error
           ->(output => resolve(. output))
         | None =>
-          switch (data) {
-          | `Str(value) => resolve(. ChildProcess.Ok(value))
-          | `Buf(value) =>
-            Buffer.contents(value)
-            ->ChildProcess.Ok
-            ->(output => resolve(. output))
-          }
+          VFile.contentsGet(data)
+          ->ChildProcess.Ok
+          ->(output => resolve(. output))
         };
       };
     Unified.unified()
