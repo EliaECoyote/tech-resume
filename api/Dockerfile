@@ -57,4 +57,4 @@ RUN apt-get remove -y wget && \
   apt-get clean
 
 RUN yarn install
-COPY ./src ./styles ./scripts bsconfig.json ./
+COPY ./src ./styles ./scripts nodemon.json bsconfig.json ./

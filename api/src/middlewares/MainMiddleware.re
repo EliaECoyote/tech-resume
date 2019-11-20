@@ -11,7 +11,7 @@ let buildExpressResponse =
 let middleware =
   Express.PromiseMiddleware.from((_, _, res) =>
     MarkdownToHtmlConverter.run(
-      ~src="# Test",
+      ~src="# Test \n ## heyy",
       ~template=MarkdownToHtmlConverter.Standard,
     )
     |> Js.Promise.then_((result: ChildProcess.spawnResult) =>

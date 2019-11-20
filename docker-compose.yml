@@ -29,6 +29,7 @@ services:
       - ./api/scripts:/usr/src/app/scripts:cached
       - ./api/package.json:/usr/src/app/package.json:cached
       - ./api/yarn.lock:/usr/src/app/yarn.lock:cached
+      - ./api/nodemon.json:/usr/src/app/nodemon.json:cached
       - ./api/bsconfig.json:/usr/src/app/bsconfig.json:cached
     ports:
       - "3000:3000"

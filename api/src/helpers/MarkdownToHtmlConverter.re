@@ -3,12 +3,38 @@
 type template =
   | Standard;
 
-let getTemplatePath = template =>
+let getTemplateFontFamily = template =>
   switch (template) {
-  | Standard => "styles/teemplate1.tex"
+  | Standard => "'Roboto', sans-serif"
   };
 
-let transform = (src: string): Js.Promise.t(ChildProcess.spawnResult) =>
+let getTemplateCssResources = template =>
+  switch (template) {
+  | Standard => [|
+      "https://fonts.googleapis.com/css?family=Roboto&display=swap",
+    |]
+  };
+
+let getTemplateStyle = template => {
+  let fontFamily = getTemplateFontFamily(template);
+  switch (template) {
+  | Standard => [|
+      {j|
+        body {
+          background: white;
+          font-family: $fontFamily;
+        }
+        h1 {
+          color: green
+        }
+      |j},
+    |]
+  };
+};
+
+let transform =
+    (~src: string, ~style: array(string), ~css: array(string))
+    : Js.Promise.t(ChildProcess.spawnResult) =>
   Js.Promise.make((~resolve, ~reject as _) => {
     let resolve = (output: ChildProcess.spawnResult) => resolve(. output);
     let processCallback: Unified.Types.processCallback =
@@ -24,16 +50,11 @@ let transform = (src: string): Js.Promise.t(ChildProcess.spawnResult) =>
         };
       };
     let remarkOpt =
-      RemarkDocument.options(
-        ~title="test title",
-        ~style=[|"h1 { color: green }"|],
-        (),
-      );
+      RemarkDocument.options(~title="test title", ~style, ~css, ());
     Unified.unified()
     ->Unified.use(~plugin=RemarkParse.markdown, ())
     ->Unified.use(~plugin=RemarkRehype.remark2rehype, ())
     ->Unified.use(~plugin=RemarkDocument.doc, ~options=remarkOpt, ())
-    ->Unified.use(~plugin=RemarkDocument.doc, ())
     ->Unified.use(~plugin=RehypeFormat.format, ())
     ->Unified.use(~plugin=RehypeStringify.html, ())
     ->Unified.process(src, processCallback);
@@ -42,6 +63,7 @@ let transform = (src: string): Js.Promise.t(ChildProcess.spawnResult) =>
 let run =
     (~src: string, ~template: template)
     : Js.Promise.t(ChildProcess.spawnResult) => {
-  // let templateFile = getTemplatePath(template);
-  transform(src);
+  let style = getTemplateStyle(template);
+  let css = getTemplateCssResources(template);
+  transform(~src, ~style, ~css);
 };
