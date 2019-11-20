@@ -14,7 +14,10 @@ module Types = {
 external unified: unit => Types.processor = "unified";
 
 [@bs.send]
-external use: (Types.processor, Types.plugin) => Types.processor = "use";
+external use:
+  (Types.processor, ~plugin: Types.plugin, ~options: 'a=?, unit) =>
+  Types.processor =
+  "use";
 
 /**
  * Process the given representation of a file as configured on the processor. The process invokes `parse`, `run`, and `stringify` internally.
