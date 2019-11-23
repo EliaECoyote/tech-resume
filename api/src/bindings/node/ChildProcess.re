@@ -70,7 +70,7 @@ let spawn =
     p->on(
       `error(
         err => {
-          Js.log(("error....", err));
+          Js.log(err);
           let errorMessage =
             Js.Exn.message(err)
             ->Belt.Option.getWithDefault("generic process error")
