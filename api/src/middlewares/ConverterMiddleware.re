@@ -9,12 +9,17 @@ let buildExpressResponse =
 };
 
 let middleware =
-  Express.PromiseMiddleware.from((_, _, res) =>
+  Express.PromiseMiddleware.from((_, req, res) => {
+    let query = Express.Request.query(req);
+    let src =
+      Js.Dict.get(query, "md")
+      ->Belt.Option.flatMap(Js.Json.decodeString)
+      ->Belt.Option.getWithDefault("");
     MarkdownToHtmlConverter.run(
-      ~src="# Test \n ## heyy",
+      ~src,
       ~template=MarkdownToHtmlConverter.Standard,
     )
     |> Js.Promise.then_((result: ChildProcess.spawnResult) =>
          buildExpressResponse(res, result)->Js.Promise.resolve
-       )
-  );
+       );
+  });
