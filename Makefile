@@ -8,6 +8,10 @@ start:
 build:
 	docker-compose -f ${DC_FILE} build
 
+clean:
+	cd ${PWD}/api && yarn clean; \
+	cd ${PWD}/web && yarn clean;
+
 install:
 	cd ${PWD}/api && yarn install; \
 	cd ${PWD}/web && yarn install;

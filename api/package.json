@@ -4,7 +4,7 @@
   "description": "markdown2cv api service",
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "scripts": {
-    "clean-bsb": "yarn bsb -clean-world",
+    "clean": "yarn bsb -clean-world",
     "build-bsb": "yarn bsb -make-world",
     "watch-bsb": "yarn bsb -w",
     "watch-node": "nodemon --inspect=3001 lib/js/src/index.bs.js"
