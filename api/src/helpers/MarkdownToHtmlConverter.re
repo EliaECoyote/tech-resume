@@ -1,4 +1,3 @@
-// Pandoc (https://pandoc.org/) service wrapper
 
 type template =
   | Standard;
