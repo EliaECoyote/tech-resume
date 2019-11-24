@@ -16,8 +16,8 @@ services:
       - ./web/gatsby-config.js:/usr/src/app/gatsby-config.js:cached
       - ./web/gatsby-node.js:/usr/src/app/gatsby-node.js:cached
       - ./web/gatsby-ssr.js:/usr/src/app/gatsby-ssr.js:cached
-      - ./web/jest.config.js :/usr/src/app/jest.config.js
-      - ./web/babel.config.js:/usr/src/app/babel.config.js
+      - ./web/jest.config.js:/usr/src/app/jest.config.js:cached
+      - ./web/babel.config.js:/usr/src/app/babel.config.js:cached
     ports:
       - "8000:8000"
   api:
