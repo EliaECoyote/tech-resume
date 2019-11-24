@@ -2,7 +2,7 @@
 set -e
 
 [ -f ".bsb.lock" ] && rm .bsb.lock
-yarn clean-bsb
+yarn clean
 yarn build-bsb
 
 yarn concurrently \

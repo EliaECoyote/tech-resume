@@ -16,6 +16,9 @@ install:
 	cd ${PWD}/api && yarn install; \
 	cd ${PWD}/web && yarn install;
 
+test-web:
+	docker-compose -f ${DC_FILE} run web yarn test
+
 connect-api:
 	docker-compose -f ${DC_FILE} run api /bin/sh
 
