@@ -14,6 +14,7 @@ let make = () => {
 
   let (state, _) = React.useContext(ThemeContext.context);
 
+  // reacts to *theme* change by updating Monaco editor theme
   React.useEffect1(
     () => {
       Monaco.setTheme(state.theme);
@@ -31,7 +32,7 @@ let make = () => {
         ~minimap=Monaco.Types.mMinimap(~enabled=false),
       );
 
-    // create and save monaco instance
+    // create monaco instance
     React.Ref.current(editorRef)
     ->Js.Nullable.toOption
     ->Belt.Option.map(value => Monaco.create(value, options))

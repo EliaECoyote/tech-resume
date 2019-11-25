@@ -46,6 +46,7 @@
     "@babel/preset-env": "^7.7.4",
     "@glennsl/bs-jest": "^0.4.9",
     "babel-jest": "^24.9.0",
+    "babel-preset-gatsby": "^0.2.22",
     "bs-fetch": "^0.5.0",
     "bs-platform": "^6.2.0",
     "concurrently": "^5.0.0",
