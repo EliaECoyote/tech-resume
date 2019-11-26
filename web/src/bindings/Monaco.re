@@ -90,6 +90,12 @@ let getValue =
     (~monaco: Types.monaco, ~options: option(Types.getValueOptions)) =>
   Js.Nullable.fromOption(options) |> getValue(monaco);
 
+/**
+ * calls the callback upon monaco editor
+ * content change.
+ * The callback parameter consists only in the actual content change -
+ * to get the full content you should use *getValue* instead.
+ */
 [@bs.send]
 external onDidChangeModelContent:
   (Types.monaco, Types.modelContentChangedEvent => unit) => Types.disposable =

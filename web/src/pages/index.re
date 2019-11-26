@@ -11,10 +11,13 @@ module Styles = {
 
 [@react.component]
 let make = () => {
-  let content = "<div>some text</div>";
+  let (editorRef, _) = Hooks.useMonaco();
 
   <div className=Styles.app>
-    <div> <p> {React.string("source (md)")} </p> <Editor /> </div>
+    <div>
+      <p> {React.string("source (md)")} </p>
+      <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
+    </div>
     <div> <p> {React.string("output")} </p> <Output /> </div>
   </div>;
 };
