@@ -1,1 +1,0 @@
-let useMonaco = UseMonaco.hook;
