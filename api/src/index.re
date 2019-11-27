@@ -15,7 +15,7 @@ let startupBackend = () => {
     };
 
   Express.App.use(app, CorsMiddleware.middlewareFactory());
-  Express.App.get(app, ~path="/", MainMiddleware.middleware);
+  Express.App.get(app, ~path="/convert", ConverterMiddleware.middleware);
   Express.App.listen(app, ~port, ~onListen, ());
 };
 

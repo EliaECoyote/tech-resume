@@ -27,12 +27,12 @@
   "license": "MIT",
   "scripts": {
     "clean": "yarn bsb -clean-world && yarn gatsby clean",
+    "test": "yarn build-bsb && NODE_ENV=test yarn jest --no-cache",
     "build-bsb": "yarn bsb -make-world",
     "watch-bsb": "yarn nodemon --watch src/ --ext re --exec \"bsb\"",
     "build": "yarn gatsby build",
     "develop": "yarn gatsby develop -H 0.0.0.0",
-    "serve": "yarn gatsby serve",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing \""
+    "serve": "yarn gatsby serve"
   },
   "repository": {
     "type": "git",
@@ -42,7 +42,11 @@
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
     "@glennsl/bs-jest": "^0.4.9",
+    "babel-jest": "^24.9.0",
+    "babel-preset-gatsby": "^0.2.22",
     "bs-fetch": "^0.5.0",
     "bs-platform": "^6.2.0",
     "concurrently": "^5.0.0",

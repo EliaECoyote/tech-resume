@@ -1,3 +1,8 @@
+type result =
+  | Ok(string)
+  | Error(string);
+
+type t = result;
 
 type template =
   | Standard;
@@ -31,11 +36,15 @@ let getTemplateStyle = template => {
   };
 };
 
+/**
+ * converts markdown to html code. The **css** parameter will
+ * be embedded as a style tag on the *head* of the document
+ */
 let transform =
     (~src: string, ~style: array(string), ~css: array(string))
-    : Js.Promise.t(ChildProcess.spawnResult) =>
+    : Js.Promise.t(result) =>
   Js.Promise.make((~resolve, ~reject as _) => {
-    let resolve = (output: ChildProcess.spawnResult) => resolve(. output);
+    let resolve = (output: result) => resolve(. output);
     let processCallback: Unified.Types.processCallback =
       (error, data) => {
         switch (Js.Nullable.toOption(error)) {
@@ -43,9 +52,9 @@ let transform =
           Js.log(value);
           Js.Exn.message(value)
           ->Belt.Option.getWithDefault("generic converter error")
-          ->ChildProcess.Error
+          ->Error
           ->resolve;
-        | None => VFile.contentsGet(data)->ChildProcess.Ok->resolve
+        | None => VFile.contentsGet(data)->Ok->resolve
         };
       };
     let remarkOpt =
@@ -59,9 +68,11 @@ let transform =
     ->Unified.process(src, processCallback);
   });
 
-let run =
-    (~src: string, ~template: template)
-    : Js.Promise.t(ChildProcess.spawnResult) => {
+/**
+ * runs the md 2 html converter. The **template** parameter specifies
+ * which template will be used to style the html document
+ */
+let run = (~src: string, ~template: template): Js.Promise.t(result) => {
   let style = getTemplateStyle(template);
   let css = getTemplateCssResources(template);
   transform(~src, ~style, ~css);
