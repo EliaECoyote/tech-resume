@@ -50,18 +50,19 @@ let make = () => {
               (),
             );
           Js.log(("fetching url: ", url));
-          HttpClient.get(~resource=url)
-          |> Js.Promise.then_(result =>
-               switch (result) {
-               | HttpClient.Ok(response) =>
-                 Fetch.Response.text(response)
-                 |> Js.Promise.then_(data => {
-                      sendEvent(LoadSuccess(data));
-                      Js.Promise.resolve();
-                    })
-               | _ => Js.Promise.resolve()
-               }
-             );
+          let _ =
+            HttpClient.get(~resource=url)
+            |> Js.Promise.then_(result =>
+                 switch (result) {
+                 | HttpClient.Ok(response) =>
+                   Fetch.Response.text(response)
+                   |> Js.Promise.then_(data => {
+                        sendEvent(LoadSuccess(data));
+                        Js.Promise.resolve();
+                      })
+                 | _ => Js.Promise.resolve()
+                 }
+               );
           None;
         | _ => None
         }
