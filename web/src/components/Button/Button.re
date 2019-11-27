@@ -4,9 +4,13 @@ module Styles = {
   let button = (colors: ThemeContext.colors) =>
     style([
       backgroundColor(colors.background),
-      padding(`px(10)),
+      padding2(~v=`px(4), ~h=`px(10)),
       border(`px(2), `solid, colors.accent),
+      fontSize(`rem(1.2)),
+      borderRadius(`px(4)),
       color(colors.primary),
+      transition(~duration=300, "opacity"),
+      hover([opacity(0.8)]),
     ]);
 };
 
