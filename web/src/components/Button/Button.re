@@ -9,8 +9,9 @@ module Styles = {
       fontSize(`rem(1.2)),
       borderRadius(`px(4)),
       color(colors.primary),
-      transition(~duration=300, "opacity"),
+      transition(~duration=250, "opacity"),
       hover([opacity(0.8)]),
+      focus([opacity(0.5)]),
     ]);
 };
 
