@@ -1,10 +1,13 @@
 module Styles = {
   open Css;
 
-  let editorContainer = (colors: ThemeContext.colors) =>
-    style([padding(`px(10)), border(`px(2), `solid, colors.accent)]);
-
-  let editor = style([height(`vh(80.0))]);
+  let button = (colors: ThemeContext.colors) =>
+    style([
+      backgroundColor(colors.background),
+      padding(`px(10)),
+      border(`px(2), `solid, colors.accent),
+      color(colors.primary),
+    ]);
 };
 
 [@react.component]
@@ -13,6 +16,7 @@ let make =
     let (state, _) = React.useContext(ThemeContext.context);
     <button
       onClick
+      className={Styles.button(state.colors)}
       ref=?{
         buttonRef
         ->Js.Nullable.toOption
