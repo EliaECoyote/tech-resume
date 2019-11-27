@@ -50,7 +50,6 @@ let make = () => {
               ~qsComponents=[|("md", value)|],
               (),
             );
-          Js.log(("fetching url: ", url));
           let _ =
             HttpClient.get(~resource=url)
             |> Js.Promise.then_(result =>

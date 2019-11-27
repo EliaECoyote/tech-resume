@@ -120,10 +120,7 @@ let fetchWrapper =
          Fetch.Response.ok(res)
            ? resolveSuccess(~res) : resolveFailure(~res, ~resource, ())
        )
-  |> Js.Promise.catch(error => {
-       Js.log(("fetch failed => ", resource, error));
-       resolveFailure(~error, ~resource, ());
-     });
+  |> Js.Promise.catch(error => resolveFailure(~error, ~resource, ()));
 };
 
 let get = (~resource: string) => {
