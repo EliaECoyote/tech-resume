@@ -7,6 +7,7 @@ module Styles = {
       padding2(~v=`px(4), ~h=`px(10)),
       border(`px(2), `solid, colors.accent),
       fontSize(`rem(1.2)),
+      textTransform(`uppercase),
       borderRadius(`px(4)),
       color(colors.primary),
       transition(~duration=250, "opacity"),

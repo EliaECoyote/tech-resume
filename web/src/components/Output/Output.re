@@ -1,7 +1,7 @@
 module Styles = {
   open Css;
 
-  let app =
+  let output =
     style([
       display(`grid),
       gridTemplateColumns([`percent(50.0), `percent(50.0)]),
@@ -10,22 +10,8 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~content: string=?) => {
-  let iframeElementRef = React.useRef(Js.Nullable.null);
-
-  let onClick = _ => {
-    let iframeElement =
-      React.Ref.current(iframeElementRef)->Js.Nullable.toOption;
-    switch (iframeElement) {
-    | Some(element) => IFrame.getContentWindow(element)->IFrame.print
-    | None => ()
-    };
-  };
-
-  <div>
-    <iframe srcDoc=content ref={ReactDOMRe.Ref.domRef(iframeElementRef)} />
-    <Button onClick> {React.string("download")} </Button>
-  </div>;
+let make = (~children) => {
+  <div className=Styles.output> children </div>;
 };
 
 let default = make;
