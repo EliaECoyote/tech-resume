@@ -1,7 +1,5 @@
 FROM node:10-alpine
 
-# Testing: NINJA_FORCE_ANSI env should enable colors for concurrently package
-ENV NINJA_FORCE_ANSI=1
 ENV APPDIR=/usr/src/app
 ENV PORT=3000
 
@@ -16,5 +14,6 @@ RUN apk add --no-cache \
   python g++ make \
   # gatsby dependencies
   util-linux
+
 RUN yarn install
 COPY ./src ./scripts bsconfig.json .eslintrc jest.config.js babel.config.js gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js ./

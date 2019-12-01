@@ -2,6 +2,8 @@ version: "3.4"
 
 services:
   web:
+    env_file:
+      - .env
     command: sh ./scripts/startup.sh
     container_name: web
     build:
@@ -21,6 +23,8 @@ services:
     ports:
       - "8000:8000"
   api:
+    env_file:
+      - .env
     command: sh ./scripts/startup.sh
     container_name: api
     build:
