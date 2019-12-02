@@ -40,32 +40,20 @@ let make = () => {
     () =>
       switch (state) {
       | Fetching =>
-        switch (getEditorContent()) {
-        | Some(value) =>
-          let url =
-            Url.make(
-              ~scheme="http",
-              ~host="127.0.0.1:3000",
-              ~path="convert",
-              ~qsComponents=[|("md", value)|],
-              (),
-            );
-          let _ =
-            HttpClient.get(~resource=url)
-            |> Js.Promise.then_(result =>
-                 switch (result) {
-                 | HttpClient.Ok(response) =>
-                   Fetch.Response.text(response)
-                   |> Js.Promise.then_(data => {
-                        sendEvent(LoadSuccess(data));
-                        Js.Promise.resolve();
-                      })
-                 | _ => Js.Promise.resolve()
-                 }
-               );
-          None;
-        | _ => None
-        }
+        let mdContent = getEditorContent()->Belt.Option.getWithDefault("");
+        let url =
+          Url.make(
+            ~scheme="http",
+            ~host="127.0.0.1:3000",
+            ~path="convert",
+            ~qsComponents=[|("md", mdContent)|],
+            (),
+          );
+        let subscription =
+          HttpClient.get(~resource=url)
+          |> Wonka.concatMap((. value) => HttpClient.toText(value))
+          |> Wonka.subscribe((. value) => Js.log(value));
+        Some(subscription.unsubscribe);
       | _ => None
       },
     (getEditorContent, state, sendEvent),
