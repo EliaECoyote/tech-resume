@@ -16,6 +16,7 @@
   "bs-dependencies": [
     "@glennsl/bs-jest",
     "reason-react",
+    "wonka",
     "bs-fetch",
     "bs-css"
   ],
