@@ -34,38 +34,26 @@ let make = () => {
   let (iframeRef, triggerPrint) = UseOutput.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
 
-  let startFetching = _ => sendEvent(LoadData);
+  let startFetching = _ =>
+    if (state !== Fetching) {
+      sendEvent(LoadData);
+    };
 
   React.useEffect3(
     () =>
       switch (state) {
       | Fetching =>
-        switch (getEditorContent()) {
-        | Some(value) =>
-          let url =
-            Url.make(
-              ~scheme="http",
-              ~host="127.0.0.1:3000",
-              ~path="convert",
-              ~qsComponents=[|("md", value)|],
-              (),
-            );
-          let _ =
-            HttpClient.get(~resource=url)
-            |> Js.Promise.then_(result =>
-                 switch (result) {
-                 | HttpClient.Ok(response) =>
-                   Fetch.Response.text(response)
-                   |> Js.Promise.then_(data => {
-                        sendEvent(LoadSuccess(data));
-                        Js.Promise.resolve();
-                      })
-                 | _ => Js.Promise.resolve()
-                 }
-               );
-          None;
-        | _ => None
-        }
+        let mdContent = getEditorContent()->Belt.Option.getWithDefault("");
+        let subscription =
+          Apis.fetchHtmlConversion(mdContent)
+          |> Wonka.subscribe((. value) =>
+               switch (value) {
+               | HttpClient.Ok(html) => sendEvent(LoadSuccess(html))
+               | HttpClient.Failure
+               | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
+               }
+             );
+        Some(subscription.unsubscribe);
       | _ => None
       },
     (getEditorContent, state, sendEvent),
@@ -84,7 +72,9 @@ let make = () => {
     </div>
     <div>
       <p> {React.string("output")} </p>
-      <Button onClick=startFetching> {React.string("Refresh")} </Button>
+      <Button onClick=startFetching disabled={state == Fetching}>
+        {React.string("Refresh")}
+      </Button>
       <Button onClick=triggerPrint> {React.string("Download")} </Button>
       <span>
         {switch (state) {

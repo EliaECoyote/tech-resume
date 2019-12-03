@@ -63,40 +63,16 @@ module StatusCode = {
   let toInt = tToJs;
 };
 
-type result =
-  | Ok(Fetch.response)
+type result('kind) =
+  | Ok('kind)
   | FailureCode(StatusCode.t)
   | Failure;
-type t = result;
 
-let resolveSuccess = (~res: Fetch.response) => Ok(res)->Js.Promise.resolve;
-
-let resolveFailure =
-    (
-      ~res: option(Fetch.response)=?,
-      ~error: option(Js.Promise.error)=?,
-      ~resource: string,
-      unit,
-    ) => {
-  let status: option(StatusCode.t) =
-    res
-    ->Belt.Option.map(Fetch.Response.status)
-    ->Belt.Option.flatMap(StatusCode.fromInt);
-
-  Js.log(("Fetch failed => ", resource, status, error));
-
-  let resultValue =
-    switch (status) {
-    | Some(value) => FailureCode(value)
-    | None => Failure
-    };
-
-  Js.Promise.resolve(resultValue);
-};
+type t = result(Fetch.response);
 
 /**
- * A fetch wrapper that actually rejects the promise
- * when an error is received from the api
+ * A fetch wrapper that handles and returns failure
+ * in case an error is received from the api
  * (source: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Checking_that_the_fetch_was_successful)
  * "A fetch() promise will reject with a TypeError
  * when a network error is encountered or CORS is
@@ -108,19 +84,51 @@ let resolveFailure =
  * checking that the Response.ok property has a value
  * of true."
  */
-let fetchWrapper =
-    (~resource: string, ~requestInit: Fetch.requestInit)
-    : Js.Promise.t(result) => {
-  Fetch.fetchWithInit(resource, requestInit)
-  |> Js.Promise.then_(res
-       // The ok read-only property of the Response interface
-       // contains a Boolean stating whether the response was
-       // successful (status in the range 200-299) or not.
-       =>
-         Fetch.Response.ok(res)
-           ? resolveSuccess(~res) : resolveFailure(~res, ~resource, ())
-       )
-  |> Js.Promise.catch(error => resolveFailure(~error, ~resource, ()));
+let fetchWrapper = (~resource: string, ~requestInit: Fetch.requestInit) => {
+  let cancelled = ref(false);
+
+  // manually creating a wonka source, in order to handle correctly
+  // the Fetch result promise errors
+  Wonka.make((. observer: Wonka.Types.observerT(t)) => {
+    // utils fns used to avoid invoking *next* and *complete
+    // observer methods when the subscription gets cancelled
+    let observerNext = value =>
+      if (! cancelled^) {
+        observer.next(value);
+      };
+    let observerComplete = () =>
+      if (! cancelled^) {
+        observer.complete();
+      };
+
+    let _ =
+      Fetch.fetchWithInit(resource, requestInit)
+      |> Js.Promise.then_(res => {
+           // The ok read-only property of the Response interface
+           // contains a Boolean stating whether the response was
+           // successful (status in the range 200-299) or not.
+           Fetch.Response.ok(res)
+             ? Ok(res)->observerNext
+             : {
+               res
+               ->Fetch.Response.status
+               ->StatusCode.fromInt
+               ->Belt.Option.map(code => FailureCode(code))
+               ->Belt.Option.getWithDefault(Failure)
+               ->observerNext;
+             };
+           observerComplete();
+           Js.Promise.resolve();
+         })
+      |> Js.Promise.catch(error => {
+           Js.log(error);
+           observerNext(Failure);
+           observerComplete();
+           Js.Promise.resolve();
+         });
+
+    (.) => cancelled := true;
+  });
 };
 
 let get = (~resource: string) => {
@@ -147,3 +155,23 @@ let delete = (~resource: string) => {
   let requestInit = Fetch.RequestInit.make(~method_=Fetch.Delete, ());
   fetchWrapper(~resource, ~requestInit);
 };
+
+let toJson = (result: t): Wonka_types.sourceT(result(Js.Json.t)) =>
+  switch (result) {
+  | Ok(res) =>
+    Fetch.Response.json(res)
+    |> Wonka.fromPromise
+    |> Wonka.map((. value) => Ok(value))
+  | FailureCode(code) => Wonka.fromValue(FailureCode(code))
+  | Failure => Wonka.fromValue(Failure)
+  };
+
+let toText = (result: t): Wonka_types.sourceT(result(string)) =>
+  switch (result) {
+  | Ok(res) =>
+    Fetch.Response.text(res)
+    |> Wonka.fromPromise
+    |> Wonka.map((. value) => Ok(value))
+  | FailureCode(code) => Wonka.fromValue(FailureCode(code))
+  | Failure => Wonka.fromValue(Failure)
+  };
