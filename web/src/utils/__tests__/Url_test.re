@@ -31,6 +31,6 @@ describe("buildUrl", () => {
       (),
     )
     |> expect
-    |> toBe("https://example.com/test?md=*%201%0A*%202%0A+-=%0A%60%60%60")
+    |> toBe("https://example.com/test?md=*%201%0A*%202%0A%2B-%3D%0A%60%60%60")
   );
 });

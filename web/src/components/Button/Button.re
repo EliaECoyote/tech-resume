@@ -18,10 +18,11 @@ module Styles = {
 
 [@react.component]
 let make =
-  React.forwardRef((~children, ~onClick, buttonRef) => {
+  React.forwardRef((~children, ~disabled=?, ~onClick, buttonRef) => {
     let (state, _) = React.useContext(ThemeContext.context);
     <button
       onClick
+      ?disabled
       className={Styles.button(state.colors)}
       ref=?{
         buttonRef

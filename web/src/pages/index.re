@@ -34,25 +34,25 @@ let make = () => {
   let (iframeRef, triggerPrint) = UseOutput.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
 
-  let startFetching = _ => sendEvent(LoadData);
+  let startFetching = _ =>
+    if (state !== Fetching) {
+      sendEvent(LoadData);
+    };
 
   React.useEffect3(
     () =>
       switch (state) {
       | Fetching =>
         let mdContent = getEditorContent()->Belt.Option.getWithDefault("");
-        let url =
-          Url.make(
-            ~scheme="http",
-            ~host="127.0.0.1:3000",
-            ~path="convert",
-            ~qsComponents=[|("md", mdContent)|],
-            (),
-          );
         let subscription =
-          HttpClient.get(~resource=url)
-          |> Wonka.concatMap((. value) => HttpClient.toText(value))
-          |> Wonka.subscribe((. value) => Js.log(value));
+          Apis.fetchHtmlConversion(mdContent)
+          |> Wonka.subscribe((. value) =>
+               switch (value) {
+               | HttpClient.Ok(html) => sendEvent(LoadSuccess(html))
+               | HttpClient.Failure
+               | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
+               }
+             );
         Some(subscription.unsubscribe);
       | _ => None
       },
@@ -72,7 +72,9 @@ let make = () => {
     </div>
     <div>
       <p> {React.string("output")} </p>
-      <Button onClick=startFetching> {React.string("Refresh")} </Button>
+      <Button onClick=startFetching disabled={state == Fetching}>
+        {React.string("Refresh")}
+      </Button>
       <Button onClick=triggerPrint> {React.string("Download")} </Button>
       <span>
         {switch (state) {
