@@ -13,6 +13,7 @@ module Styles = {
       transition(~duration=250, "opacity"),
       hover([opacity(0.8)]),
       focus([opacity(0.6)]),
+      disabled([opacity(0.3)]),
     ]);
 };
 
