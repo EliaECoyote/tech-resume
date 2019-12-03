@@ -7,6 +7,13 @@ module Styles = {
       gridTemplateColumns([`percent(50.0), `percent(50.0)]),
       gridColumnGap(`pt(10)),
     ]);
+
+  let outputContent =
+    style([
+      position(`absolute),
+      width(`percent(100.0)),
+      height(`percent(100.0)),
+    ]);
 };
 
 type status =
@@ -86,6 +93,7 @@ let make = () => {
       </span>
       <Output>
         <iframe
+          className=Styles.outputContent
           srcDoc=?outputContent
           ref={ReactDOMRe.Ref.domRef(iframeRef)}
         />

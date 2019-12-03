@@ -27,9 +27,29 @@ let getTemplateStyle = template => {
         body {
           background: white;
           font-family: $fontFamily;
+          padding: 30px 50px;
         }
         h1 {
-          color: green
+          color: #626262;
+          text-align: center;
+        }
+        h2 {
+          color: #2d6139;
+        }
+        h2::before {
+          content: '';
+          background: #8bab5d;
+          height: 8px;
+          margin-right: 6px;
+          width: 16%;
+          display: inline-block;
+        }
+        blockquote {
+          text-align: center;
+        }
+        a {
+          color: #2d6139;
+          text-decoration: none;
         }
       |j},
     |]
