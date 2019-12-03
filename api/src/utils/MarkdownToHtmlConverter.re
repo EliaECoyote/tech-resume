@@ -15,7 +15,7 @@ let getTemplateFontFamily = template =>
 let getTemplateCssResources = template =>
   switch (template) {
   | Standard => [|
-      "https://fonts.googleapis.com/css?family=Roboto&display=swap",
+      "https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&display=swap",
     |]
   };
 
