@@ -40,3 +40,10 @@ services:
     ports:
       - "3000:3000"
       - "3001:3001"
+  pdf-generator:
+    env_file:
+      - .env
+    container_name: pdf-gen
+    image: openlabs/docker-wkhtmltopdf-aas:latest
+    ports:
+      - "80:80"
