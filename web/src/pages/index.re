@@ -46,13 +46,33 @@ let make = () => {
       sendEvent(LoadData);
     };
 
+  let downloadPdf = _ => {
+    switch (state) {
+    | Success(html) =>
+      let _ =
+        Apis.fetchPdfConversion(~html)
+        |> Wonka.subscribe((. value) =>
+             switch (value) {
+             | HttpClient.Ok(pdf) => Js.log("pdf received!!!!")
+             | HttpClient.Failure
+             | HttpClient.FailureCode(_) =>
+               // implement and display toast notifications when this happens
+               Js.log("error encountered during pdf download")
+             }
+           );
+      ();
+    // implement and display toast notifications when this happens
+    | _ => Js.log("cannot download without any html available!")
+    };
+  };
+
   React.useEffect3(
     () =>
       switch (state) {
       | Fetching =>
-        let mdContent = getEditorContent()->Belt.Option.getWithDefault("");
+        let md = getEditorContent()->Belt.Option.getWithDefault("");
         let subscription =
-          Apis.fetchHtmlConversion(mdContent)
+          Apis.fetchHtmlConversion(~md)
           |> Wonka.subscribe((. value) =>
                switch (value) {
                | HttpClient.Ok(html) => sendEvent(LoadSuccess(html))
@@ -82,7 +102,7 @@ let make = () => {
       <Button onClick=startFetching disabled={state == Fetching}>
         {React.string("Refresh")}
       </Button>
-      <Button onClick=triggerPrint> {React.string("Download")} </Button>
+      <Button onClick=downloadPdf> {React.string("Download")} </Button>
       <span>
         {switch (state) {
          | Success(_) => React.string("Data loaded successfully!")

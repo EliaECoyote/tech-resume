@@ -137,7 +137,12 @@ let get = (~resource: string) => {
 };
 
 let post = (~resource: string, ~body: Fetch.bodyInit) => {
-  let requestInit = Fetch.RequestInit.make(~method_=Fetch.Post, ~body, ());
+  let headers =
+    Fetch.HeadersInit.makeWithArray([|
+      ("Content-Type", "application/json"),
+    |]);
+  let requestInit =
+    Fetch.RequestInit.make(~method_=Fetch.Post, ~body, ~headers, ());
   fetchWrapper(~resource, ~requestInit);
 };
 
