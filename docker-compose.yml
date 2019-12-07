@@ -1,6 +1,13 @@
 version: "3.4"
 
 services:
+  bs-node:
+    image: bs-node
+    build:
+      context: .
+      dockerfile: Dockerfile.bs-node
+      args:
+        BS_PLATFORM_VERSION: 6.2.0
   web:
     env_file:
       - .env
