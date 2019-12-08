@@ -1,0 +1,8 @@
+{
+  "restartable": "rs",
+  "watch": [
+    "lib/js"
+  ],
+  "ext": "js,json",
+  "signal": "SIGINT"
+}

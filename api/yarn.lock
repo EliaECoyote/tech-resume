@@ -711,7 +711,7 @@ bs-node@reasonml-community/bs-node:
   version "0.0.1"
   resolved "https://codeload.github.com/reasonml-community/bs-node/tar.gz/ba6564678fd90c259ee1998d501350d61bf74548"
 
-bs-platform@^6.2.0:
+bs-platform@6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-6.2.0.tgz#a6a4f3dab8bedc9daf6efc864865654efe49e65d"
   integrity sha512-UU/X6LvOLzDZ8QEDTzANvAhuztD9rqbATodWW1bUwAtgHKLT7KCXdhX/UmVwHU3j4+fAE4rExdVfXb7FqnsLdg==

@@ -5,6 +5,7 @@ WEB_FOLDER = web
 
 API_SERVICE = api
 WEB_SERVICE = web
+PDF_GEN_SERVICE = pdfgen
 SERVICE =
 
 define HELP_MESSAGE
@@ -15,9 +16,11 @@ define HELP_MESSAGE
   **Targets**
   - api
   - web
+  - pdfgen
   
   **Actions**
   - help --> "prints make cmds docs"
+  - install --> "install modules dependencies"
   - serve --> "starts development server on loopback address"
   - test --> "runs tests in a new container. Requires a target"
   - test-watch --> "runs tests (watch mode) in a new container. Requires a target"
@@ -51,6 +54,9 @@ api:
 web:
 	@echo "\n** running in service: web **\n"
 	$(eval SERVICE=$(WEB_SERVICE))
+pdfgen:
+	@echo "\n** running in service: pdfgen **\n"
+	$(eval SERVICE=$(PDF_GEN_SERVICE))
 
 # Helpers
 run-docker-cmd:
@@ -64,6 +70,7 @@ run-cmd:
 	@if [ "$(SERVICE)" = "" ]; then \
 		cd $(PWD)/api && $(ARGS); \
 		cd $(PWD)/web && $(ARGS); \
+		cd $(PWD)/pdfgen && $(ARGS); \
 	else \
 		cd $(PWD)/$(SERVICE) && $(ARGS); \
 	fi; \
@@ -101,4 +108,4 @@ clean:
 install:
 	make SERVICE=$(SERVICE) ARGS="yarn install" run-cmd
 
-.PHONY: web api start build-image clean install test connect
+.PHONY: web api pdfgen start build-image clean install test connect

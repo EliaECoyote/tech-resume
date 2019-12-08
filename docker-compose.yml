@@ -47,10 +47,19 @@ services:
     ports:
       - "3000:3000"
       - "3001:3001"
-  pdf-generator:
+  pdfgen:
     env_file:
       - .env
-    container_name: pdf-gen
-    image: openlabs/docker-wkhtmltopdf-aas:latest
+    command: sh ./scripts/startup.sh
+    build:
+      context: ./pdfgen
+    container_name: pdfgen
+    volumes:
+      - ./pdfgen/src:/usr/src/app/src:cached
+      - ./pdfgen/scripts:/usr/src/app/scripts:cached
+      - ./pdfgen/package.json:/usr/src/app/package.json:cached
+      - ./pdfgen/yarn.lock:/usr/src/app/yarn.lock:cached
+      - ./pdfgen/nodemon.json:/usr/src/app/nodemon.json:cached
+      - ./pdfgen/bsconfig.json:/usr/src/app/bsconfig.json:cached
     ports:
       - "80:80"
