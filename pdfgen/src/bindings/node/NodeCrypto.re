@@ -1,1 +1,2 @@
-[@bs.module] external randomBytes: int => Node.Buffer.t = "crypto";
+[@bs.module "crypto"]
+external randomBytes: int => Node.Buffer.t = "randomBytes";
