@@ -5,7 +5,7 @@ WEB_FOLDER = web
 
 API_SERVICE = api
 WEB_SERVICE = web
-PDF_GEN_SERVICE = pdfgen
+PDFGEN_SERVICE = pdfgen
 SERVICE =
 
 define HELP_MESSAGE
@@ -56,7 +56,7 @@ web:
 	$(eval SERVICE=$(WEB_SERVICE))
 pdfgen:
 	@echo "\n** running in service: pdfgen **\n"
-	$(eval SERVICE=$(PDF_GEN_SERVICE))
+	$(eval SERVICE=$(PDFGEN_SERVICE))
 
 # Helpers
 run-docker-cmd:
@@ -79,10 +79,10 @@ run-cmd:
 # Actions
 ## - actions that will affect containers
 serve:
-	make SERVICE=$(SERVICE) ARGS=up run-docker-cmd
+	make SERVICE=$(SERVICE) DC_ACTION=up run-docker-cmd
 
 build-image:
-	make SERVICE=$(SERVICE) ARGS=build run-docker-cmd
+	make SERVICE=$(SERVICE) DC_ACTION=build run-docker-cmd
 
 test:
 	@if [ "$(SERVICE)" = "" ]; then \

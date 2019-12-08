@@ -62,4 +62,5 @@ services:
       - ./pdfgen/nodemon.json:/usr/src/app/nodemon.json:cached
       - ./pdfgen/bsconfig.json:/usr/src/app/bsconfig.json:cached
     ports:
-      - "80:80"
+      - "4000:4000"
+      - "4001:4001"
