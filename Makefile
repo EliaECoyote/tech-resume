@@ -19,13 +19,13 @@ define HELP_MESSAGE
   - pdfgen
   
   **Actions**
-  - help --> "prints make cmds docs"
-  - install --> "install modules dependencies"
-  - serve --> "starts development server on loopback address"
-  - test --> "runs tests in a new container. Requires a target"
-  - test-watch --> "runs tests (watch mode) in a new container. Requires a target"
-  - connect --> "starts a bash shell in a new container. Requires a target"
-  - build-image --> "rebuilds docker images"
+  - help          prints make cmds docs
+  - install       install modules dependencies
+  - serve         starts development server on loopback address
+  - test          runs tests in a new container. Requires a target
+  - test-watch    runs tests (watch mode) in a new container. Requires a target
+  - connect       starts a bash shell in a new container. Requires a target
+  - build-image   rebuilds docker images
   
   When [target] is not provided, the [action] will run in all modules by default
   e.g.: 
