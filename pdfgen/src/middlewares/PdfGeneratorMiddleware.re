@@ -24,7 +24,7 @@ let deleteFileIfExists = fileName =>
        }
      );
 
-let getBase64Pdf = (html: string) => {
+let generatePdf = (html: string) => {
   let pdfFileName = generateFileName(Pdf);
   ChildProcess.spawn(
     ~path="wkhtmltopdf",
@@ -35,16 +35,13 @@ let getBase64Pdf = (html: string) => {
   |> Wonka.map((. result) =>
        switch (result) {
        | ChildProcess.Ok(_) =>
-         Node.Fs.readFileSync(pdfFileName, `utf8)
-         ->Node.Buffer.fromString
-         ->NodeBuffer.bufferToString("base64")
-         ->(base64 => Ok(base64))
+         Node.Path.resolve(".", pdfFileName) |> (path => Ok(path))
        | ChildProcess.Error(value) => Error(value)
        }
-     )
-  |> Wonka.mergeMap((. value) =>
-       deleteFileIfExists(pdfFileName) |> Wonka.map((. _) => value)
      );
+  // |> Wonka.mergeMap((. value) =>
+  //      deleteFileIfExists(pdfFileName) |> Wonka.map((. _) => value)
+  //    );
 };
 
 let middleware =
@@ -56,12 +53,14 @@ let middleware =
          ->Belt.Option.flatMap(Js.Json.decodeString)
          ->Belt.Option.getWithDefault("")
        )
-    |> Wonka.mergeMap((. html) => getBase64Pdf(html))
+    |> Wonka.mergeMap((. html) => generatePdf(html))
     |> Wonka.toPromise
     |> Js.Promise.then_(result => {
          let response =
            switch (result) {
-           | Ok(value) => Express.Response.sendString(value, res)
+           | Ok(value) =>
+             Express.Response.status(Express.Response.StatusCode.Ok, res)
+             |> ExpressBs.download(~path=value, ~filename="resume.pdf")
            | Error(value) =>
              Js.log(value);
              Express.Response.status(

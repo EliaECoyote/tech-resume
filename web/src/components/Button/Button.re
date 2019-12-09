@@ -17,19 +17,46 @@ module Styles = {
     ]);
 };
 
+type buttonKind =
+  | StandardButton
+  | LinkButton(string);
+
+let getButtonKind = (~url=?, ()) =>
+  switch (url) {
+  | Some(value) => LinkButton(value)
+  | None => StandardButton
+  };
+
 [@react.component]
 let make =
-  React.forwardRef((~children, ~disabled=?, ~onClick, buttonRef) => {
-    let (state, _) = React.useContext(ThemeContext.context);
-    <button
-      onClick
-      ?disabled
-      className={Styles.button(state.colors)}
-      ref=?{
-        buttonRef
-        ->Js.Nullable.toOption
-        ->Belt.Option.map(ReactDOMRe.Ref.domRef)
-      }>
-      children
-    </button>;
+  React.forwardRef((~children, ~disabled=?, ~onClick=?, ~url=?, buttonRef) => {
+    let (theme, _) = React.useContext(ThemeContext.context);
+    let kind = getButtonKind(~url?, ());
+    switch (kind) {
+    | StandardButton =>
+      <button
+        ?onClick
+        ?disabled
+        className={Styles.button(theme.colors)}
+        ref=?{
+          buttonRef
+          ->Js.Nullable.toOption
+          ->Belt.Option.map(ReactDOMRe.Ref.domRef)
+        }>
+        children
+      </button>
+    | LinkButton(value) =>
+      <a
+        href=value
+        ?onClick
+        ?disabled
+        className={Styles.button(theme.colors)}
+        ref=?{
+          buttonRef
+          ->Js.Nullable.toOption
+          ->Belt.Option.map(ReactDOMRe.Ref.domRef)
+        }>
+        children
+      </a>
+    };
   });
