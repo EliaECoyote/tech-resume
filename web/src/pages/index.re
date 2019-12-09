@@ -88,8 +88,9 @@ let make = () => {
       <Button onClick=startFetching disabled={state == Fetching}>
         {React.string("Refresh")}
       </Button>
-      <Button
-        url={Url.make(
+      <Link
+        download=true
+        href={Url.make(
           ~scheme="http",
           ~host="127.0.0.1:4000",
           ~path="",
@@ -97,7 +98,7 @@ let make = () => {
           (),
         )}>
         {React.string("Download")}
-      </Button>
+      </Link>
       <span>
         {switch (state) {
          | Success(_) => React.string("Data loaded successfully!")
