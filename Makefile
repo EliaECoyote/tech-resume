@@ -5,6 +5,7 @@ WEB_FOLDER = web
 
 API_SERVICE = api
 WEB_SERVICE = web
+PDFGEN_SERVICE = pdfgen
 SERVICE =
 
 define HELP_MESSAGE
@@ -15,14 +16,16 @@ define HELP_MESSAGE
   **Targets**
   - api
   - web
+  - pdfgen
   
   **Actions**
-  - help --> "prints make cmds docs"
-  - serve --> "starts development server on loopback address"
-  - test --> "runs tests in a new container. Requires a target"
-  - test-watch --> "runs tests (watch mode) in a new container. Requires a target"
-  - connect --> "starts a bash shell in a new container. Requires a target"
-  - build-image --> "rebuilds docker images"
+  - help          prints make cmds docs
+  - install       install modules dependencies
+  - serve         starts development server on loopback address
+  - test          runs tests in a new container. Requires a target
+  - test-watch    runs tests (watch mode) in a new container. Requires a target
+  - connect       starts a bash shell in a new container. Requires a target
+  - build-image   rebuilds docker images
   
   When [target] is not provided, the [action] will run in all modules by default
   e.g.: 
@@ -51,6 +54,9 @@ api:
 web:
 	@echo "\n** running in service: web **\n"
 	$(eval SERVICE=$(WEB_SERVICE))
+pdfgen:
+	@echo "\n** running in service: pdfgen **\n"
+	$(eval SERVICE=$(PDFGEN_SERVICE))
 
 # Helpers
 run-docker-cmd:
@@ -64,6 +70,7 @@ run-cmd:
 	@if [ "$(SERVICE)" = "" ]; then \
 		cd $(PWD)/api && $(ARGS); \
 		cd $(PWD)/web && $(ARGS); \
+		cd $(PWD)/pdfgen && $(ARGS); \
 	else \
 		cd $(PWD)/$(SERVICE) && $(ARGS); \
 	fi; \
@@ -72,10 +79,10 @@ run-cmd:
 # Actions
 ## - actions that will affect containers
 serve:
-	make SERVICE=$(SERVICE) ARGS=up run-docker-cmd
+	make SERVICE=$(SERVICE) DC_ACTION=up run-docker-cmd
 
 build-image:
-	make SERVICE=$(SERVICE) ARGS=build run-docker-cmd
+	make SERVICE=$(SERVICE) DC_ACTION=build run-docker-cmd
 
 test:
 	@if [ "$(SERVICE)" = "" ]; then \
@@ -101,4 +108,4 @@ clean:
 install:
 	make SERVICE=$(SERVICE) ARGS="yarn install" run-cmd
 
-.PHONY: web api start build-image clean install test connect
+.PHONY: web api pdfgen start build-image clean install test connect

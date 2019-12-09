@@ -1,0 +1,14 @@
+FROM node:10-alpine
+
+ARG BS_PLATFORM_VERSION
+
+RUN apk add --no-cache \
+  # File watcher package, necessary for live reloading
+  inotify-tools \
+  # bsb ninja build dependencies
+  python g++ make
+
+# globally add bs-platform
+RUN yarn global add bs-platform@${BS_PLATFORM_VERSION}
+
+CMD ["true"]
