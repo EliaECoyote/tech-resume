@@ -25,23 +25,3 @@ let encodePdfConversionData = (~contents_: string) => {
       };
     });
 };
-
-let fetchPdfConversion = (~html) => {
-  let url =
-    Url.make(
-      ~scheme="http",
-      ~host="127.0.0.1:4000",
-      ~path="",
-      ~qsComponents=[|("html", html)|],
-      (),
-    );
-  // let data = encodePdfConversionData(~contents_=html);
-  // switch (data) {
-  // | Belt.Result.Ok(value) =>
-  // let body = Fetch.BodyInit.make(value);
-  HttpClient.get(~resource=url);
-  // | Belt.Result.Error(value) =>
-  // Js.log((value, html));
-  // Wonka.fromValue(HttpClient.Failure);
-  // };
-};

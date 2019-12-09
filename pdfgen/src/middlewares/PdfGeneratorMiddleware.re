@@ -54,21 +54,22 @@ let middleware =
          ->Belt.Option.getWithDefault("")
        )
     |> Wonka.mergeMap((. html) => generatePdf(html))
-    |> Wonka.toPromise
-    |> Js.Promise.then_(result => {
+    |> Wonka.mergeMap((. result) => {
          let response =
            switch (result) {
            | Ok(value) =>
-             Express.Response.status(Express.Response.StatusCode.Ok, res)
+             res
+             |> Express.Response.status(Express.Response.StatusCode.Ok)
              |> ExpressBs.download(~path=value, ~filename="resume.pdf")
            | Error(value) =>
              Js.log(value);
-             Express.Response.status(
-               Express.Response.StatusCode.BadRequest,
-               res,
-             )
+             res
+             |> Express.Response.status(
+                  Express.Response.StatusCode.BadRequest,
+                )
              |> Express.Response.sendString("pdf generation failed");
            };
-         Js.Promise.resolve(response);
+         Wonka.fromValue(response);
        })
+    |> Wonka.toPromise
   );
