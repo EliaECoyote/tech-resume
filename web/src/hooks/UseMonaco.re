@@ -1,13 +1,8 @@
 module type MonacoType = {include (module type of Monaco);};
 
-let minimap = Monaco.Types.mMinimap(~enabled=false);
-let monacoOptions =
-  Monaco.Types.options(
-    ~value="",
-    ~language="markdown",
-    ~automaticLayout=true,
-    ~minimap,
-  );
+let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
+  {| () => import("../bindings/Monaco.js") |}
+];
 
 /**
  * react hook that manages the creation & cleanup of
@@ -15,58 +10,82 @@ let monacoOptions =
  */
 let hook = () => {
   let editorRef = React.useRef(Js.Nullable.null);
-  let monacoInstanceRef: React.Ref.t(option(Monaco.t)) = React.useRef(None);
+  let (textSubject, _) = React.useState(() => Wonka.makeSubject());
+  let monacoInstanceRef = React.useRef(None);
 
   let (state, _) = React.useContext(ThemeContext.context);
+
+  let {Wonka.Types.source: textSource, Wonka.Types.next: textNext} = textSubject;
 
   // reacts to *theme* change by updating Monaco editor theme
   React.useEffect1(
     () => {
       let subscription =
-        DynamicImport.import("../bindings/Monaco.js")
-        |> DynamicImport.resolve
+        dynamicImportMonaco()
         |> Wonka.fromPromise
-        |> Wonka.subscribe((. module AnonymousModule: MonacoType) =>
-             AnonymousModule.setTheme(state.theme)
+        |> Wonka.subscribe((. module Monaco: MonacoType) =>
+             Monaco.setTheme(. state.theme)
            );
-
-      // DynamicImport.(
-      //   import("../bindings/Monaco.js")
-      //   |> resolve
-      //   |> Js.Promise.then_((module AnonymousModule: MonacoType) => {
-      //        AnonymousModule.setTheme(state.theme);
-      //        Js.Promise.resolve();
-      //      })
-      // );
       Some(subscription.unsubscribe);
     },
     [|state.theme|],
   );
 
-  React.useEffect0(() => {
-    let subscription =
-      DynamicImport.import("../bindings/Monaco.js")
-      |> DynamicImport.resolve
-      |> Wonka.fromPromise
-      |> Wonka.subscribe((. module AnonymousModule: MonacoType) => {
-           // create monaco instance
-           let instance =
+  React.useEffect1(
+    () => {
+      // monaco library dynamic import source
+      let importSource = dynamicImportMonaco() |> Wonka.fromPromise;
+
+      // monaco instance wonka source
+      let monacoInstanceSource =
+        importSource
+        |> Wonka.map((. module Monaco: MonacoType) => {
+             let minimap = Monaco.Types.mMinimap(~enabled=false);
+             let monacoOptions =
+               Monaco.Types.options(
+                 ~value="",
+                 ~language="markdown",
+                 ~automaticLayout=true,
+                 ~minimap,
+               );
+             // TODO: remove Obj.magic usage
+             // using Obj.magic in order to avoid error
+             // "The type constructor Monaco.Types.monaco would escape its scope"
+             // (caused by dynamic imports and `module type MonacoType` syntaxes)
              React.Ref.current(editorRef)
              ->Js.Nullable.toOption
-             ->Belt.Option.map(value =>
-                 AnonymousModule.create(value, Obj.magic(monacoOptions))
-               );
+             ->Belt.Option.map(value => Monaco.create(value, monacoOptions))
+             ->Obj.magic;
+           });
 
-           React.Ref.setCurrent(monacoInstanceRef, Obj.magic(instance));
-         });
-    Some(subscription.unsubscribe);
-  });
+      // sets the current monaco instance in a react ref
+      let monacoInstanceRefSubscription =
+        monacoInstanceSource
+        |> Wonka.subscribe((. monaco) =>
+             React.Ref.setCurrent(monacoInstanceRef, monaco)
+           );
 
-  let getContent =
-    React.useCallback0(() =>
-      React.Ref.current(monacoInstanceRef)
-      ->Belt.Option.map(monaco => "Monaco.getValue(~monaco, ~options=None)")
-    );
+      // pushes events to *textSource* when monaco text changes
+      let monacoTextChangeSubscription =
+        Wonka.combine(importSource, monacoInstanceSource)
+        |> Wonka.take(1)
+        |> Wonka.mergeMap((. (module Monaco: MonacoType, monaco))
+             // TODO: remove Obj.magic usage
+             // using Obj.magic in order to avoid error
+             // "The type constructor Monaco.Types.monaco would escape its scope"
+             // (caused by dynamic imports and `module type MonacoType` syntaxes)
+             => monaco |> Obj.magic |> Monaco.makeMonacoTexthangeWonkaSource)
+        |> Wonka.subscribe((. text) => textNext(text));
 
-  (editorRef, getContent);
+      Some(
+        () => {
+          monacoInstanceRefSubscription.unsubscribe();
+          monacoTextChangeSubscription.unsubscribe();
+        },
+      );
+    },
+    [|textNext|],
+  );
+
+  (editorRef, textSource);
 };

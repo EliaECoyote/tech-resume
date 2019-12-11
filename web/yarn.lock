@@ -3122,11 +3122,6 @@ bs-css@^10.0.1:
   dependencies:
     emotion "^10.0.7"
 
-bs-dynamic-import@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/bs-dynamic-import/-/bs-dynamic-import-0.4.0.tgz#73e72d4ab38d68bd448652392b7d99bd72c1b8c6"
-  integrity sha512-8d9O6A87x8dc82cV7a67azs/p+FhRtP78bwcTzpGifSEfb9Oj66rCrVU5zZE7GVJqSBP+XpsgoaEAqlddtI3/g==
-
 bs-fetch@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.5.0.tgz#6913b1d1ddfa0b0a4b832357854e9763d61d4b28"

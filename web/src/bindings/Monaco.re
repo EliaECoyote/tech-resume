@@ -77,19 +77,19 @@ external toDisposable: Types.monaco => Types.disposable = "%identity";
 
 [@bs.module "monaco-editor"] [@bs.scope "editor"]
 external create: (Dom.element, Types.options) => Types.monaco = "create";
-// This is needed in order to make dyanmic imports work for this fn
-let create = (element, options) => create(element, options);
+// ⚠️ needed in order to make dyanmic imports work
+let create = create;
 
 [@bs.module "monaco-editor"] [@bs.scope "editor"]
 external setTheme: string => unit = "setTheme";
-let setTheme = theme => Theme.stringOfColors(theme)->setTheme;
+let setTheme = (. theme) => Theme.stringOfColors(theme)->setTheme;
 
 [@bs.send]
 external getValue:
   (Types.monaco, Js.Nullable.t(Types.getValueOptions)) => string =
   "getValue";
 let getValue =
-    (~monaco: Types.monaco, ~options: option(Types.getValueOptions)) =>
+    (~monaco: Types.monaco, ~options: option(Types.getValueOptions)=None, ()) =>
   Js.Nullable.fromOption(options) |> getValue(monaco);
 
 /**
@@ -102,3 +102,21 @@ let getValue =
 external onDidChangeModelContent:
   (Types.monaco, Types.modelContentChangedEvent => unit) => Types.disposable =
   "onDidChangeModelContent";
+
+/**
+ * builds a wonka source that pushes values
+ * each time the content of the monaco
+ * instance changes. The pushed values
+ * contain the latest updated monaco text
+ * content.
+ */
+let makeMonacoTexthangeWonkaSource = (monaco): Wonka.Types.sourceT(string) => {
+  Wonka.make((. observer: Wonka.Types.observerT(string)) => {
+    let disposable =
+      monaco->onDidChangeModelContent(_ => {
+        let value = getValue(~monaco, ());
+        observer.next(value);
+      });
+    (.) => dispose(disposable);
+  });
+};
