@@ -16,7 +16,6 @@
   "bs-dependencies": [
     "@glennsl/bs-jest",
     "reason-react",
-    "bs-dynamic-import",
     "wonka",
     "bs-fetch",
     "bs-css"
