@@ -37,26 +37,28 @@ let reducer = (~state, ~event) =>
 
 [@react.component]
 let make = () => {
-  let (editorRef, getEditorContent) = UseMonaco.hook();
-  let (iframeRef, triggerPrint) = UseOutput.hook();
+  let (editorRef, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
+  let iframeRef = React.useRef(Js.Nullable.null);
+  let editorTextRef = React.useRef("");
 
-  let startFetching = _ =>
-    if (state !== Fetching) {
-      sendEvent(LoadData);
-    };
+  React.useEffect1(
+    () => {
+      let subscription =
+        editorTextSource
+        |> Wonka.subscribe((. text) =>
+             text |> React.Ref.setCurrent(editorTextRef)
+           );
+      Some(subscription.unsubscribe);
+    },
+    [|editorTextSource|],
+  );
 
-  let html =
-    switch (state) {
-    | Success(value) => value
-    | _ => ""
-    };
-
-  React.useEffect3(
+  React.useEffect2(
     () =>
       switch (state) {
       | Fetching =>
-        let md = getEditorContent()->Belt.Option.getWithDefault("");
+        let md = editorTextRef->React.Ref.current;
         let subscription =
           Apis.fetchHtmlConversion(~md)
           |> Wonka.subscribe((. value) =>
@@ -69,8 +71,19 @@ let make = () => {
         Some(subscription.unsubscribe);
       | _ => None
       },
-    (getEditorContent, state, sendEvent),
+    (state, sendEvent),
   );
+
+  let startFetching = _ =>
+    if (state !== Fetching) {
+      sendEvent(LoadData);
+    };
+
+  let html =
+    switch (state) {
+    | Success(value) => value
+    | _ => ""
+    };
 
   let outputContent =
     switch (state) {
