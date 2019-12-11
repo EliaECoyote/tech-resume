@@ -16,3 +16,5 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY ./src ./scripts nodemon.json bsconfig.json ./
+COPY ./src ./src/
+COPY ./scripts ./scripts/

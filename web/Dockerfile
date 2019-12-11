@@ -12,4 +12,6 @@ COPY package.json yarn.lock ./
 
 RUN yarn install
 
-COPY ./src ./scripts bsconfig.json .eslintrc jest.config.js babel.config.js gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js ./
+COPY bsconfig.json .eslintrc jest.config.js babel.config.js gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js ./
+COPY ./src ./src/
+COPY ./scripts ./scripts/

@@ -26,6 +26,7 @@ define HELP_MESSAGE
   - test-watch    runs tests (watch mode) in a new container. Requires a target
   - connect       starts a bash shell in a new container. Requires a target
   - build-image   rebuilds docker images
+  - deploy        builds and deploys the service
   
   When [target] is not provided, the [action] will run in all modules by default
   e.g.: 
@@ -100,6 +101,17 @@ test-watch:
 
 connect:
 	make SERVICE=$(SERVICE) DC_ACTION="run --rm" ARGS="/bin/sh" run-docker-cmd
+
+deploy:
+	case "$(SERVICE)" in \
+	web) \
+		docker-compose -f docker-compose.production.yml up --build web \
+		;; \
+	*) \
+		echo "cannot run deploy cmd on service: $(SERVICE)"; \
+		exit 1 \
+		;; \
+	esac
 
 ## - actions that will affect your local filesystem
 clean:
