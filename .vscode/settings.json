@@ -6,5 +6,6 @@
     "**/.cache": true,
     "**/lib": true,
     "**/public": true,
-  }
+  },
+  "reason_language_server.autoRebuild": false
 }
