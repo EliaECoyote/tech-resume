@@ -7,4 +7,4 @@ yarn clean
 yarn build-bsb
 yarn build
 
-yarn now --token $NOW_TOKEN
+yarn now --prod --token $NOW_TOKEN ./public

@@ -1,13 +1,7 @@
 {
   "version": 2,
   "name": "tech-resume",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@now/static-build",
-      "config": {
-        "distDir": "public"
-      }
-    }
-  ]
+  "github": {
+    "enabled": false
+  }
 }
