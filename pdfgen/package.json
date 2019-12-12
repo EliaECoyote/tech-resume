@@ -13,7 +13,7 @@
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.9",
     "bs-express": "^0.12.1",
-    "bs-platform": "6.2.0",
+    "bs-platform": "7.0.1",
     "bs-node": "reasonml-community/bs-node",
     "concurrently": "^5.0.0",
     "nodemon": "^1.19.3"
