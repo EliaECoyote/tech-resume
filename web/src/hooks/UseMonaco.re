@@ -34,7 +34,8 @@ let hook = () => {
   React.useEffect1(
     () => {
       // monaco library dynamic import source
-      let importSource = dynamicImportMonaco() |> Wonka.fromPromise;
+      let importSource =
+        dynamicImportMonaco() |> Wonka.fromPromise |> Wonka.share;
 
       // monaco instance wonka source
       let monacoInstanceSource =
@@ -56,7 +57,8 @@ let hook = () => {
              ->Js.Nullable.toOption
              ->Belt.Option.map(value => Monaco.create(value, monacoOptions))
              ->Obj.magic;
-           });
+           })
+        |> Wonka.share;
 
       // sets the current monaco instance in a react ref
       let monacoInstanceRefSubscription =
