@@ -1,0 +1,21 @@
+version: "3.4"
+
+services:
+  bs-node:
+    image: bs-node
+    build:
+      context: .
+      dockerfile: Dockerfile.bs-node
+      args:
+        BS_PLATFORM_VERSION: 7.0.1
+  web:
+    env_file:
+      - .env
+    command: sh ./scripts/deploy.sh
+    container_name: web
+    build:
+      context: ./web
+    depends_on:
+      - bs-node
+    ports:
+      - "8000:8000"

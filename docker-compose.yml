@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile.bs-node
       args:
-        BS_PLATFORM_VERSION: 6.2.0
+        BS_PLATFORM_VERSION: 7.0.1
   web:
     env_file:
       - .env
@@ -38,7 +38,6 @@ services:
       context: ./api
     volumes:
       - ./api/src:/usr/src/app/src:cached
-      - ./api/styles:/usr/src/app/styles:cached
       - ./api/scripts:/usr/src/app/scripts:cached
       - ./api/package.json:/usr/src/app/package.json:cached
       - ./api/yarn.lock:/usr/src/app/yarn.lock:cached
