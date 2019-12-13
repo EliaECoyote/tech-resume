@@ -6,8 +6,9 @@ type fileNameKind =
  * generates a random pdf / html filename
  */
 let generateFileName = kind => {
-  NodeCrypto.randomBytes(16)
-  |> Node.Buffer.toString
+  Js.Date.make()
+  |> Js.Date.getTime
+  |> Js.Float.toString
   |> (
     filename =>
       switch (kind) {
