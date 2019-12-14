@@ -14,4 +14,5 @@ let make = () =>
   <header className=Styles.header>
     <h1 className=Styles.headerTitle> {React.string("Markdown 2 cv")} </h1>
     <ThemeDropdown />
+    <div id="auth" />
   </header>;

@@ -13,11 +13,19 @@ module AppContent = {
       * { box-sizing: border-box; }
     |j};
 
+    UseFirebase.hook();
+    UseAuth.hook();
+
     <div>
       <ReactHelmet>
         <link
           href="https://fonts.googleapis.com/css?family=Montserrat&display=swap"
           rel="stylesheet"
+        />
+        <link
+          type_="text/css"
+          rel="stylesheet"
+          href="https://www.gstatic.com/firebasejs/ui/4.3.0/firebase-ui-auth.css"
         />
         <style> {ReasonReact.string(globalStyle)} </style>
       </ReactHelmet>
