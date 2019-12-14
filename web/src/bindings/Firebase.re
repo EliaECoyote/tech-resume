@@ -1,24 +1,54 @@
 type json;
 
+type firebaseAppConfig = {
+  name: option(string),
+  automaticDataCollectionEnabled: option(bool),
+};
+
+type firebaseOptions = {
+  apiKey: option(string),
+  authDomain: option(string),
+  databaseURL: option(string),
+  projectId: option(string),
+  storageBucket: option(string),
+  messagingSenderId: option(string),
+  appId: option(string),
+  measurementId: option(string),
+};
+[@bs.module "firebase/app"]
+external initializeApp: (~firebaseOptions: firebaseOptions) => unit =
+  "initializeApp";
+[@bs.module "firebase/app"]
+external initializeAppByName:
+  (~firebaseOptions: firebaseOptions, ~name: string, unit) => unit =
+  "initializeApp";
+[@bs.module "firebase/app"]
+external initializeAppByConfig:
+  (~firebaseOptions: firebaseOptions, ~config: firebaseAppConfig, unit) => unit =
+  "initializeApp";
+
+[@bs.module "firebase/app"] external analytics: unit => unit = "analytics";
+
 module AuthProvider = {
   type t;
+  type providerId;
 };
 
 module GithubAuthProvider = {
   type t = AuthProvider.t;
 
-  [@bs.new] [@bs.module "firebase"] [@bs.scope "auth"]
+  [@bs.new] [@bs.module "firebase/app"] [@bs.scope "auth"]
   external make: unit => t = "GithubAuthProvider";
 
   [@bs.send] external addScope: (t, string) => t = "addScope";
 
-  [@bs.module "firebase"] [@bs.scope "auth"] [@bs.scope "GithubAuthProvider"]
-  external providerId: string = "PROVIDER_ID";
+  [@bs.module "firebase/app"] [@bs.scope ("auth", "GithubAuthProvider")]
+  external providerId: AuthProvider.providerId = "PROVIDER_ID";
 };
 
 module AuthCredential = {
   type t = {
-    providerId: string,
+    providerId: AuthProvider.providerId,
     signInMethod: string,
   };
 
@@ -46,7 +76,7 @@ module User = {
     email: option(string),
     phoneNumber: option(string),
     photoURL: option(string),
-    providerId: string,
+    providerId: AuthProvider.providerId,
     uid: string,
   };
 
@@ -55,7 +85,7 @@ module User = {
     email: option(string),
     phoneNumber: option(string),
     photoURL: option(string),
-    providerId: string,
+    providerId: AuthProvider.providerId,
     uid: string,
     emailVerified: bool,
     isAnonymous: bool,
@@ -69,7 +99,7 @@ module User = {
 module AdditionalUserInfo = {
   type t = {
     isNewUser: bool,
-    providerId: string,
+    providerId: AuthProvider.providerId,
     profile: option(Js.Dict.t(unit)),
     username: option(string),
   };
@@ -186,7 +216,9 @@ module UserUtils = {
     (t, ~provider: AuthProvider.t) => Js.Promise.t(unit) =
     "reauthenticateWithRedirect";
   [@bs.send]
-  external unlink: (t, ~providerId: string) => Js.Promise.t(t) = "unlink";
+  external unlink:
+    (t, ~providerId: AuthProvider.providerId) => Js.Promise.t(t) =
+    "unlink";
   [@bs.send]
   external updateEmail: (t, ~newEmail: string) => Js.Promise.t(unit) =
     "updateEmail";
@@ -210,9 +242,15 @@ module UserUtils = {
 module Auth = {
   type t;
 
-  type unsubscribe = unit => unit;
+  [@bs.module "firebase/app"] external make: unit => t = "auth";
 
-  [@bs.module "firebase"] external make: unit => t = "auth";
+  type nextOrObserver = Js.Nullable.t(User.t) => unit;
+  type error = Js.Exn.t => unit;
+  type unsubscribe = unit => unit;
+  type events =
+    | AnonymousLogin
+    | UserLoginSuccess(User.t)
+    | UserLoginFailed(Js.Exn.t);
 
   [@bs.send]
   external getRedirectResult: t => Js.Promise.t(string) = "getRedirectResult";
@@ -222,19 +260,36 @@ module Auth = {
   [@bs.send]
   external onAuthStateChanged:
     (
-      ~nextOrObserver: Js.Nullable.t(User.t) => unit,
-      ~error: option(Js.Exn.t) => unit,
-      ~completed: unsubscribe
+      t,
+      ~nextOrObserver: nextOrObserver,
+      ~error: error=?,
+      ~completed: unsubscribe=?,
+      unit
     ) =>
     unsubscribe =
     "onAuthStateChanged";
+  let getAuthEventFromUser = (user: Js.Nullable.t(User.t)) =>
+    switch (user->Js.Nullable.toOption) {
+    | Some(value) => UserLoginSuccess(value)
+    | None => AnonymousLogin
+    };
+  // onAuthStateChanged wonka wrapper
+  let authStateChange = auth =>
+    Wonka.make((. observer: Wonka.Types.observerT(events)) => {
+      let unsubscribe =
+        onAuthStateChanged(
+          auth,
+          ~nextOrObserver=user => getAuthEventFromUser(user) |> observer.next,
+          ~error=error => UserLoginFailed(error) |> observer.next,
+          (),
+        );
+      (.) => unsubscribe();
+    });
 };
 
 // Further types docs: https://github.com/firebase/firebaseui-web/blob/master/types/index.d.ts
 module UI = {
   type t;
-
-  type element = [ | `Str(string) | `El(Dom.element)];
 
   type authError = {
     code: string,
@@ -303,15 +358,6 @@ module UI = {
     customParameters: option(Js.Dict.t(string)),
   };
 
-  type signInOptions = [
-    | `Str(string)
-    | `Federated(federatedSignInOption)
-    | `Email(emailSignInOption)
-    | `Phone(phoneSignInOption)
-    | `Saml(samlSignInOption)
-    | `OAuth(oAuthSignInOption)
-    | `Oidc(oidcSignInOption)
-  ];
   type urlKind = [ | `Callback(unit => unit) | `Str(string)];
 
   type config = {
@@ -323,7 +369,7 @@ module UI = {
     queryParameterForSignInSuccessUrl: option(string),
     queryParameterForWidgetMode: option(string),
     signInFlow: option(string),
-    signInOptions: option(signInOptions),
+    signInOptions: option(array(AuthProvider.providerId)),
     signInSuccessUrl: option(string),
     siteName: option(string),
     tosUrl: option(urlKind),
@@ -331,10 +377,16 @@ module UI = {
     widgetUrl: option(string),
   };
 
-  [@bs.send] external start: (t, element, config) => unit = "start";
-};
-
-module AuthUI = {
   [@bs.new] [@bs.module "firebaseui"] [@bs.scope "auth"]
-  external authUI: Auth.t => UI.t = "AuthUI";
+  external authUI: (~auth: Auth.t, ~appId: string=?, unit) => t = "AuthUI";
+  [@bs.send] external disableAutoSignIn: t => unit = "disableAutoSignIn";
+  [@bs.send]
+  external start:
+    (t, [@bs.unwrap] [ | `Id(string) | `El(Dom.element)], config) => unit =
+    "start";
+  [@bs.send] external setConfig: (t, config) => unit = "setConfig";
+  [@bs.send] external signIn: t => unit = "signIn";
+  [@bs.send] external reset: t => unit = "reset";
+  [@bs.send] external delete: t => Js.Promise.t(unit) = "delete";
+  [@bs.send] external isPendingRedirect: t => bool = "isPendingRedirect";
 };
