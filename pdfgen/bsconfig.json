@@ -14,7 +14,6 @@
   "suffix": ".bs.js",
   "bs-dependencies": [
     "@glennsl/bs-jest",
-    "bs-puppeteer",
     "wonka",
     "bs-express",
     "bs-node"
