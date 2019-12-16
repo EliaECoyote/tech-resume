@@ -32,7 +32,7 @@
     "clean": "yarn bsb -clean-world && yarn gatsby clean",
     "test": "yarn build-bsb && NODE_ENV=test yarn jest --no-cache",
     "build-bsb": "yarn bsb -make-world",
-    "watch-bsb": "yarn nodemon --watch src/ --ext re --exec \"bsb\"",
+    "watch-bsb": "yarn nodemon --exec \"bsb\"",
     "build": "yarn gatsby build",
     "develop": "yarn gatsby develop -H 0.0.0.0",
     "serve": "yarn gatsby serve"
