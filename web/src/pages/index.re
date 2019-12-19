@@ -79,17 +79,13 @@ let make = () => {
       sendEvent(LoadData);
     };
 
-  let html =
-    switch (state) {
-    | Success(value) => value
-    | _ => ""
-    };
-
   let outputContent =
     switch (state) {
     | Success(value) => Some(value)
     | _ => None
     };
+
+  let html = Belt.Option.getWithDefault(outputContent, "");
 
   <div className=Styles.app>
     <div>
@@ -105,7 +101,7 @@ let make = () => {
         download=true
         href={Url.make(
           ~scheme="http",
-          ~host="127.0.0.1:5001",
+          ~host="127.0.0.1:4000",
           ~path="",
           ~qsComponents=[|("html", html)|],
           (),
