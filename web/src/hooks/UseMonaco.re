@@ -40,7 +40,7 @@ let hook = () => {
       // monaco instance wonka source
       let monacoInstanceSource =
         importSource
-        |> Wonka.map((. module Monaco: MonacoType) => {
+        |> Wonka.mergeMap((. module Monaco: MonacoType) => {
              let minimap = Monaco.Types.mMinimap(~enabled=false);
              let monacoOptions =
                Monaco.Types.options(
@@ -49,14 +49,24 @@ let hook = () => {
                  ~automaticLayout=true,
                  ~minimap,
                );
+             let createMonaco = monaco =>
+               Monaco.create(monaco, monacoOptions);
+             let destroyMonaco = monaco =>
+               Monaco.toDisposable(monaco) |> Monaco.dispose;
              // TODO: remove Obj.magic usage
              // using Obj.magic in order to avoid error
              // "The type constructor Monaco.Types.monaco would escape its scope"
              // (caused by dynamic imports and `module type MonacoType` syntaxes)
-             React.Ref.current(editorRef)
-             ->Js.Nullable.toOption
-             ->Belt.Option.map(value => Monaco.create(value, monacoOptions))
-             ->Obj.magic;
+             Wonka.make(
+               (. observer: Wonka.Types.observerT(option(Monaco.t))) => {
+               let instance =
+                 React.Ref.current(editorRef)
+                 |> Js.Nullable.toOption
+                 |> Belt.Option.map(_, createMonaco);
+               instance |> observer.next;
+               (.) => Belt.Option.map(instance, destroyMonaco) |> (_ => ());
+             })
+             |> Wonka.map((. value) => Obj.magic(value));
            })
         |> Wonka.share;
 
