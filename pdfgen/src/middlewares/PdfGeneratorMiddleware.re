@@ -1,57 +1,66 @@
-type fileNameKind =
-  | Html
-  | Pdf;
-
-/**
- * generates a random pdf / html filename
- */
-let generateFileName = kind => {
-  NodeCrypto.randomBytes(16)
-  |> Node.Buffer.toString
-  |> (
-    filename =>
-      switch (kind) {
-      | Html => filename ++ ".html"
-      | Pdf => filename ++ ".pdf"
-      }
-  );
+// custom puppeteer options suggested by the
+// official docs for alpine-based docker images
+// https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#running-on-alpine
+let launchOptions: Puppeteer.launchOptions = {
+  ignoreHTTPSErrors: None,
+  headless: None,
+  executablePath: Some("/usr/bin/chromium-browser"),
+  slowMo: None,
+  defaultViewport: Js.Nullable.null,
+  args: Some([|"--disable-dev-shm-usage"|]),
+  ignoreDefaultArgs: None,
+  handleSIGINT: None,
+  handleSIGTERM: None,
+  handleSIGHUP: None,
+  timeout: None,
+  dumpio: None,
+  userDataDir: None,
+  env: None,
+  devtools: None,
+  pipe: None,
 };
 
-/**
- * checks if a file exists before deleting it from
- * the file system
- */
-let deleteFileIfExists = path =>
-  NodeFs.wonkaStat(~path, ~options=None, ())
-  |> Wonka.mergeMap((. value) =>
-       switch (value) {
-       | Belt.Result.Ok(_) =>
-         NodeFs.wonkaUnlink(~path) |> Wonka.map((. _) => ())
-       | Belt.Result.Error(_) => Wonka.fromValue()
-       }
-     );
+let pdfOptions: Page.pdfOptions = {
+  path: None,
+  scale: None,
+  displayHeaderFooter: None,
+  headerTemplate: None,
+  footerTemplate: None,
+  printBackground: None,
+  landscape: None,
+  pageRanges: None,
+  format: Some("A4"),
+  width: None,
+  height: None,
+  margin: None,
+  preferCSSPageSize: None,
+};
 
-/**
- * generates a pdf file, given an html string, by spawning
- * a wkhtmltopdf process.
- * returns the generated pdf path when successful
- */
-let generatePdf = (html: string) => {
-  let pdfFileName = generateFileName(Pdf);
-  ChildProcess.spawn(
-    ~path="wkhtmltopdf",
-    ~args=[|"-", pdfFileName|],
-    ~src=html,
-  )
-  |> Wonka.fromPromise
-  |> Wonka.map((. result) =>
-       switch (result) {
-       | ChildProcess.Ok(_) =>
-         Node.Path.resolve(".", pdfFileName)
-         |> (path => Belt.Result.Ok(path))
-       | ChildProcess.Error(value) => Belt.Result.Error(value)
-       }
-     );
+let generatePdf = html => {
+  Puppeteer.launch(~options=launchOptions, ())
+  |> Js.Promise.then_(browser =>
+       browser
+       |> Browser.newPage
+       |> Js.Promise.then_(page => Js.Promise.resolve((browser, page)))
+     )
+  |> Js.Promise.then_(((browser, page)) =>
+       page
+       |> Page.setContent(_, html)
+       |> Js.Promise.then_(() => Js.Promise.resolve((browser, page)))
+     )
+  |> Js.Promise.then_(((browser, page)) =>
+       page
+       |> Page.pdf(_, pdfOptions)
+       |> Js.Promise.then_(pdfBuffer =>
+            Js.Promise.resolve((browser, pdfBuffer))
+          )
+     )
+  |> Js.Promise.then_(((browser, pdfBuffer)) =>
+       browser
+       |> Browser.close
+       |> Js.Promise.then_(() => Js.Promise.resolve(pdfBuffer))
+     )
+  |> WonkaHelpers.fromPromise;
 };
 
 let middleware =
@@ -68,14 +77,14 @@ let middleware =
     |> Wonka.mergeMap((. html)
          // generates the pdf
          => generatePdf(html))
-    |> Wonka.mergeMap((. pathResult) => {
+    |> Wonka.mergeMap((. result) => {
          // sends the pdf file, if available
          let response =
-           switch (pathResult) {
-           | Belt.Result.Ok(value) =>
+           switch (result) {
+           | Belt.Result.Ok(pdfBuffer) =>
              res
              |> Express.Response.status(Express.Response.StatusCode.Ok)
-             |> ExpressBs.download(~path=value, ~filename="resume.pdf")
+             |> Express.Response.sendBuffer(pdfBuffer)
            | Belt.Result.Error(value) =>
              Js.log(value);
              res
@@ -84,15 +93,7 @@ let middleware =
                 )
              |> Express.Response.sendString("pdf generation failed");
            };
-         Wonka.fromValue((response, pathResult));
+         Wonka.fromValue(response);
        })
-    |> Wonka.mergeMap((. (response, pathResult))
-         // deletes the generated pdf file
-         =>
-           pathResult
-           ->Belt.Result.map(deleteFileIfExists)
-           ->Belt.Result.getWithDefault(Wonka.fromValue())
-           |> Wonka.map((. _) => response)
-         )
     |> Wonka.toPromise
   );

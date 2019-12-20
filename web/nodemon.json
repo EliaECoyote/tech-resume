@@ -1,0 +1,8 @@
+{
+  "restartable": "rs",
+  "watch": [
+    "src"
+  ],
+  "ext": "re",
+  "signal": "SIGINT"
+}

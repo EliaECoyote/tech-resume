@@ -47,6 +47,7 @@ services:
       - "3000:3000"
       - "3001:3001"
   pdfgen:
+    privileged: true
     env_file:
       - .env
     command: sh ./scripts/startup.sh

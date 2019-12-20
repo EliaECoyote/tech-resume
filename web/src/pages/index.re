@@ -79,17 +79,13 @@ let make = () => {
       sendEvent(LoadData);
     };
 
-  let html =
-    switch (state) {
-    | Success(value) => value
-    | _ => ""
-    };
-
   let outputContent =
     switch (state) {
     | Success(value) => Some(value)
     | _ => None
     };
+
+  let html = Belt.Option.getWithDefault(outputContent, "");
 
   <div className=Styles.app>
     <div>
