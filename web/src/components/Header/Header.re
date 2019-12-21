@@ -10,9 +10,9 @@ module Styles = {
 };
 
 [@react.component]
-let make = () =>
+let make = (~children) =>
   <header className=Styles.header>
     <h1 className=Styles.headerTitle> {React.string("Tech resume")} </h1>
     <ThemeDropdown />
-    <div id="auth" />
+    <div> children </div>
   </header>;

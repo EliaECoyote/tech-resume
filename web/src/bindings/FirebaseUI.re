@@ -87,8 +87,7 @@ type config = {
 };
 
 [@bs.new] [@bs.module "firebaseui"] [@bs.scope "auth"]
-external authUI: (~auth: Firebase.Auth.t, ~appId: string=?, unit) => t =
-  "AuthUI";
+external authUI: (Firebase.Auth.t, ~appId: string=?, unit) => t = "AuthUI";
 let authUI = authUI;
 [@bs.send] external disableAutoSignIn: t => unit = "disableAutoSignIn";
 [@bs.send]
