@@ -2,22 +2,11 @@
 // - firebaseUI auth demo: https://github.com/firebase/firebaseui-web/tree/master/demo
 // - github auth management: https://firebase.google.com/docs/auth/web/github-auth#handle_the_sign-in_flow_with_the_firebase_sdk
 
-let uiConfig: Firebase.UI.config = {
-  acUiConfig: None,
-  autoUpgradeAnonymousUsers: None,
-  callbacks: None,
-  credentialHelper: None,
-  popupMode: None,
-  queryParameterForSignInSuccessUrl: Some("login-success"),
-  queryParameterForWidgetMode: Some("mode"),
-  signInFlow: None,
-  signInOptions: Some([|Firebase.GithubAuthProvider.providerId|]),
-  signInSuccessUrl: None,
-  siteName: None,
-  tosUrl: None,
-  privacyPolicyUrl: None,
-  widgetUrl: None,
-};
+module type FirebaseUIType = {include (module type of FirebaseUI);};
+
+let dynamicImportFirebaseUI: unit => Js.Promise.t(module FirebaseUIType) = [%bs.raw
+  {| () => import("../bindings/FirebaseUI.js") |}
+];
 
 type status =
   | Idle
@@ -44,18 +33,38 @@ let hook = () => {
 
   React.useEffect1(
     () => {
-      // instantiating the github auth provider as described in the docs
-      // https://firebase.google.com/docs/auth/web/github-auth#handle_the_sign-in_flow_with_the_firebase_sdk
-      let provider = Firebase.GithubAuthProvider.make();
-
-      let auth = Firebase.Auth.make();
-      Firebase.UI.authUI(~auth, ())
-      |> Firebase.UI.start(_, `Id("#auth"), uiConfig);
-
-      // setting up firebase user current state source$
+      // FirebaseUI library dynamic import source
       let subscription =
-        auth
-        |> Firebase.Auth.authStateChange
+        dynamicImportFirebaseUI()
+        |> Wonka.fromPromise
+        |> Wonka.mergeMap((. module FirebaseUI: FirebaseUIType) => {
+             // instantiating the github auth provider as described in the docs
+             // https://firebase.google.com/docs/auth/web/github-auth#handle_the_sign-in_flow_with_the_firebase_sdk
+             let provider = Firebase.GithubAuthProvider.make();
+             let auth = Firebase.Auth.make();
+             let uiConfig: FirebaseUI.config = {
+               acUiConfig: None,
+               autoUpgradeAnonymousUsers: None,
+               callbacks: None,
+               credentialHelper: None,
+               popupMode: None,
+               queryParameterForSignInSuccessUrl: Some("login-success"),
+               queryParameterForWidgetMode: Some("mode"),
+               signInFlow: None,
+               signInOptions:
+                 Some([|Firebase.GithubAuthProvider.providerId|]),
+               signInSuccessUrl: None,
+               siteName: None,
+               tosUrl: None,
+               privacyPolicyUrl: None,
+               widgetUrl: None,
+             };
+             // starts firebase UI widget
+             FirebaseUI.authUI(~auth, ())
+             |> FirebaseUI.start(_, `Id("#auth"), uiConfig);
+             // returns authentication change source
+             Firebase.Auth.authStateChange(auth);
+           })
         |> Wonka.subscribe((. event) => sendEvent(event));
 
       Some(subscription.unsubscribe);
