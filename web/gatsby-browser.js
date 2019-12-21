@@ -4,9 +4,9 @@
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
 
-const React = require('react');
-const App = require('./src/App').make;
+import React from 'react';
+import App from './src/App';
 
-exports.wrapPageElement = ({ element }) => {
+export const wrapPageElement = ({ element }) => {
   return <App>{element}</App>
 }

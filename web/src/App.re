@@ -38,3 +38,5 @@ module AppContent = {
 [@react.component]
 let make = (~children) =>
   <ThemeContext> <AppContent> children </AppContent> </ThemeContext>;
+
+let default = make;
