@@ -4,4 +4,17 @@
  * See: https://www.gatsbyjs.org/docs/ssr-apis/
  */
 
-// You can delete this file if you're not using it
+import React from 'react';
+import App from './src/App';
+import { renderToString } from "react-dom/server"
+import { renderStylesToString } from 'emotion-server'
+
+export const replaceRenderer = ({ bodyComponent, replaceBodyHTMLString }) => {
+  const bodyHTML = renderToString(bodyComponent)
+  const resultHTML = renderStylesToString(bodyHTML)
+  replaceBodyHTMLString(resultHTML)
+}
+
+export const wrapPageElement = ({ element }) => {
+  return <App>{element}</App>
+}
