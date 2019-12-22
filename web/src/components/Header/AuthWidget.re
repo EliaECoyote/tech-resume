@@ -43,7 +43,7 @@ let startFirebaseUIWidget = () =>
          popupMode: None,
          queryParameterForSignInSuccessUrl: Some("login-success"),
          queryParameterForWidgetMode: Some("mode"),
-         signInFlow: None,
+         signInFlow: Some("popup"),
          signInOptions: Some([|Firebase.GithubAuthProvider.providerId|]),
          signInSuccessUrl: None,
          siteName: None,

@@ -10,7 +10,7 @@ services:
         BS_PLATFORM_VERSION: 7.0.1
   web:
     env_file:
-      - .env
+      - .env.production
     command: sh ./scripts/deploy.sh
     container_name: web
     build:
