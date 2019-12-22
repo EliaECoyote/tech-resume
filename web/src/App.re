@@ -14,7 +14,7 @@ module AppContent = {
     |j};
 
     UseFirebase.hook();
-    let authStatus = UseAuth.hook();
+    let (authStatus, signOut) = UseAuth.hook();
 
     <div>
       <ReactHelmet>
@@ -29,7 +29,7 @@ module AppContent = {
         />
         <style> {ReasonReact.string(globalStyle)} </style>
       </ReactHelmet>
-      <Header> <AuthWidget authStatus /> </Header>
+      <Header> <AuthWidget authStatus signOut /> </Header>
       children
     </div>;
   };

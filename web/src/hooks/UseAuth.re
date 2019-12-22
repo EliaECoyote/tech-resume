@@ -43,5 +43,20 @@ let hook = () => {
     [|sendEvent|],
   );
 
-  state;
+  let signOut =
+    React.useCallback0(() => {
+      Firebase.Auth.make()
+      |> Firebase.Auth.signOut
+      |> WonkaHelpers.fromPromise
+      |> Wonka.subscribe((. result) =>
+           switch (result) {
+           | Belt.Result.Ok(_) => ()
+           | Belt.Result.Error(error) =>
+             Js.log(error);
+             sendEvent(Firebase.Auth.AnonymousLogin);
+           }
+         )
+    });
+
+  (state, signOut);
 };

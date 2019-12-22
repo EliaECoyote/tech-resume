@@ -261,6 +261,7 @@ module Auth = {
   [@bs.send]
   external signInWithRedirect: (t, AuthProvider.t) => unit =
     "signInWithRedirect";
+  [@bs.send] external signOut: t => Js.Promise.t(unit) = "signOut";
   [@bs.send]
   external onAuthStateChanged:
     (
