@@ -7,4 +7,4 @@ yarn clean
 yarn build-bsb
 yarn build
 
-firebase deploy
+yarn firebase deploy

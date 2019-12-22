@@ -103,7 +103,7 @@ connect:
 	make SERVICE=$(SERVICE) DC_ACTION="run --rm" ARGS="/bin/sh" run-docker-cmd
 
 deploy:
-	case "$(SERVICE)" in \
+	@case "$(SERVICE)" in \
 	web) \
 		docker-compose -f docker-compose.production.yml up --build web \
 		;; \
