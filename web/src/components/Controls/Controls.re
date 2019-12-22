@@ -18,11 +18,11 @@ module Styles = {
       focus([opacity(0.6)]),
       disabled([opacity(0.3)]),
       switch (size) {
-      | Small => fontSize(`rem(0.8))
+      | Small => fontSize(`rem(0.6))
       | Large => fontSize(`rem(1.2))
       },
       switch (size) {
-      | Small => padding2(~v=`px(2), ~h=`px(4))
+      | Small => padding2(~v=`px(1), ~h=`px(2))
       | Large => padding2(~v=`px(4), ~h=`px(10))
       },
     ]);

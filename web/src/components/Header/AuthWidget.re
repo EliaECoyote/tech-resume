@@ -4,13 +4,19 @@ module Styles = {
   let loggedUserGrid =
     style([
       display(`grid),
-      height(`rem(4.0)),
+      height(`rem(3.0)),
       gridTemplateRows([`percent(50.0), `percent(50.0)]),
-      gridTemplateColumns([`fr(1.0), `rem(4.0)]),
+      gridTemplateColumns([`fr(1.0), `rem(3.0)]),
       gridTemplateAreas(`areas(["username avatar", "cta avatar"])),
       gridColumnGap(`rem(1.0)),
     ]);
-  let username = style([gridArea(`ident("username")), margin(`px(0))]);
+  let username =
+    style([
+      gridArea(`ident("username")),
+      margin(`px(0)),
+      fontSize(`rem(0.8)),
+      fontWeight(`bold),
+    ]);
   let cta = style([gridArea(`ident("cta"))]);
   let thumb =
     style([
@@ -73,23 +79,18 @@ let make =
     [|authStatus|],
   );
 
-  let onLogoutCtaClick = _ => {
-    let _ = signOut();
-    ();
-  };
-
   switch (authStatus) {
   | UseAuth.Idle => ReasonReact.null
   | UseAuth.Logged(user) =>
     <div className=Styles.loggedUserGrid>
-      <p className=Styles.username>
-        <b>
-          {Belt.Option.getWithDefault(user.displayName, "Unknown user")
-           |> React.string}
-        </b>
-      </p>
+      <span className=Styles.username>
+        {Belt.Option.getWithDefault(user.displayName, "Unknown user")
+         |> React.string}
+      </span>
       <Button
-        className=Styles.cta size=Controls.Small onClick=onLogoutCtaClick>
+        className=Styles.cta
+        size=Controls.Small
+        onClick={_ => signOut() |> (_ => ())}>
         {React.string("Log out")}
       </Button>
       // user mini thumb rendering
