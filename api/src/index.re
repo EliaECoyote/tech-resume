@@ -1,7 +1,7 @@
 // TODO: use ENV vars for this
 let protocol = "http";
 let host = "127.0.0.1";
-let port = 3000;
+let port = Config.port;
 
 let startupBackend = () => {
   let app = Express.express();

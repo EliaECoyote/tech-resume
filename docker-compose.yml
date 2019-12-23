@@ -30,6 +30,8 @@ services:
     ports:
       - "8000:8000"
   api:
+    environment:
+      - PORT=3000
     env_file:
       - .env
     command: sh ./scripts/startup.sh
