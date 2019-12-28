@@ -1,7 +1,7 @@
 {
-  "name": "markdown2cv-pdfgen",
+  "name": "tech-resume-pdfgen",
   "version": "0.0.1",
-  "description": "markdown2cv pdf generator service",
+  "description": "tech-resume pdf generator service",
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "scripts": {
     "clean": "yarn bsb -clean-world",

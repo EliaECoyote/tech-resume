@@ -19,3 +19,13 @@ services:
       - bs-node
     ports:
       - "8000:8000"
+  api:
+    env_file:
+      - .env.production
+    container_name: api
+    build:
+      context: ./api
+    depends_on:
+      - bs-node
+    ports:
+      - "5000:5001"
