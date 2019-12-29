@@ -7,7 +7,7 @@ RUN apk add g++ make python && \
   npm install -g bs-platform@${BS_PLATFORM_VERSION} --unsafe-perm
 
 
-FROM node:lts-alpine
+FROM node:10-alpine
 ENV GLOBAL_NODE_MODULES_PATH=/usr/local/lib/node_modules
 # Adds file watcher package, necessary for live reloading feature
 RUN apk add --no-cache inotify-tools
