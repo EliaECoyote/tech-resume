@@ -2,8 +2,6 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: [
         "build",
-        "--file",
-        "./Dockerfile.bs-node",
         "--build-arg",
         "BS_PLATFORM_VERSION=7.0.1",
         "--tag",
