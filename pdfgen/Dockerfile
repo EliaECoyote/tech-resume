@@ -1,11 +1,15 @@
 FROM gcr.io/tech-resume/bs-node:latest
 
 # ******************************
-# From *Running puppeteer on alpine* section in the docs: 
+# Inspired to *Running puppeteer on alpine* section in the puppeter docs: 
 # https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 # ******************************
 
-# Installs latest Chromium (77) package.
+ENV APPDIR=/home/node/app
+# Tell Puppeteer to skip installing Chrome. We'll be using the installed package
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+# Installs latest Chromium (77) package
 RUN apk add --no-cache \
   chromium \
   nss \
@@ -14,12 +18,7 @@ RUN apk add --no-cache \
   harfbuzz \
   ca-certificates \
   ttf-freefont
-
-ENV APPDIR=/home/node/app
-# Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-
-# Puppeteer v1.19.0 works with Chromium 77.
+# Puppeteer v1.19.0 works with Chromium 77
 RUN yarn add puppeteer@1.19.0
 WORKDIR ${APPDIR}
 COPY package.json yarn.lock ./
@@ -27,12 +26,12 @@ RUN yarn install
 COPY nodemon.json bsconfig.json ./
 COPY ./src ./src/
 COPY ./scripts ./scripts/
-# Add user so we don't need --no-sandbox.
+# Add user so we don't need --no-sandbox
 RUN addgroup -S pptruser && adduser -S -g pptruser pptruser \
   && mkdir -p /home/pptruser/Downloads /app \
   && chown -R pptruser:pptruser /home/pptruser \
   && chown -R pptruser:pptruser /app \
   && chown -R pptruser:pptruser ${APPDIR}
-# Run everything after as non-privileged user.
+# Run everything after as non-privileged user
 USER pptruser
 CMD node lib/js/src/index.bs.js
