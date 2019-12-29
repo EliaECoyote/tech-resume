@@ -9,6 +9,7 @@ module AppContent = {
         color: $primary;
         background-color: $background;
         font-family: 'Montserrat', sans-serif;
+        transition: color, background-color 0.3s
       }
       * { box-sizing: border-box; }
     |j};
