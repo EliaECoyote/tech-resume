@@ -1,8 +1,8 @@
 version: "3.4"
 
 services:
-  gcr.io/tech-resume/bs-node:
-    image: bs-node
+  bs-node:
+    image: gcr.io/tech-resume/bs-node
     build:
       context: .
       dockerfile: Dockerfile.bs-node
@@ -10,8 +10,8 @@ services:
         BS_PLATFORM_VERSION: 7.0.1
   web:
     environment:
-      - API_SCHEME=http
-      - API_HOST=127.0.0.1:3000
+      - GATSBY_API_SCHEME=http
+      - GATSBY_API_HOST=127.0.0.1:3000
     env_file:
       - .env
     command: sh ./scripts/startup.sh

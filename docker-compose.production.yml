@@ -3,8 +3,8 @@ version: "3.4"
 services:
   web:
     environment:
-      - API_SCHEME=https
-      - API_HOST=api-67xb7jfyla-ew.a.run.app
+      - GATSBY_API_SCHEME=https
+      - GATSBY_API_HOST=api-67xb7jfyla-ew.a.run.app
     env_file:
       - .env.production
     command: sh ./scripts/deploy.sh
