@@ -11,5 +11,9 @@ steps:
         "gcr.io/$PROJECT_ID/api:latest",
         ".",
       ]
+    env:
+      - "SCHEME=https"
+      - "HOST=api-67xb7jfyla-ew.a.run.app"
+      - "PORT=8080"
     timeout: 200s
 images: ["gcr.io/$PROJECT_ID/api:latest"]

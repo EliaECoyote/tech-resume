@@ -1,31 +1,15 @@
 version: "3.4"
 
 services:
-  bs-node:
-    image: bs-node
-    build:
-      context: .
-      dockerfile: Dockerfile.bs-node
-      args:
-        BS_PLATFORM_VERSION: 7.0.1
   web:
+    environment:
+      - API_SCHEME=https
+      - API_HOST=api-67xb7jfyla-ew.a.run.app
     env_file:
       - .env.production
     command: sh ./scripts/deploy.sh
     container_name: web
     build:
       context: ./web
-    depends_on:
-      - bs-node
     ports:
       - "8000:8000"
-  api:
-    env_file:
-      - .env.production
-    container_name: api
-    build:
-      context: ./api
-    depends_on:
-      - bs-node
-    ports:
-      - "5000:5001"

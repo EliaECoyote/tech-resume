@@ -4,10 +4,10 @@ set -e
 [ -f ".bsb.lock" ] && rm .bsb.lock
 
 yarn clean
-yarn build-bsb
+yarn bsb -make-world
 
 yarn concurrently \
   --names bsb,gatsby \
   --raw \
   --prefix-colors blue.bold,yellow.bold \
-  "yarn watch-bsb" "yarn develop"
+  "yarn watch-bsb" "yarn gatsby develop -H 0.0.0.0"

@@ -125,6 +125,8 @@ clean:
 	make SERVICE=$(SERVICE) ARGS="yarn clean" run-cmd
 
 install:
-	make SERVICE=$(SERVICE) ARGS="yarn install" run-cmd
+	@npm install -g bs-platform@7.0.1; \
+	make SERVICE=$(SERVICE) ARGS="yarn install" run-cmd; \
+	make SERVICE=$(SERVICE) ARGS="npm link bs-platform" run-cmd;
 
 .PHONY: web api pdfgen start build-image clean install test connect

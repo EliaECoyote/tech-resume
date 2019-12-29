@@ -13,4 +13,8 @@ steps:
         ".",
       ]
     timeout: 500s
-images: ["gcr.io/$PROJECT_ID/bs-node:latest"]
+images:
+  [
+    "gcr.io/$PROJECT_ID/bs-node:latest",
+    "gcr.io/$PROJECT_ID/bs-node:$COMMIT_SHA",
+  ]

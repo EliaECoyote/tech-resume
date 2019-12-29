@@ -4,19 +4,12 @@ ARG BS_PLATFORM_VERSION
 FROM node:10-alpine
 # Adds bsb ninja build dependencies & bs-platform package
 RUN apk add g++ make python && \
-   yarn global add bs-platform@${BS_PLATFORM_VERSION}
+  npm install -g bs-platform@${BS_PLATFORM_VERSION} --unsafe-perm
 
 
 FROM node:lts-alpine
+ENV GLOBAL_NODE_MODULES_PATH=/usr/local/lib/node_modules
 # Adds file watcher package, necessary for live reloading feature
 RUN apk add --no-cache inotify-tools
 # Copies bs-platform package from builder image
-COPY --from=0 /usr/local/share/.config/yarn/global /usr/local/share/.config/yarn/global
-RUN cd /usr/local && \
-  # creates symlink of bucklescript binaries
-  ln -s ../share/.config/yarn/global/node_modules/.bin/bsb bin/bsb && \
-  ln -s ../share/.config/yarn/global/node_modules/.bin/bsc bin/bsc && \
-  ln -s ../share/.config/yarn/global/node_modules/.bin/bsrefmt bin/bsrefmt && \
-  bsb -v && \
-  bsc -v
-CMD ["sh"]
+COPY --from=0 ${GLOBAL_NODE_MODULES_PATH} ${GLOBAL_NODE_MODULES_PATH}
