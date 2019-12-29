@@ -107,11 +107,18 @@ deploy:
 	web) \
 		docker-compose -f docker-compose.production.yml up --build web \
 		;; \
+	api) \
+		cd $(PWD)/api; \
+		gcloud builds submit --tag gcr.io/tech-resume/api \
+		;; \
 	*) \
 		echo "cannot run deploy cmd on service: $(SERVICE)"; \
 		exit 1 \
 		;; \
 	esac
+
+deploy-base-image:
+	gcloud builds submit --tag gcr.io/tech-resume/bs-node
 
 ## - actions that will affect your local filesystem
 clean:

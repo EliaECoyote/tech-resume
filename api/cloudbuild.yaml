@@ -1,0 +1,15 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["pull", "gcr.io/$PROJECT_ID/bs-node:latest"]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--tag",
+        "gcr.io/$PROJECT_ID/api:$COMMIT_SHA",
+        "--tag",
+        "gcr.io/$PROJECT_ID/api:latest",
+        ".",
+      ]
+    timeout: 200s
+images: ["gcr.io/$PROJECT_ID/api:latest"]
