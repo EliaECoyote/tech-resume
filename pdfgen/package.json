@@ -4,10 +4,7 @@
   "description": "tech-resume pdf generator service",
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "scripts": {
-    "clean": "yarn bsb -clean-world",
-    "build-bsb": "yarn bsb -make-world",
-    "watch-bsb": "yarn bsb -w",
-    "watch-node": "nodemon --inspect=4001 lib/js/src/index.bs.js"
+    "clean": "yarn bsb -clean-world"
   },
   "license": "ISC",
   "devDependencies": {

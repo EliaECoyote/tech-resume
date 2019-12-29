@@ -1,6 +1,6 @@
 FROM gcr.io/tech-resume/bs-node:latest
 
-ENV APPDIR=/usr/src/app
+ENV APPDIR=/home/node/app
 
 WORKDIR ${APPDIR}
 # Installs gatsby dependencies
