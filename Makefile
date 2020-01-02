@@ -50,13 +50,13 @@ help:
 
 # Services (targets)
 api:
-	@echo "\n** running in service: api **\n"
+	@echo "\n>>>> service: api\n"
 	$(eval SERVICE=$(API_SERVICE))
 web:
-	@echo "\n** running in service: web **\n"
+	@echo "\n>>>> service: web\n"
 	$(eval SERVICE=$(WEB_SERVICE))
 pdfgen:
-	@echo "\n** running in service: pdfgen **\n"
+	@echo "\n>>>> service: pdfgen\n"
 	$(eval SERVICE=$(PDFGEN_SERVICE))
 
 # Helpers
