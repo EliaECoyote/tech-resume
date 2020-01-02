@@ -105,7 +105,9 @@ connect:
 deploy:
 	@case "$(SERVICE)" in \
 	web) \
-		docker-compose -f docker-compose.production.yml up --build web \
+		cd $(PWD)/web; \
+		gcloud builds submit --tag gcr.io/tech-resume/web; \
+		docker-compose -f ../docker-compose.production.yml up web_production \
 		;; \
 	api) \
 		cd $(PWD)/api; \

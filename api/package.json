@@ -4,9 +4,7 @@
   "description": "tech-resume api service",
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "scripts": {
-    "clean": "yarn bsb -clean-world",
-    "build": "yarn build-bsb",
-    "build-bsb": "yarn bsb -make-world"
+    "clean": "yarn bsb -clean-world"
   },
   "license": "ISC",
   "devDependencies": {

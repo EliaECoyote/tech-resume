@@ -1,15 +1,8 @@
-version: "3.4"
+version: "3.7"
 
 services:
-  web:
-    environment:
-      - GATSBY_API_SCHEME=https
-      - GATSBY_API_HOST=api-67xb7jfyla-ew.a.run.app
+  web_production:
+    image: gcr.io/tech-resume/web
     env_file:
       - .env.production
     command: sh ./scripts/deploy.sh
-    container_name: web
-    build:
-      context: ./web
-    ports:
-      - "8000:8000"

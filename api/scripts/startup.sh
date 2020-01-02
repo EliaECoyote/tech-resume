@@ -3,7 +3,7 @@ set -e
 
 [ -f ".bsb.lock" ] && rm .bsb.lock
 yarn clean
-yarn build-bsb
+yarn bsb -make-world
 
 yarn concurrently \
   --names bsb,node \

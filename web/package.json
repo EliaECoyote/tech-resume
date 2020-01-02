@@ -31,7 +31,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "yarn bsb -clean-world && yarn gatsby clean",
-    "test": "yarn build-bsb && NODE_ENV=test yarn jest --no-cache",
+    "test": "yarn bsb -make-world && NODE_ENV=test yarn jest --no-cache",
     "watch-bsb": "yarn nodemon --exec \"bsb || exit 1\"",
     "serve": "yarn gatsby serve"
   },
