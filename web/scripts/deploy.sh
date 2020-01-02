@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-yarn firebase deploy
+npx firebase deploy
