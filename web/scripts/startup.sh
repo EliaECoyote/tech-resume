@@ -10,4 +10,4 @@ yarn concurrently \
   --names bsb,gatsby \
   --raw \
   --prefix-colors blue.bold,yellow.bold \
-  "yarn watch-bsb" "yarn gatsby develop -H 0.0.0.0"
+  "yarn nodemon --exec \"bsb || exit 1\"" "yarn gatsby develop -H 0.0.0.0"

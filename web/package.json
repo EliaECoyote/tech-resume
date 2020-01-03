@@ -32,7 +32,6 @@
   "scripts": {
     "clean": "yarn bsb -clean-world && yarn gatsby clean",
     "test": "yarn bsb -make-world && NODE_ENV=test yarn jest --no-cache",
-    "watch-bsb": "yarn nodemon --exec \"bsb || exit 1\"",
     "serve": "yarn gatsby serve"
   },
   "repository": {

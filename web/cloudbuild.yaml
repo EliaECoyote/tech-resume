@@ -1,19 +1,27 @@
 steps:
+  # pull cached image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["pull", "gcr.io/$PROJECT_ID/bs-node:latest"]
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "docker pull gcr.io/$PROJECT_ID/web:latest || exit 0"
+  # build image
   - name: "gcr.io/cloud-builders/docker"
     args:
-      [
-        "build",
-        "--build-arg",
-        "GATSBY_API_SCHEME=https",
-        "--build-arg",
-        "GATSBY_API_HOST=api-67xb7jfyla-ew.a.run.app",
-        "--tag",
-        "gcr.io/$PROJECT_ID/web:$COMMIT_SHA",
-        "--tag",
-        "gcr.io/$PROJECT_ID/web:latest",
-        ".",
-      ]
-    timeout: 1200s
-images: ["gcr.io/$PROJECT_ID/web:latest"]
+      - "build"
+      - "--cache-from"
+      - "gcr.io/$PROJECT_ID/web:latest"
+      - "--build-arg"
+      - "GATSBY_API_SCHEME=https"
+      - "--build-arg"
+      - "GATSBY_API_HOST=api-67xb7jfyla-ew.a.run.app"
+      # - "--tag"
+      # - "gcr.io/$PROJECT_ID/web:$SHORT_SHA"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/web:latest"
+      - "."
+    timeout: 720s # 12 minutes
+timeout: 1200s
+images:
+  - "gcr.io/$PROJECT_ID/web:latest"
+  # - "gcr.io/$PROJECT_ID/web:$SHORT_SHA"

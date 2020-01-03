@@ -5,4 +5,4 @@ services:
     image: gcr.io/tech-resume/web
     env_file:
       - .env.production
-    command: sh ./scripts/deploy.sh
+    command: firebase deploy
