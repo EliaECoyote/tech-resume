@@ -50,13 +50,13 @@ help:
 
 # Services (targets)
 api:
-	@echo "\n** running in service: api **\n"
+	@echo "\n>>>> service: api\n"
 	$(eval SERVICE=$(API_SERVICE))
 web:
-	@echo "\n** running in service: web **\n"
+	@echo "\n>>>> service: web\n"
 	$(eval SERVICE=$(WEB_SERVICE))
 pdfgen:
-	@echo "\n** running in service: pdfgen **\n"
+	@echo "\n>>>> service: pdfgen\n"
 	$(eval SERVICE=$(PDFGEN_SERVICE))
 
 # Helpers
@@ -105,7 +105,13 @@ connect:
 deploy:
 	@case "$(SERVICE)" in \
 	web) \
-		docker-compose -f docker-compose.production.yml up --build web \
+		cd $(PWD)/web; \
+		gcloud builds submit; \
+		docker-compose -f ../docker-compose.production.yml up web_production \
+		;; \
+	api) \
+		cd $(PWD)/api; \
+		gcloud builds submit \
 		;; \
 	*) \
 		echo "cannot run deploy cmd on service: $(SERVICE)"; \
@@ -113,11 +119,16 @@ deploy:
 		;; \
 	esac
 
+deploy-base-image:
+	gcloud builds submit
+
 ## - actions that will affect your local filesystem
 clean:
 	make SERVICE=$(SERVICE) ARGS="yarn clean" run-cmd
 
 install:
-	make SERVICE=$(SERVICE) ARGS="yarn install" run-cmd
+	@npm install -g bs-platform@7.0.1; \
+	make SERVICE=$(SERVICE) ARGS="yarn install" run-cmd; \
+	make SERVICE=$(SERVICE) ARGS="npm link bs-platform" run-cmd;
 
 .PHONY: web api pdfgen start build-image clean install test connect

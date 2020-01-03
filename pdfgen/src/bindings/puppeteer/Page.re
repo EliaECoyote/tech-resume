@@ -176,10 +176,6 @@ external emulateMediaDisable:
 [@bs.send]
 external pdf: (t, pdfOptions) => Js.Promise.t(Node.Buffer.t) = "pdf";
 
-/* TODO:
-      external on
-      external once
-   */
 /** Iterates the JS heap finding all the objects with the given prototype. */
 [@bs.send]
 external queryObjects:

@@ -1,8 +1,8 @@
-version: "3.4"
+version: "3.7"
 
 services:
   bs-node:
-    image: bs-node
+    image: gcr.io/tech-resume/bs-node
     build:
       context: .
       dockerfile: Dockerfile.bs-node
@@ -15,36 +15,42 @@ services:
     container_name: web
     build:
       context: ./web
+      target: builder
+      args:
+        - GATSBY_API_SCHEME=http
+        - GATSBY_API_HOST=127.0.0.1:3000
     volumes:
-      - ./web/src:/usr/src/app/src:cached
-      - ./web/scripts:/usr/src/app/scripts:cached
-      - ./web/package.json:/usr/src/app/package.json:cached
-      - ./web/yarn.lock:/usr/src/app/yarn.lock:cached
-      - ./web/bsconfig.json:/usr/src/app/bsconfig.json:cached
-      - ./web/gatsby-browser.js:/usr/src/app/gatsby-browser.js:cached
-      - ./web/gatsby-config.js:/usr/src/app/gatsby-config.js:cached
-      - ./web/gatsby-node.js:/usr/src/app/gatsby-node.js:cached
-      - ./web/gatsby-ssr.js:/usr/src/app/gatsby-ssr.js:cached
-      - ./web/jest.config.js:/usr/src/app/jest.config.js:cached
-      - ./web/babel.config.js:/usr/src/app/babel.config.js:cached
+      - ./web/src:/home/node/app/src:cached
+      - ./web/scripts:/home/node/app/scripts:cached
+      - ./web/package.json:/home/node/app/package.json:cached
+      - ./web/yarn.lock:/home/node/app/yarn.lock:cached
+      - ./web/bsconfig.json:/home/node/app/bsconfig.json:cached
+      - ./web/gatsby-browser.js:/home/node/app/gatsby-browser.js:cached
+      - ./web/gatsby-config.js:/home/node/app/gatsby-config.js:cached
+      - ./web/gatsby-node.js:/home/node/app/gatsby-node.js:cached
+      - ./web/gatsby-ssr.js:/home/node/app/gatsby-ssr.js:cached
+      - ./web/jest.config.js:/home/node/app/jest.config.js:cached
+      - ./web/babel.config.js:/home/node/app/babel.config.js:cached
     ports:
       - "8000:8000"
   api:
-    environment:
-      - PORT=3000
     env_file:
       - .env
     command: sh ./scripts/startup.sh
     container_name: api
     build:
       context: ./api
+      args:
+        - SCHEME=http
+        - HOST=127.0.0.1
+        - PORT=3000
     volumes:
-      - ./api/src:/usr/src/app/src:cached
-      - ./api/scripts:/usr/src/app/scripts:cached
-      - ./api/package.json:/usr/src/app/package.json:cached
-      - ./api/yarn.lock:/usr/src/app/yarn.lock:cached
-      - ./api/nodemon.json:/usr/src/app/nodemon.json:cached
-      - ./api/bsconfig.json:/usr/src/app/bsconfig.json:cached
+      - ./api/src:/home/node/app/src:cached
+      - ./api/scripts:/home/node/app/scripts:cached
+      - ./api/package.json:/home/node/app/package.json:cached
+      - ./api/yarn.lock:/home/node/app/yarn.lock:cached
+      - ./api/nodemon.json:/home/node/app/nodemon.json:cached
+      - ./api/bsconfig.json:/home/node/app/bsconfig.json:cached
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -57,12 +63,12 @@ services:
       context: ./pdfgen
     container_name: pdfgen
     volumes:
-      - ./pdfgen/src:/usr/src/app/src:cached
-      - ./pdfgen/scripts:/usr/src/app/scripts:cached
-      - ./pdfgen/package.json:/usr/src/app/package.json:cached
-      - ./pdfgen/yarn.lock:/usr/src/app/yarn.lock:cached
-      - ./pdfgen/nodemon.json:/usr/src/app/nodemon.json:cached
-      - ./pdfgen/bsconfig.json:/usr/src/app/bsconfig.json:cached
+      - ./pdfgen/src:/home/node/app/src:cached
+      - ./pdfgen/scripts:/home/node/app/scripts:cached
+      - ./pdfgen/package.json:/home/node/app/package.json:cached
+      - ./pdfgen/yarn.lock:/home/node/app/yarn.lock:cached
+      - ./pdfgen/nodemon.json:/home/node/app/nodemon.json:cached
+      - ./pdfgen/bsconfig.json:/home/node/app/bsconfig.json:cached
     ports:
       - "4000:4000"
       - "4001:4001"

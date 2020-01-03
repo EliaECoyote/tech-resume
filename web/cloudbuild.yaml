@@ -1,0 +1,19 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["pull", "gcr.io/$PROJECT_ID/bs-node:latest"]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--build-arg",
+        "GATSBY_API_SCHEME=https",
+        "--build-arg",
+        "GATSBY_API_HOST=api-67xb7jfyla-ew.a.run.app",
+        "--tag",
+        "gcr.io/$PROJECT_ID/web:$COMMIT_SHA",
+        "--tag",
+        "gcr.io/$PROJECT_ID/web:latest",
+        ".",
+      ]
+    timeout: 1200s
+images: ["gcr.io/$PROJECT_ID/web:latest"]

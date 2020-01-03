@@ -1,20 +1,16 @@
 {
-  "name": "markdown2cv-api",
+  "name": "tech-resume-api",
   "version": "0.0.1",
-  "description": "markdown2cv api service",
+  "description": "tech-resume api service",
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "scripts": {
-    "clean": "yarn bsb -clean-world",
-    "build-bsb": "yarn bsb -make-world",
-    "watch-bsb": "yarn bsb -w",
-    "watch-node": "nodemon --inspect=3001 lib/js/src/index.bs.js"
+    "clean": "yarn bsb -clean-world"
   },
   "license": "ISC",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.9",
     "bs-express": "^0.12.1",
     "bs-node": "reasonml-community/bs-node",
-    "bs-platform": "7.0.1",
     "concurrently": "^5.0.0",
     "nodemon": "^1.19.3"
   },

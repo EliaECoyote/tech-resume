@@ -1,0 +1,20 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: [
+        "build",
+        "--build-arg",
+        "BS_PLATFORM_VERSION=7.0.1",
+        "--tag",
+        "gcr.io/$PROJECT_ID/bs-node:$COMMIT_SHA",
+        "--tag",
+        "gcr.io/$PROJECT_ID/bs-node:latest",
+        # "--cache-from",
+        # "gcr.io/$PROJECT_ID/bs-node:latest",
+        ".",
+      ]
+    timeout: 500s
+images:
+  [
+    "gcr.io/$PROJECT_ID/bs-node:latest",
+    "gcr.io/$PROJECT_ID/bs-node:$COMMIT_SHA",
+  ]

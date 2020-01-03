@@ -1,5 +1,5 @@
 // TODO: use ENV vars for this
-let protocol = "http";
+let scheme = "http";
 let host = "127.0.0.1";
 let port = 4000;
 
@@ -11,7 +11,7 @@ let startupBackend = () => {
     | exception (Js.Exn.Error(e)) =>
       Js.log(e);
       Node.Process.exit(1);
-    | _ => Js.log @@ {j|Listening at $protocol://$host:$port|j}
+    | _ => Js.log @@ {j|Listening at $scheme://$host:$port|j}
     };
 
   Express.App.use(app, CorsMiddleware.middlewareFactory());
