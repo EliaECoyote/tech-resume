@@ -106,12 +106,12 @@ deploy:
 	@case "$(SERVICE)" in \
 	web) \
 		cd $(PWD)/web; \
-		gcloud builds submit --tag gcr.io/tech-resume/web; \
+		gcloud builds submit; \
 		docker-compose -f ../docker-compose.production.yml up web_production \
 		;; \
 	api) \
 		cd $(PWD)/api; \
-		gcloud builds submit --tag gcr.io/tech-resume/api \
+		gcloud builds submit \
 		;; \
 	*) \
 		echo "cannot run deploy cmd on service: $(SERVICE)"; \
@@ -120,7 +120,7 @@ deploy:
 	esac
 
 deploy-base-image:
-	gcloud builds submit --tag gcr.io/tech-resume/bs-node
+	gcloud builds submit
 
 ## - actions that will affect your local filesystem
 clean:

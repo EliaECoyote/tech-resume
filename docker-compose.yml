@@ -34,16 +34,16 @@ services:
     ports:
       - "8000:8000"
   api:
-    environment:
-      - SCHEME=http
-      - HOST=127.0.0.1
-      - PORT=3000
     env_file:
       - .env
     command: sh ./scripts/startup.sh
     container_name: api
     build:
       context: ./api
+      args:
+        - SCHEME=http
+        - HOST=127.0.0.1
+        - PORT=3000
     volumes:
       - ./api/src:/home/node/app/src:cached
       - ./api/scripts:/home/node/app/scripts:cached
