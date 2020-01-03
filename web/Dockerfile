@@ -8,7 +8,7 @@ ENV GATSBY_API_HOST=$GATSBY_API_HOST
 
 WORKDIR ${APPDIR}
 # Installs gatsby dependencies
-RUN apk add --no-cache  util-linux
+RUN apk add --no-cache util-linux
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 COPY nodemon.json bsconfig.json .eslintrc jest.config.js babel.config.js gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js firebase.json .firebaserc ./
@@ -25,10 +25,12 @@ RUN npm link "bs-platform" && \
   # Adding execute permission on bash scripts
   chmod -R +x ${APPDIR}/scripts
 USER node
+CMD npx http-server ./public
 
 
 FROM node:10-alpine
 # copy generated build & scripts from builder stage
-COPY --from=builder ${APPDIR}/public ${APPDIR}/public
-COPY --from=builder ${APPDIR}/scripts ${APPDIR}/scripts
+COPY --from=builder ${APPDIR}/public ${APPDIR}/public/
+COPY --from=builder ${APPDIR}/scripts ${APPDIR}/scripts/
 USER node
+CMD npx http-server ./public
