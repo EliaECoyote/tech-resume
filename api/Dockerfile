@@ -1,12 +1,7 @@
 FROM gcr.io/tech-resume/bs-node:latest
 
-ARG SCHEME
-ARG HOST
-ARG PORT
+ENV PORT=8080
 ENV APPDIR=/home/node/app
-ENV SCHEME=$SCHEME
-ENV HOST=$HOST
-ENV PORT=$PORT
 
 WORKDIR ${APPDIR}
 COPY package.json yarn.lock ./
