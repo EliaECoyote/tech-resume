@@ -113,6 +113,10 @@ deploy:
 		cd $(PWD)/api; \
 		gcloud builds submit \
 		;; \
+	pdfgen) \
+		cd $(PWD)/pdfgen; \
+		gcloud builds submit \
+		;; \
 	*) \
 		echo "cannot run deploy cmd on service: $(SERVICE)"; \
 		exit 1 \
