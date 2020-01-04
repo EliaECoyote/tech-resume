@@ -23,6 +23,31 @@ steps:
       - "gcr.io/$PROJECT_ID/api:latest"
       - "."
     timeout: 200s
+  # deploy in multiple regions
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "api-europe-west1"
+      - "--image"
+      - "gcr.io/tech-resume/api"
+      - "--region"
+      - "europe-west1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "api-us-central1"
+      - "--image"
+      - "gcr.io/tech-resume/api"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
 images:
   - "gcr.io/$PROJECT_ID/api:latest"
   # - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
