@@ -15,15 +15,15 @@ COPY nodemon.json bsconfig.json .eslintrc jest.config.js babel.config.js gatsby-
 COPY ./src ./src/
 COPY ./scripts ./scripts/
 # Link bs-platform
-RUN npm link "bs-platform" && \
+RUN npm link "bs-platform" \
   # Bucklescript build
-  yarn bsb -make-world && \
+  && yarn bsb -make-world \
   # Gatsby build
-  yarn gatsby build && \
+  && yarn gatsby build \
   # Setting node user as APPDIR owner
-  chown -R node ${APPDIR} && \
+  && chown -R node ${APPDIR} \
   # Adding execute permission on bash scripts
-  chmod -R +x ${APPDIR}/scripts
+  && chmod -R +x ${APPDIR}/scripts
 USER node
 CMD npx http-server ./public
 
