@@ -100,8 +100,8 @@ let make = () => {
       <Link
         download=true
         href={Url.make(
-          ~scheme="http",
-          ~host="127.0.0.1:4000",
+          ~scheme=Config.pdfgenScheme,
+          ~host=Config.pdfgenHost,
           ~path="",
           ~qsComponents=[|("html", html)|],
           (),
