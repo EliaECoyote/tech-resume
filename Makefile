@@ -80,10 +80,10 @@ run-cmd:
 # Actions
 ## - actions that will affect containers
 serve:
-	make SERVICE=$(SERVICE) DC_ACTION=up run-docker-cmd
+	@make SERVICE=$(SERVICE) DC_ACTION=up run-docker-cmd
 
 build-image:
-	make SERVICE=$(SERVICE) DC_ACTION=build run-docker-cmd
+	@make SERVICE=$(SERVICE) DC_ACTION=build run-docker-cmd
 
 test:
 	@if [ "$(SERVICE)" = "" ]; then \
@@ -100,7 +100,7 @@ test-watch:
 	fi
 
 connect:
-	make SERVICE=$(SERVICE) DC_ACTION="run --rm" ARGS="/bin/sh" run-docker-cmd
+	@make SERVICE=$(SERVICE) DC_ACTION="run --rm" ARGS="/bin/sh" run-docker-cmd
 
 deploy:
 	@case "$(SERVICE)" in \
@@ -124,11 +124,11 @@ deploy:
 	esac
 
 deploy-base-image:
-	gcloud builds submit
+	@gcloud builds submit
 
 ## - actions that will affect your local filesystem
 clean:
-	make SERVICE=$(SERVICE) ARGS="yarn clean" run-cmd
+	@make SERVICE=$(SERVICE) ARGS="yarn clean" run-cmd
 
 install:
 	@npm install -g bs-platform@7.0.1; \

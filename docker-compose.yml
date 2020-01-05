@@ -21,17 +21,21 @@ services:
         - GATSBY_PDFGEN_SCHEME=http
         - GATSBY_PDFGEN_HOST=127.0.0.1:4000
     volumes:
-      - ./web/src:/home/node/app/src:cached
-      - ./web/scripts:/home/node/app/scripts:cached
-      - ./web/package.json:/home/node/app/package.json:cached
-      - ./web/yarn.lock:/home/node/app/yarn.lock:cached
-      - ./web/bsconfig.json:/home/node/app/bsconfig.json:cached
-      - ./web/gatsby-browser.js:/home/node/app/gatsby-browser.js:cached
-      - ./web/gatsby-config.js:/home/node/app/gatsby-config.js:cached
-      - ./web/gatsby-node.js:/home/node/app/gatsby-node.js:cached
-      - ./web/gatsby-ssr.js:/home/node/app/gatsby-ssr.js:cached
-      - ./web/jest.config.js:/home/node/app/jest.config.js:cached
-      - ./web/babel.config.js:/home/node/app/babel.config.js:cached
+      - ./web/src:/home/node/app/src:delegated
+      - ./web/scripts:/home/node/app/scripts:delegated
+      - ./web/package.json:/home/node/app/package.json:delegated
+      - ./web/yarn.lock:/home/node/app/yarn.lock:delegated
+      - ./web/bsconfig.json:/home/node/app/bsconfig.json:delegated
+      - ./web/gatsby-browser.js:/home/node/app/gatsby-browser.js:delegated
+      - ./web/gatsby-config.js:/home/node/app/gatsby-config.js:delegated
+      - ./web/gatsby-node.js:/home/node/app/gatsby-node.js:delegated
+      - ./web/gatsby-ssr.js:/home/node/app/gatsby-ssr.js:delegated
+      - ./web/jest.config.js:/home/node/app/jest.config.js:delegated
+      - ./web/babel.config.js:/home/node/app/babel.config.js:delegated
+      # volumes that allows reason-language-server vscode plugin
+      # to correctly read the built artifacts
+      - ./web/lib:/home/node/app/lib:cached
+      # - ./web/.merlin:/home/node/app/.merlin:cached
     ports:
       - "8000:8000"
   api:
@@ -42,12 +46,12 @@ services:
     build:
       context: ./api
     volumes:
-      - ./api/src:/home/node/app/src:cached
-      - ./api/scripts:/home/node/app/scripts:cached
-      - ./api/package.json:/home/node/app/package.json:cached
-      - ./api/yarn.lock:/home/node/app/yarn.lock:cached
-      - ./api/nodemon.json:/home/node/app/nodemon.json:cached
-      - ./api/bsconfig.json:/home/node/app/bsconfig.json:cached
+      - ./api/src:/home/node/app/src:delegated
+      - ./api/scripts:/home/node/app/scripts:delegated
+      - ./api/package.json:/home/node/app/package.json:delegated
+      - ./api/yarn.lock:/home/node/app/yarn.lock:delegated
+      - ./api/nodemon.json:/home/node/app/nodemon.json:delegated
+      - ./api/bsconfig.json:/home/node/app/bsconfig.json:delegated
     ports:
       - "3000:8080"
       - "3001:9229"
@@ -60,12 +64,12 @@ services:
       context: ./pdfgen
     container_name: pdfgen
     volumes:
-      - ./pdfgen/src:/home/node/app/src:cached
-      - ./pdfgen/scripts:/home/node/app/scripts:cached
-      - ./pdfgen/package.json:/home/node/app/package.json:cached
-      - ./pdfgen/yarn.lock:/home/node/app/yarn.lock:cached
-      - ./pdfgen/nodemon.json:/home/node/app/nodemon.json:cached
-      - ./pdfgen/bsconfig.json:/home/node/app/bsconfig.json:cached
+      - ./pdfgen/src:/home/node/app/src:delegated
+      - ./pdfgen/scripts:/home/node/app/scripts:delegated
+      - ./pdfgen/package.json:/home/node/app/package.json:delegated
+      - ./pdfgen/yarn.lock:/home/node/app/yarn.lock:delegated
+      - ./pdfgen/nodemon.json:/home/node/app/nodemon.json:delegated
+      - ./pdfgen/bsconfig.json:/home/node/app/bsconfig.json:delegated
     ports:
       - "4000:8080"
       - "4001:9229"
