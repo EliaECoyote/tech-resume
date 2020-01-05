@@ -5,10 +5,10 @@ FROM gcr.io/tech-resume/bs-node:latest
 # https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 # ******************************
 
+ENV PORT=8080
 ENV APPDIR=/home/node/app
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV PORT=8080
 
 # Installs latest Chromium (77) package
 RUN apk add --no-cache \

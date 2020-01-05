@@ -18,6 +18,8 @@ services:
       args:
         - GATSBY_API_SCHEME=http
         - GATSBY_API_HOST=127.0.0.1:3000
+        - GATSBY_PDFGEN_SCHEME=http
+        - GATSBY_PDFGEN_HOST=127.0.0.1:4000
     volumes:
       - ./web/src:/home/node/app/src:cached
       - ./web/scripts:/home/node/app/scripts:cached
@@ -39,10 +41,6 @@ services:
     container_name: api
     build:
       context: ./api
-      args:
-        - SCHEME=http
-        - HOST=127.0.0.1
-        - PORT=3000
     volumes:
       - ./api/src:/home/node/app/src:cached
       - ./api/scripts:/home/node/app/scripts:cached
@@ -51,8 +49,8 @@ services:
       - ./api/nodemon.json:/home/node/app/nodemon.json:cached
       - ./api/bsconfig.json:/home/node/app/bsconfig.json:cached
     ports:
-      - "3000:3000"
-      - "3001:3001"
+      - "3000:8080"
+      - "3001:9229"
   pdfgen:
     privileged: true
     env_file:
@@ -69,5 +67,5 @@ services:
       - ./pdfgen/nodemon.json:/home/node/app/nodemon.json:cached
       - ./pdfgen/bsconfig.json:/home/node/app/bsconfig.json:cached
     ports:
-      - "4000:4000"
-      - "4001:4001"
+      - "4000:8080"
+      - "4001:9229"

@@ -10,4 +10,4 @@ yarn concurrently \
   --prefix-colors blue.bold,yellow.bold \
   --kill-others \
   --kill-others-on-fail \
-  "yarn bsb -w" "yarn nodemon --inspect=3001 lib/js/src/index.bs.js"
+  "yarn bsb -w" "yarn nodemon --inspect lib/js/src/index.bs.js"

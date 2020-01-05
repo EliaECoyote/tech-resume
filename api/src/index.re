@@ -1,5 +1,3 @@
-let scheme = Config.scheme;
-let host = Config.host;
 let port = Config.port;
 
 let startupBackend = () => {
@@ -10,7 +8,7 @@ let startupBackend = () => {
     | exception (Js.Exn.Error(e)) =>
       Js.log(e);
       Node.Process.exit(1);
-    | _ => Js.log @@ {j|Listening at $scheme://$host:$port|j}
+    | _ => Js.log @@ {j|Listening at port $port|j}
     };
 
   Express.App.use(app, CorsMiddleware.middlewareFactory());

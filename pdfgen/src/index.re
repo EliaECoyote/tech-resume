@@ -5,7 +5,7 @@ let onListen = e =>
   | exception (Js.Exn.Error(e)) =>
     Js.log(e);
     Node.Process.exit(1);
-  | _ => Js.log @@ {j|server started at port $port|j}
+  | _ => Js.log @@ {j|Listening at port $port|j}
   };
 
 let startupBackend = () => {
