@@ -17,6 +17,19 @@ steps:
       - "gcr.io/$PROJECT_ID/pdfgen:latest"
       - "."
     timeout: 200s
+  # deploy
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "pdfgen-europe-west1"
+      - "--image"
+      - "gcr.io/tech-resume/pdfgen"
+      - "--region"
+      - "europe-west1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
 images:
   - "gcr.io/$PROJECT_ID/pdfgen:latest"
   # - "gcr.io/$PROJECT_ID/pdfgen:$SHORT_SHA"
