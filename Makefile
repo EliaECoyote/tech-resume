@@ -50,13 +50,13 @@ help:
 
 # Services (targets)
 api:
-	@echo "\n>>>> service: api\n"
+	@echo ">>>> service: api"
 	$(eval SERVICE=$(API_SERVICE))
 web:
-	@echo "\n>>>> service: web\n"
+	@echo ">>>> service: web"
 	$(eval SERVICE=$(WEB_SERVICE))
 pdfgen:
-	@echo "\n>>>> service: pdfgen\n"
+	@echo ">>>> service: pdfgen"
 	$(eval SERVICE=$(PDFGEN_SERVICE))
 
 # Helpers
@@ -111,6 +111,10 @@ deploy:
 		;; \
 	api) \
 		cd $(PWD)/api; \
+		gcloud builds submit \
+		;; \
+	pdfgen) \
+		cd $(PWD)/pdfgen; \
 		gcloud builds submit \
 		;; \
 	*) \

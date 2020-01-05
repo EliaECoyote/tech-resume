@@ -1,20 +1,35 @@
 steps:
+  # pull cached image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["pull", "gcr.io/$PROJECT_ID/bs-node:latest"]
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "docker pull gcr.io/$PROJECT_ID/pdfgen:latest || exit 0"
+  # build image
   - name: "gcr.io/cloud-builders/docker"
     args:
-      [
-        "build",
-        "--tag",
-        "gcr.io/$PROJECT_ID/pdfgen:$COMMIT_SHA",
-        "--tag",
-        "gcr.io/$PROJECT_ID/pdfgen:latest",
-        "--privileged",
-        ".",
-      ]
-    env:
-      - "SCHEME=https"
-      - "HOST=api-67xb7jfyla-ew.a.run.app"
-      - "PORT=8080"
+      - "build"
+      - "--cache-from"
+      - "gcr.io/$PROJECT_ID/pdfgen:latest"
+      # - "--tag
+      # - "gcr.io/$PROJECT_ID/api:$SHORT_SHA
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/pdfgen:latest"
+      - "."
     timeout: 200s
-images: ["gcr.io/$PROJECT_ID/pdfgen:latest"]
+  # deploy
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "pdfgen-europe-west1"
+      - "--image"
+      - "gcr.io/tech-resume/pdfgen"
+      - "--region"
+      - "europe-west1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+images:
+  - "gcr.io/$PROJECT_ID/pdfgen:latest"
+  # - "gcr.io/$PROJECT_ID/pdfgen:$SHORT_SHA"

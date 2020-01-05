@@ -1,5 +1,3 @@
-// TODO: test this bindings!
-
 /**
  * The encodeURIComponent() function encodes a Uniform Resource
  * Identifier (URI) component by replacing each instance of certain

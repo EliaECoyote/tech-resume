@@ -14,7 +14,7 @@ module Styles = {
 let make = (~children) =>
   <header className=Styles.header>
     <div>
-      <h1 className=Styles.headerTitle> {React.string("Tech resume")} </h1>
+      <h1 className=Styles.headerTitle> {React.string("# Tech resume")} </h1>
       <ThemeDropdown />
     </div>
     <div> children </div>
