@@ -8,7 +8,7 @@ type authError = {
 
 type callbacks = {
   signInSuccessWithAuthResult:
-    option((~authResult: Js.t(unit), ~redirectUrl: string=?) => bool),
+    option((~authResult: Js.t(unit), ~redirectUrl: string=?, unit) => bool),
   signInFailure: option(option((~error: authError) => Js.Promise.t(unit))),
   uiShown: option(unit => unit),
 };

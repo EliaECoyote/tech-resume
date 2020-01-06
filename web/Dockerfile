@@ -10,6 +10,10 @@ ENV GATSBY_API_HOST=$GATSBY_API_HOST
 ENV GATSBY_PDFGEN_SCHEME=$GATSBY_PDFGEN_SCHEME
 ENV GATSBY_PDFGEN_HOST=$GATSBY_PDFGEN_HOST
 ENV APPDIR=/home/node/app
+# As described by gatsby docs
+# https://www.gatsbyjs.org/docs/environment-variables/#build-variables
+# setting CI=true as an environment variable will tailor output for dumb terminals
+ENV CI=true
 
 
 WORKDIR ${APPDIR}
