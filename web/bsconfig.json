@@ -21,11 +21,13 @@
   },
   "suffix": ".js",
   "bs-dependencies": [
-    "@glennsl/bs-jest",
     "reason-react",
     "wonka",
     "bs-fetch",
     "bs-css"
+  ],
+  "bs-dev-dependencies": [
+    "@glennsl/bs-jest"
   ],
   "reason": {
     "react-jsx": 3
