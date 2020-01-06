@@ -96,7 +96,7 @@ test-watch:
 	@if [ "$(SERVICE)" = "" ]; then \
 		echo "\ntest-watch action needs a target!\n"; \
 	else \
-		make SERVICE=$(SERVICE) DC_ACTION="run --rm" ARGS="JEST_MODE=watch sh scripts/test.sh" run-docker-cmd; \
+		make SERVICE=$(SERVICE) DC_ACTION="run --rm" ARGS="sh scripts/test.sh -w" run-docker-cmd; \
 	fi
 
 connect:
