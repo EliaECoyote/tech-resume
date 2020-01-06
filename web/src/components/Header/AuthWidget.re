@@ -41,10 +41,20 @@ let startFirebaseUIWidget = () =>
   |> Wonka.fromPromise
   // FirebaseUI library dynamic import source
   |> Wonka.subscribe((. module FirebaseUI: FirebaseUIType) => {
+       let callbacks: FirebaseUI.callbacks = {
+         // signInSuccessWithAuthResult callback returns false in
+         // order to avoid redirects after a successful login as
+         // described in
+         // https://github.com/firebase/firebaseui-web/blob/master/README.md#signinsuccesswithauthresultauthresult-redirecturl
+         signInSuccessWithAuthResult:
+           Some((~authResult as _, ~redirectUrl as _=?, ()) => false),
+         signInFailure: None,
+         uiShown: None,
+       };
        let uiConfig: FirebaseUI.config = {
          acUiConfig: None,
          autoUpgradeAnonymousUsers: None,
-         callbacks: None,
+         callbacks: Some(callbacks),
          credentialHelper: None,
          popupMode: None,
          queryParameterForSignInSuccessUrl: Some("login-success"),
