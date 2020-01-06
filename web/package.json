@@ -29,9 +29,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "clean": "yarn bsb -clean-world && yarn gatsby clean",
-    "test": "yarn bsb -make-world && NODE_ENV=test yarn jest --no-cache",
-    "serve": "yarn gatsby serve"
+    "clean": "yarn bsb -clean-world && yarn gatsby clean"
   },
   "repository": {
     "type": "git",
