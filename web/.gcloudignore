@@ -11,6 +11,7 @@ lib
 .merlin
 .bsb.lock
 src/**/*.js
+__tests__/**/*.js
 
 # Dependency directories
 node_modules/

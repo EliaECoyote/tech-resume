@@ -21,7 +21,8 @@ WORKDIR ${APPDIR}
 RUN apk add --no-cache util-linux
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
-COPY nodemon.json bsconfig.json .eslintrc jest.config.js babel.config.js gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js firebase.json .firebaserc ./
+COPY nodemon.json bsconfig.json .eslintrc jest.config.js gatsby-browser.js gatsby-config.js gatsby-node.js gatsby-ssr.js firebase.json .firebaserc ./
+COPY ./__tests__ ./__tests__/
 COPY ./src ./src/
 COPY ./scripts ./scripts/
 # Link bs-platform
