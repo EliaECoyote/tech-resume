@@ -5,7 +5,7 @@ module Styles = {
     style([
       display(`grid),
       height(`vh(100.0)),
-      gridTemplateRows([`px(50), `fr(1.0)]),
+      gridTemplateRows([`px(50), `vh(100.0)]),
       gridTemplateAreas(`areas(["header", "content"])),
       gridRowGap(`px(10)),
     ]);

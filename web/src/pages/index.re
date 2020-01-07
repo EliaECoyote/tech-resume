@@ -6,18 +6,27 @@ module Styles = {
       height(`percent(100.0)),
       display(`grid),
       gridTemplateColumns([`fr(1.0), `fr(1.0)]),
-      gridTemplateAreas(`areas(["editor output"])),
+      gridTemplateRows([`minContent, `fr(1.0)]),
+      gridTemplateAreas(
+        `areas(["editor-header output-header", "editor output"]),
+      ),
       gridColumnGap(`px(10)),
+      gridRowGap(`px(10)),
+      alignItems(`center),
     ]);
-
-  let editorContainer =
+  let editorHeader = style([gridArea(`ident("editor-header"))]);
+  let outputHeader = style([gridArea(`ident("output-header"))]);
+  let editor =
     style([
       gridArea(`ident("editor")),
       resize(`horizontal),
       overflow(`auto),
+      height(`percent(100.0)),
     ]);
-  let outputContainer = style([gridArea(`ident("output"))]);
-  let outputTool = style([margin2(~v=`px(10), ~h=`px(10))]);
+  let output =
+    style([gridArea(`ident("output")), height(`percent(100.0))]);
+
+  let outputTool = style([margin2(~v=`px(10), ~h=`px(2))]);
   let outputContent =
     style([width(`percent(100.0)), height(`percent(100.0))]);
 };
@@ -48,25 +57,28 @@ let make = () => {
   let iframeRef = React.useRef(Js.Nullable.null);
   let editorTextRef = React.useRef("");
 
+  // *editorRef* value updates handling
   React.useEffect1(
     () => {
       let subscription =
         editorTextSource
         |> Wonka.subscribe((. text) =>
-             text |> React.Ref.setCurrent(editorTextRef)
+             React.Ref.setCurrent(editorTextRef, text)
            );
       Some(subscription.unsubscribe);
     },
     [|editorTextSource|],
   );
 
+  // html conversion api handling
   React.useEffect2(
     () =>
       switch (state) {
       | Fetching =>
-        let md = editorTextRef->React.Ref.current;
         let subscription =
-          Apis.fetchHtmlConversion(~md)
+          editorTextRef
+          |> React.Ref.current
+          |> Apis.fetchHtmlConversion(~md=_)
           |> Wonka.subscribe((. value) =>
                switch (value) {
                | HttpClient.Ok(html) => sendEvent(LoadSuccess(html))
@@ -94,46 +106,45 @@ let make = () => {
   let html = Belt.Option.getWithDefault(outputContent, "");
 
   <div className=Styles.app>
-    <div className=Styles.editorContainer>
-      <p> {React.string("source (md)")} </p>
+    <div className=Styles.editorHeader>
+      <span> {React.string("source (md)")} </span>
+    </div>
+    <div className=Styles.editor>
       <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
     </div>
-    <div className=Styles.outputContainer>
-      <div>
-        <span className=Styles.outputTool> {React.string("output")} </span>
-        <Button
-          onClick=startFetching
-          disabled={state == Fetching}
-          className=Styles.outputTool>
-          {React.string("Refresh")}
-        </Button>
-        <Link
-          download=true
-          href={Url.make(
-            ~scheme=Config.pdfgenScheme,
-            ~host=Config.pdfgenHost,
-            ~path="",
-            ~qsComponents=[|("html", html)|],
-            (),
-          )}>
-          {React.string("Download")}
-        </Link>
-        <span>
-          {switch (state) {
-           | Success(_) => React.string("Data loaded successfully!")
-           | Fetching => React.string("Fetching....")
-           | Error => React.string("Data failed to load")
-           | Idle => React.string("Ready for some fetching!")
-           }}
-        </span>
-      </div>
-      <Output>
-        <iframe
-          className=Styles.outputContent
-          srcDoc=?outputContent
-          ref={ReactDOMRe.Ref.domRef(iframeRef)}
-        />
-      </Output>
+    <div className=Styles.outputHeader>
+      <Button
+        onClick=startFetching
+        disabled={state == Fetching}
+        className=Styles.outputTool>
+        {React.string("Refresh")}
+      </Button>
+      <Link
+        download=true
+        href={Url.make(
+          ~scheme=Config.pdfgenScheme,
+          ~host=Config.pdfgenHost,
+          ~path="",
+          ~qsComponents=[|("html", html)|],
+          (),
+        )}>
+        {React.string("Download")}
+      </Link>
+      <span>
+        {switch (state) {
+         | Success(_) => React.string("Data loaded successfully!")
+         | Fetching => React.string("Fetching....")
+         | Error => React.string("Data failed to load")
+         | Idle => React.string("Ready for some fetching!")
+         }}
+      </span>
+    </div>
+    <div className=Styles.output>
+      <iframe
+        className=Styles.outputContent
+        srcDoc=?outputContent
+        ref={ReactDOMRe.Ref.domRef(iframeRef)}
+      />
     </div>
   </div>;
 };
