@@ -4,9 +4,18 @@ module Styles = {
   let app =
     style([
       display(`grid),
-      gridTemplateColumns([`percent(50.0), `percent(50.0)]),
+      gridTemplateColumns([`fr(1.0), `fr(1.0)]),
+      gridTemplateAreas(`areas(["editor output"])),
       gridColumnGap(`pt(10)),
     ]);
+
+  let editorContainer =
+    style([
+      gridArea(`ident("editor")),
+      resize(`horizontal),
+      overflow(`auto),
+    ]);
+  let outputContainer = style([gridArea(`ident("output"))]);
 
   let outputContent =
     style([
@@ -88,7 +97,7 @@ let make = () => {
   let html = Belt.Option.getWithDefault(outputContent, "");
 
   <div className=Styles.app>
-    <div>
+    <div className=Styles.editorContainer>
       <p> {React.string("source (md)")} </p>
       <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
     </div>
@@ -116,7 +125,7 @@ let make = () => {
          | Idle => React.string("Ready for some fetching!")
          }}
       </span>
-      <Output>
+      <Output className=Styles.outputContainer>
         <iframe
           className=Styles.outputContent
           srcDoc=?outputContent
