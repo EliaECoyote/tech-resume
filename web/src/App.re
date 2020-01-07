@@ -1,3 +1,18 @@
+module Styles = {
+  open Css;
+
+  let app =
+    style([
+      display(`grid),
+      height(`vh(100.0)),
+      gridTemplateRows([`px(50), `fr(1.0)]),
+      gridTemplateAreas(`areas(["header", "content"])),
+      gridRowGap(`px(10)),
+    ]);
+  let header = style([gridArea(`ident("header"))]);
+  let content = style([gridArea(`ident("content"))]);
+};
+
 module AppContent = {
   [@react.component]
   let make = (~children) => {
@@ -17,7 +32,7 @@ module AppContent = {
     UseFirebase.hook();
     let (authStatus, signOut) = UseAuth.hook();
 
-    <div>
+    <div className=Styles.app>
       <ReactHelmet>
         <link
           href="https://fonts.googleapis.com/css?family=Montserrat&display=swap"
@@ -30,8 +45,10 @@ module AppContent = {
         />
         <style> {ReasonReact.string(globalStyle)} </style>
       </ReactHelmet>
-      <Header> <AuthWidget authStatus signOut /> </Header>
-      children
+      <Header className=Styles.header>
+        <AuthWidget authStatus signOut />
+      </Header>
+      <div className=Styles.content> children </div>
     </div>;
   };
 };

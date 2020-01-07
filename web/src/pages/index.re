@@ -3,10 +3,11 @@ module Styles = {
 
   let app =
     style([
+      height(`percent(100.0)),
       display(`grid),
       gridTemplateColumns([`fr(1.0), `fr(1.0)]),
       gridTemplateAreas(`areas(["editor output"])),
-      gridColumnGap(`pt(10)),
+      gridColumnGap(`px(10)),
     ]);
 
   let editorContainer =
@@ -16,13 +17,9 @@ module Styles = {
       overflow(`auto),
     ]);
   let outputContainer = style([gridArea(`ident("output"))]);
-
+  let outputTool = style([margin2(~v=`px(10), ~h=`px(10))]);
   let outputContent =
-    style([
-      position(`absolute),
-      width(`percent(100.0)),
-      height(`percent(100.0)),
-    ]);
+    style([width(`percent(100.0)), height(`percent(100.0))]);
 };
 
 type status =
@@ -101,31 +98,36 @@ let make = () => {
       <p> {React.string("source (md)")} </p>
       <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
     </div>
-    <div>
-      <p> {React.string("output")} </p>
-      <Button onClick=startFetching disabled={state == Fetching}>
-        {React.string("Refresh")}
-      </Button>
-      <Link
-        download=true
-        href={Url.make(
-          ~scheme=Config.pdfgenScheme,
-          ~host=Config.pdfgenHost,
-          ~path="",
-          ~qsComponents=[|("html", html)|],
-          (),
-        )}>
-        {React.string("Download")}
-      </Link>
-      <span>
-        {switch (state) {
-         | Success(_) => React.string("Data loaded successfully!")
-         | Fetching => React.string("Fetching....")
-         | Error => React.string("Data failed to load")
-         | Idle => React.string("Ready for some fetching!")
-         }}
-      </span>
-      <Output className=Styles.outputContainer>
+    <div className=Styles.outputContainer>
+      <div>
+        <span className=Styles.outputTool> {React.string("output")} </span>
+        <Button
+          onClick=startFetching
+          disabled={state == Fetching}
+          className=Styles.outputTool>
+          {React.string("Refresh")}
+        </Button>
+        <Link
+          download=true
+          href={Url.make(
+            ~scheme=Config.pdfgenScheme,
+            ~host=Config.pdfgenHost,
+            ~path="",
+            ~qsComponents=[|("html", html)|],
+            (),
+          )}>
+          {React.string("Download")}
+        </Link>
+        <span>
+          {switch (state) {
+           | Success(_) => React.string("Data loaded successfully!")
+           | Fetching => React.string("Fetching....")
+           | Error => React.string("Data failed to load")
+           | Idle => React.string("Ready for some fetching!")
+           }}
+        </span>
+      </div>
+      <Output>
         <iframe
           className=Styles.outputContent
           srcDoc=?outputContent

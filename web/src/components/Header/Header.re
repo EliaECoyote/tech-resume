@@ -5,7 +5,7 @@ module Styles = {
   let header =
     style([
       display(`grid),
-      height(`px(50)),
+      height(`percent(100.0)),
       gridColumnGap(`px(20)),
       padding2(~v=`px(0), ~h=`px(20)),
       gridTemplateColumns([`auto, `fr(1.0), `auto, `rem(14.0)]),
@@ -29,8 +29,12 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~children) =>
-  <header className=Styles.header>
+let make = (~children, ~className=?) => {
+  let className =
+    className
+    |> Belt.Option.map(_, value => Css.merge([Styles.header, value]))
+    |> Belt.Option.getWithDefault(_, Styles.header);
+  <header className>
     <h1 className=Styles.title> {React.string("# Tech resume")} </h1>
     <div className=Styles.themeSelector>
       <span> {React.string("Theme")} </span>
@@ -38,3 +42,4 @@ let make = (~children) =>
     </div>
     <div className=Styles.authWidget> children </div>
   </header>;
+};

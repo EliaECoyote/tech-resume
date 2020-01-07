@@ -2,9 +2,12 @@ module Styles = {
   open Css;
 
   let editorContainer = (colors: ThemeContext.colors) =>
-    style([padding(`px(10)), border(`px(2), `solid, colors.accent)]);
+    style([
+      height(`percent(100.0)),
+      border(`px(2), `solid, colors.accent),
+    ]);
 
-  let editor = style([height(`vh(80.0))]);
+  let editor = style([height(`percent(100.0))]);
 };
 
 [@react.component]
