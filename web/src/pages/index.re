@@ -5,7 +5,7 @@ module Styles = {
     style([
       height(`percent(100.0)),
       display(`grid),
-      gridTemplateColumns([`fr(1.0), `fr(1.0)]),
+      gridTemplateColumns([`minContent, `fr(1.0)]),
       gridTemplateRows([`minContent, `fr(1.0)]),
       gridTemplateAreas(
         `areas(["editor-header output-header", "editor output"]),
@@ -25,8 +25,10 @@ module Styles = {
     ]);
   let output =
     style([gridArea(`ident("output")), height(`percent(100.0))]);
-
-  let outputTool = style([margin2(~v=`px(10), ~h=`px(2))]);
+  let outputTool =
+    style([
+      margin4(~top=`zero, ~right=`px(10), ~bottom=`zero, ~left=`zero),
+    ]);
   let outputContent =
     style([width(`percent(100.0)), height(`percent(100.0))]);
 };
