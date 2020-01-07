@@ -5,14 +5,14 @@ module Styles = {
   let header =
     style([
       display(`grid),
-      height(`px(80)),
+      height(`px(50)),
       gridColumnGap(`px(20)),
       padding2(~v=`px(0), ~h=`px(20)),
       gridTemplateColumns([`auto, `fr(1.0), `auto, `rem(14.0)]),
       gridTemplateAreas(`areas(["title spacer theme-selector auth-widget"])),
       alignItems(`center),
     ]);
-  let title = style([gridArea(`ident("title"))]);
+  let title = style([gridArea(`ident("title")), margin(`zero)]);
   let themeSelector =
     style([
       gridArea(`ident("theme-selector")),
