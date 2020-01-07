@@ -11,12 +11,15 @@ module Styles = {
       gridColumnGap(`rem(1.0)),
     ]);
   let username =
-    style([
+    [
       gridArea(`ident("username")),
-      margin(`px(0)),
-      fontSize(`rem(0.8)),
-      fontWeight(`bold),
-    ]);
+      textOverflow(`ellipsis),
+      whiteSpace(`nowrap),
+      overflow(`hidden),
+    ]
+    |> (styles => List.concat([styles, TextStyles.textEllipsis]))
+    |> (styles => List.concat([styles, TextStyles.xsFont]))
+    |> style;
   let cta = style([gridArea(`ident("cta"))]);
   let thumb =
     style([
