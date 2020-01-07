@@ -8,6 +8,8 @@ services:
       args:
         BS_PLATFORM_VERSION: 7.0.1
   web:
+    # truthy *tty* is necessary in order to get colored bsb output
+    tty: true
     env_file:
       - .env
     command: sh ./scripts/startup.sh
@@ -38,6 +40,7 @@ services:
     ports:
       - "8000:8000"
   api:
+    tty: true
     env_file:
       - .env
     command: sh ./scripts/startup.sh
@@ -55,6 +58,7 @@ services:
       - "3000:8080"
       - "3001:9229"
   pdfgen:
+    tty: true
     privileged: true
     env_file:
       - .env
