@@ -18,6 +18,7 @@ module Styles = {
   let outputHeader = style([gridArea(`ident("output-header"))]);
   let editor =
     style([
+      position(`relative),
       gridArea(`ident("editor")),
       resize(`horizontal),
       overflow(`auto),
@@ -113,6 +114,7 @@ let make = () => {
     </div>
     <div className=Styles.editor>
       <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
+      <ResizerIndicator />
     </div>
     <div className=Styles.outputHeader>
       <Button

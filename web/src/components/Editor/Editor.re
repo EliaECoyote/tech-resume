@@ -4,6 +4,7 @@ module Styles = {
   let editorContainer = (colors: ThemeContext.colors) =>
     style([
       height(`percent(100.0)),
+      paddingBottom(`px(18)),
       border(`px(2), `solid, colors.accent),
     ]);
 
