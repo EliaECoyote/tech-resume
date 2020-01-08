@@ -16,16 +16,24 @@ module Styles = {
     ]);
   let editorHeader = style([gridArea(`ident("editor-header"))]);
   let outputHeader = style([gridArea(`ident("output-header"))]);
-  let editor =
+  let editor = (colors: ThemeContext.colors) =>
     style([
-      position(`relative),
       gridArea(`ident("editor")),
       resize(`horizontal),
       overflow(`auto),
+      minWidth(`px(300)),
+      width(`vw(45.0)),
+      border(`px(2), `solid, colors.accent),
       height(`percent(100.0)),
+      display(`flex),
+      flexDirection(`column),
     ]);
   let output =
-    style([gridArea(`ident("output")), height(`percent(100.0))]);
+    style([
+      gridArea(`ident("output")),
+      minWidth(`px(300)),
+      height(`percent(100.0)),
+    ]);
   let outputTool =
     style([
       margin4(~top=`zero, ~right=`px(10), ~bottom=`zero, ~left=`zero),
@@ -57,6 +65,7 @@ let reducer = (~state, ~event) =>
 let make = () => {
   let (editorRef, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
+  let (themeState, _) = React.useContext(ThemeContext.context);
   let iframeRef = React.useRef(Js.Nullable.null);
   let editorTextRef = React.useRef("");
 
@@ -112,7 +121,7 @@ let make = () => {
     <div className=Styles.editorHeader>
       <span> {React.string("source (md)")} </span>
     </div>
-    <div className=Styles.editor>
+    <div className={Styles.editor(themeState.colors)}>
       <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
       <ResizerIndicator />
     </div>

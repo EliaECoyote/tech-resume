@@ -1,14 +1,23 @@
 module Styles = {
   open Css;
+  let resizerSize = 30;
+  let translateValue = resizerSize / 2 |> string_of_int;
+  let container =
+    style([alignSelf(`flexEnd), overflow(`hidden), zIndex(-1)]);
   let resizerIndicator = (colors: ThemeContext.colors) =>
     style([
-      position(`absolute),
       zIndex(-1),
-      bottom(`px(-15)),
-      right(`px(-15)),
-      transform(`rotate(`deg(45.0))),
-      height(`px(30)),
-      width(`px(30)),
+      alignSelf(`flexEnd),
+      unsafe(
+        "transform",
+        "translate("
+        ++ translateValue
+        ++ "px, "
+        ++ translateValue
+        ++ "px) rotate(45deg)",
+      ),
+      height(`px(resizerSize)),
+      width(`px(resizerSize)),
       backgroundColor(colors.accent),
     ]);
 };
@@ -17,5 +26,7 @@ module Styles = {
 let make =
   React.forwardRef(editorRef => {
     let (state, _) = React.useContext(ThemeContext.context);
-    <div className={Styles.resizerIndicator(state.colors)} />;
+    <div className=Styles.container>
+      <div className={Styles.resizerIndicator(state.colors)} />
+    </div>;
   });

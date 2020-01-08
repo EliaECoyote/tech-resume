@@ -1,13 +1,6 @@
 module Styles = {
   open Css;
-
-  let editorContainer = (colors: ThemeContext.colors) =>
-    style([
-      height(`percent(100.0)),
-      paddingBottom(`px(18)),
-      border(`px(2), `solid, colors.accent),
-    ]);
-
+  let container = style([flex(`num(1.0))]);
   let editor = style([height(`percent(100.0))]);
 };
 
@@ -15,7 +8,7 @@ module Styles = {
 let make =
   React.forwardRef(editorRef => {
     let (state, _) = React.useContext(ThemeContext.context);
-    <div className={Styles.editorContainer(state.colors)}>
+    <div className=Styles.container>
       <div
         className=Styles.editor
         ref=?{
