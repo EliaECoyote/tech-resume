@@ -3,17 +3,43 @@ module Styles = {
 
   let app =
     style([
+      height(`percent(100.0)),
       display(`grid),
-      gridTemplateColumns([`percent(50.0), `percent(50.0)]),
-      gridColumnGap(`pt(10)),
+      gridTemplateColumns([`minContent, `fr(1.0)]),
+      gridTemplateRows([`minContent, `fr(1.0)]),
+      gridTemplateAreas(
+        `areas(["editor-header output-header", "editor output"]),
+      ),
+      gridColumnGap(`px(10)),
+      gridRowGap(`px(10)),
+      alignItems(`center),
     ]);
-
-  let outputContent =
+  let editorHeader = style([gridArea(`ident("editor-header"))]);
+  let outputHeader = style([gridArea(`ident("output-header"))]);
+  let editor = (colors: ThemeContext.colors) =>
     style([
-      position(`absolute),
-      width(`percent(100.0)),
+      gridArea(`ident("editor")),
+      resize(`horizontal),
+      overflow(`auto),
+      minWidth(`px(300)),
+      width(`vw(45.0)),
+      border(`px(2), `solid, colors.accent),
+      height(`percent(100.0)),
+      display(`flex),
+      flexDirection(`column),
+    ]);
+  let output =
+    style([
+      gridArea(`ident("output")),
+      minWidth(`px(300)),
       height(`percent(100.0)),
     ]);
+  let outputTool =
+    style([
+      margin4(~top=`zero, ~right=`px(10), ~bottom=`zero, ~left=`zero),
+    ]);
+  let outputContent =
+    style([width(`percent(100.0)), height(`percent(100.0))]);
 };
 
 type status =
@@ -39,28 +65,32 @@ let reducer = (~state, ~event) =>
 let make = () => {
   let (editorRef, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
+  let (themeState, _) = React.useContext(ThemeContext.context);
   let iframeRef = React.useRef(Js.Nullable.null);
   let editorTextRef = React.useRef("");
 
+  // *editorRef* value updates handling
   React.useEffect1(
     () => {
       let subscription =
         editorTextSource
         |> Wonka.subscribe((. text) =>
-             text |> React.Ref.setCurrent(editorTextRef)
+             React.Ref.setCurrent(editorTextRef, text)
            );
       Some(subscription.unsubscribe);
     },
     [|editorTextSource|],
   );
 
+  // html conversion api handling
   React.useEffect2(
     () =>
       switch (state) {
       | Fetching =>
-        let md = editorTextRef->React.Ref.current;
         let subscription =
-          Apis.fetchHtmlConversion(~md)
+          editorTextRef
+          |> React.Ref.current
+          |> Apis.fetchHtmlConversion(~md=_)
           |> Wonka.subscribe((. value) =>
                switch (value) {
                | HttpClient.Ok(html) => sendEvent(LoadSuccess(html))
@@ -88,13 +118,18 @@ let make = () => {
   let html = Belt.Option.getWithDefault(outputContent, "");
 
   <div className=Styles.app>
-    <div>
-      <p> {React.string("source (md)")} </p>
-      <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
+    <div className=Styles.editorHeader>
+      <span> {React.string("source (md)")} </span>
     </div>
-    <div>
-      <p> {React.string("output")} </p>
-      <Button onClick=startFetching disabled={state == Fetching}>
+    <div className={Styles.editor(themeState.colors)}>
+      <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
+      <ResizerIndicator />
+    </div>
+    <div className=Styles.outputHeader>
+      <Button
+        onClick=startFetching
+        disabled={state == Fetching}
+        className=Styles.outputTool>
         {React.string("Refresh")}
       </Button>
       <Link
@@ -116,13 +151,13 @@ let make = () => {
          | Idle => React.string("Ready for some fetching!")
          }}
       </span>
-      <Output>
-        <iframe
-          className=Styles.outputContent
-          srcDoc=?outputContent
-          ref={ReactDOMRe.Ref.domRef(iframeRef)}
-        />
-      </Output>
+    </div>
+    <div className=Styles.output>
+      <iframe
+        className=Styles.outputContent
+        srcDoc=?outputContent
+        ref={ReactDOMRe.Ref.domRef(iframeRef)}
+      />
     </div>
   </div>;
 };
