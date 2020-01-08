@@ -21,7 +21,7 @@ module Styles = {
       gridArea(`ident("editor")),
       resize(`horizontal),
       overflow(`auto),
-      minWidth(`vw(30)),
+      minWidth(`vw(30.0)),
       width(`vw(45.0)),
       border(`px(2), `solid, colors.accent),
       height(`percent(100.0)),
@@ -31,7 +31,7 @@ module Styles = {
   let output =
     style([
       gridArea(`ident("output")),
-      minWidth(`vw(30)),
+      minWidth(`vw(30.0)),
       height(`percent(100.0)),
     ]);
   let outputTool =

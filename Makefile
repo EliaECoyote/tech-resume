@@ -106,8 +106,8 @@ deploy:
 	@case "$(SERVICE)" in \
 	web) \
 		cd $(PWD)/web; \
-		gcloud builds submit; \
-		docker-compose -f ../docker-compose.production.yml up web_production \
+		gcloud builds submit \
+		&& docker-compose -f ../docker-compose.production.yml up web_production \
 		;; \
 	api) \
 		cd $(PWD)/api; \
