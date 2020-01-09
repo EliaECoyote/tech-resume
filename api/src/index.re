@@ -12,7 +12,11 @@ let startupBackend = () => {
     };
 
   Express.App.use(app, CorsMiddleware.middlewareFactory());
-  Express.App.get(app, ~path="/convert", ConverterMiddleware.middleware);
+  Express.App.get(
+    app,
+    ~path="/convert",
+    Md2HtmlConverterMiddleware.middleware,
+  );
   Express.App.listen(app, ~port, ~onListen, ());
 };
 
