@@ -17,16 +17,16 @@ var qsComponents = /* array */[/* tuple */[
 
 Jest.describe("buildUrl", (function (param) {
         Jest.test("should return correct complete url", (function (param) {
-                return Jest.Expect.toBe("https://example.com/test?key1=value1", Jest.Expect.expect(Url.make(scheme, host, path, qsComponents, /* () */0)));
+                return Jest.Expect.toBe("https://example.com/test?key1=value1", Jest.Expect.expect(Url.make(scheme, host, undefined, path, qsComponents, /* () */0)));
               }));
         Jest.test("should return pathname + qs with no scheme", (function (param) {
-                return Jest.Expect.toBe("/test?key1=value1", Jest.Expect.expect(Url.make(undefined, host, path, qsComponents, /* () */0)));
+                return Jest.Expect.toBe("/test?key1=value1", Jest.Expect.expect(Url.make(undefined, host, undefined, path, qsComponents, /* () */0)));
               }));
         Jest.test("should return pathname + qs with no host", (function (param) {
-                return Jest.Expect.toBe("/test?key1=value1", Jest.Expect.expect(Url.make(scheme, undefined, path, qsComponents, /* () */0)));
+                return Jest.Expect.toBe("/test?key1=value1", Jest.Expect.expect(Url.make(scheme, undefined, undefined, path, qsComponents, /* () */0)));
               }));
         return Jest.test("should encode qs correctly", (function (param) {
-                      return Jest.Expect.toBe("https://example.com/test?md=*%201%0A*%202%0A%2B-%3D%0A%60%60%60", Jest.Expect.expect(Url.make(scheme, host, path, /* array */[/* tuple */[
+                      return Jest.Expect.toBe("https://example.com/test?md=*%201%0A*%202%0A%2B-%3D%0A%60%60%60", Jest.Expect.expect(Url.make(scheme, host, undefined, path, /* array */[/* tuple */[
                                             "md",
                                             "* 1\n* 2\n+-=\n```"
                                           ]], /* () */0)));

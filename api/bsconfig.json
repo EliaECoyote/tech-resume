@@ -4,17 +4,27 @@
   "bsc-flags": [
     "-bs-super-errors"
   ],
-  "sources": {
-    "dir": "src",
-    "subdirs": true
-  },
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "__tests__",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
   "package-specs": {
     "module": "commonjs"
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
-    "@glennsl/bs-jest",
     "bs-express",
     "bs-node"
-  ]
+  ],
+  "bs-dev-dependencies": [
+    "@glennsl/bs-jest"
+  ],
+  "refmt": 3
 }
