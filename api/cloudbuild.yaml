@@ -17,6 +17,14 @@ steps:
       - "gcr.io/$PROJECT_ID/api:latest"
       - "."
     timeout: 200s
+  # test
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "run"
+      - "gcr.io/$PROJECT_ID/api:latest"
+      - "sh"
+      - "./scripts/test.sh"
+    timeout: 200s
   # deploy
   - name: "gcr.io/cloud-builders/gcloud"
     args:
@@ -30,6 +38,8 @@ steps:
       - "--platform"
       - "managed"
       - "--allow-unauthenticated"
+      - "--update-env-vars"
+      - "ENDPOINT_PDFGEN=https://pdfgen-europe-west1-67xb7jfyla-ew.a.run.app"
 images:
   - "gcr.io/$PROJECT_ID/api:latest"
   # - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
