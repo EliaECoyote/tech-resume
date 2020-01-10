@@ -182,3 +182,13 @@ let toText = (result: t): Wonka_types.sourceT(result(string)) =>
   | FailureCode(code) => Wonka.fromValue(FailureCode(code))
   | Failure => Wonka.fromValue(Failure)
   };
+
+let toBlob = (result: t): Wonka.Types.sourceT(result(Fetch.blob)) =>
+  switch (result) {
+  | Ok(res) =>
+    Fetch.Response.blob(res)
+    |> Wonka.fromPromise
+    |> Wonka.map((. value) => Ok(value))
+  | FailureCode(code) => Wonka.fromValue(FailureCode(code))
+  | Failure => Wonka.fromValue(Failure)
+  };

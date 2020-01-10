@@ -1,13 +1,3 @@
-let buildExpressResponse =
-    (res: Express.Response.t, result: MarkdownToHtmlConverter.result) => {
-  switch (result) {
-  | Ok(data) => Express.Response.sendString(data, res)
-  | Error(_) =>
-    Express.Response.status(Express.Response.StatusCode.BadRequest, res)
-    |> Express.Response.sendString("Incorrect / malformed request")
-  };
-};
-
 exception ConversionFailed(string);
 
 let middleware =
