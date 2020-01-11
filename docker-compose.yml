@@ -10,8 +10,6 @@ services:
   web:
     # truthy *tty* is necessary in order to get colored bsb output
     tty: true
-    env_file:
-      - .env
     command: sh ./scripts/startup.sh
     container_name: web
     build:
@@ -42,8 +40,6 @@ services:
     environment:
       # note: Networked service-to-service communication use the CONTAINER_PORT
       - ENDPOINT_PDFGEN=http://pdfgen:4000
-    env_file:
-      - .env
     depends_on:
       - pdfgen
     command: sh ./scripts/startup.sh
@@ -65,8 +61,6 @@ services:
     privileged: true
     environment:
       - PORT=4000
-    env_file:
-      - .env
     command: sh ./scripts/startup.sh
     build:
       context: ./pdfgen

@@ -1,4 +1,4 @@
-[%raw "require(\"isomorphic-fetch\")"];
+[%raw "global.fetch = require(\"node-fetch\")"];
 
 module StatusCode = {
   [@bs.deriving jsConverter]
@@ -163,32 +163,19 @@ let delete = (~resource: string) => {
   fetchWrapper(~resource, ~requestInit);
 };
 
-let toJson = (result: t): Wonka_types.sourceT(result(Js.Json.t)) =>
+let to_ =
+    (converter: Fetch.response => Js.Promise.t('kind), result)
+    : Wonka.Types.sourceT(result('kind)) =>
   switch (result) {
   | Ok(res) =>
-    Fetch.Response.json(res)
+    res
+    |> converter
     |> Wonka.fromPromise
     |> Wonka.map((. value) => Ok(value))
   | FailureCode(code) => Wonka.fromValue(FailureCode(code))
   | Failure => Wonka.fromValue(Failure)
   };
 
-let toText = (result: t): Wonka_types.sourceT(result(string)) =>
-  switch (result) {
-  | Ok(res) =>
-    Fetch.Response.text(res)
-    |> Wonka.fromPromise
-    |> Wonka.map((. value) => Ok(value))
-  | FailureCode(code) => Wonka.fromValue(FailureCode(code))
-  | Failure => Wonka.fromValue(Failure)
-  };
-
-let toBlob = (result: t): Wonka.Types.sourceT(result(Fetch.blob)) =>
-  switch (result) {
-  | Ok(res) =>
-    Fetch.Response.blob(res)
-    |> Wonka.fromPromise
-    |> Wonka.map((. value) => Ok(value))
-  | FailureCode(code) => Wonka.fromValue(FailureCode(code))
-  | Failure => Wonka.fromValue(Failure)
-  };
+let toJson = to_(Fetch.Response.json);
+let toText = to_(Fetch.Response.text);
+let toArrayBuffer = to_(Fetch.Response.arrayBuffer);
