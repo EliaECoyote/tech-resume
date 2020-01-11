@@ -91,7 +91,7 @@ let middleware =
              |> Express.Response.status(
                   Express.Response.StatusCode.BadRequest,
                 )
-             |> Express.Response.sendString("pdf generation failed");
+             |> Express.Response.sendString("[pdfgen] pdf generation failed");
            };
          Wonka.fromValue(response);
        })

@@ -1,17 +1,27 @@
-let buildExpressResponse =
-    (res: Express.Response.t, result: MarkdownToHtmlConverter.result) => {
-  switch (result) {
-  | Ok(data) => Express.Response.sendString(data, res)
-  | Error(_) =>
-    Express.Response.status(Express.Response.StatusCode.BadRequest, res)
-    |> Express.Response.sendString("Incorrect / malformed request")
-  };
-};
-
 type html2pdfResult('a) =
   | HtmlNotFound
   | PdfConversionFailure
   | PdfConversionSuccess('a);
+
+let html2pdf = (html: option(string)) =>
+  switch (html) {
+  | Some(html) =>
+    Apis.fetchPdfConversion(~html)
+    |> Wonka.map((. result) =>
+         switch (result) {
+         | HttpClient.Ok(value) => PdfConversionSuccess(value)
+         // TODO: failure should forward the status code received in
+         // the pdf service response
+         | HttpClient.FailureCode(code) =>
+           Js.Console.error @@ {j| pdf conversion failed with status $code |j};
+           PdfConversionFailure;
+         | HttpClient.Failure =>
+           Js.Console.error @@ {j| pdf conversion failed with generic error |j};
+           PdfConversionFailure;
+         }
+       )
+  | None => Wonka.fromValue(HtmlNotFound)
+  };
 
 let middleware =
   Express.PromiseMiddleware.from((_, req, res) => {
@@ -21,21 +31,7 @@ let middleware =
          |> Js.Dict.get(_, "html")
          |> Belt.Option.flatMap(_, Js.Json.decodeString)
        )
-    |> Wonka.mergeMap((. html) =>
-         switch (html) {
-         | Some(html) =>
-           Apis.fetchPdfConversion(~html)
-           |> Wonka.map((. result) =>
-                switch (result) {
-                | HttpClient.Ok(value) => PdfConversionSuccess(value)
-                // TODO: failure should forward the status code received in
-                // the pdf service response
-                | _ => PdfConversionFailure
-                }
-              )
-         | None => Wonka.fromValue(HtmlNotFound)
-         }
-       )
+    |> Wonka.mergeMap((. html) => html2pdf(html))
     |> Wonka.map((. result) =>
          switch (result) {
          | HtmlNotFound =>
@@ -46,12 +42,12 @@ let middleware =
            |> Express.Response.sendString(
                 "pdf generation service was not able to access html",
               )
+         // TODO: failure should forward the status code received in
+         // the pdf service response
          | PdfConversionFailure =>
            res
            |> Express.Response.status(Express.Response.StatusCode.BadRequest)
-           |> Express.Response.sendString(
-                "pdf generation failed - check again your input",
-              )
+           |> Express.Response.sendString("[api] pdf generation failed")
          | PdfConversionSuccess(value) =>
            res
            |> Express.Response.status(Express.Response.StatusCode.Ok)

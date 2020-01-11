@@ -10,8 +10,11 @@ let onListen = e =>
 
 let startupBackend = () => {
   let app = Express.express();
-  Express.App.use(app, CorsMiddleware.middlewareFactory());
-  Express.App.use(app, PdfGeneratorMiddleware.middleware);
+  Express.App.getWithMany(
+    app,
+    ~path="/",
+    [|CorsMiddleware.middlewareFactory(), PdfGeneratorMiddleware.middleware|],
+  );
   Express.App.listen(app, ~port, ~onListen, ());
 };
 
