@@ -22,7 +22,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-helmet": "^5.2.1",
-    "wonka": "^3.2.1"
+    "wonka": "^3.2.2"
   },
   "keywords": [
     "gatsby"

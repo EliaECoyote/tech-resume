@@ -11,8 +11,17 @@ let startupBackend = () => {
     | _ => Js.log @@ {j|Listening at port $port|j}
     };
 
-  Express.App.use(app, CorsMiddleware.middlewareFactory());
-  Express.App.get(app, ~path="/convert", ConverterMiddleware.middleware);
+  Express.App.getWithMany(
+    app,
+    ~path="/convert",
+    [|
+      CorsMiddleware.middlewareFactory(),
+      Md2HtmlConverterMiddleware.middleware,
+      Html2PdfMiddleware.middleware,
+      ErrorMiddleware.middleware,
+    |],
+  );
+
   Express.App.listen(app, ~port, ~onListen, ());
 };
 

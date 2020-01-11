@@ -7,7 +7,8 @@ WORKDIR ${APPDIR}
 COPY package.json yarn.lock ./
 # Installs deps
 RUN yarn install --frozen-lockfile
-COPY nodemon.json bsconfig.json ./
+COPY nodemon.json bsconfig.json jest.config.js ./
+COPY ./__tests__ ./__tests__/
 COPY ./src ./src/
 COPY ./scripts ./scripts/
 # Link bs-platform and builds project

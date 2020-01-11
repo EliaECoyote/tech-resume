@@ -56,43 +56,66 @@ let getTemplateStyle = template => {
   };
 };
 
+let getErrorMessage = (error: Js.Exn.t) =>
+  Js.Exn.message(error)
+  |> Belt.Option.getWithDefault(_, "generic converter error");
+
 /**
  * converts markdown to html code. The **css** parameter will
  * be embedded as a style tag on the *head* of the document
  */
-let transform =
-    (~src: string, ~style: array(string), ~css: array(string))
-    : Js.Promise.t(result) =>
-  Js.Promise.make((~resolve, ~reject as _) => {
-    let resolve = (output: result) => resolve(. output);
-    let processCallback: Unified.Types.processCallback =
-      (error, data) => {
-        switch (Js.Nullable.toOption(error)) {
-        | Some(value) =>
-          Js.log(value);
-          Js.Exn.message(value)
-          ->Belt.Option.getWithDefault("generic converter error")
-          ->Error
-          ->resolve;
-        | None => VFile.contentsGet(data)->Ok->resolve
-        };
-      };
+let transform = (~src: string, ~style: array(string), ~css: array(string)) =>
+  Wonka.make((. observer: Wonka.Types.observerT(result)) => {
+    let cancelledSubject = Wonka.makeSubject();
+    let subscription = ref(None);
     let remarkOpt =
       RemarkDocument.options(~title="test title", ~style, ~css, ());
     Unified.unified()
-    ->Unified.use(~plugin=RemarkParse.markdown, ())
-    ->Unified.use(~plugin=RemarkRehype.remark2rehype, ())
-    ->Unified.use(~plugin=RemarkDocument.doc, ~options=remarkOpt, ())
-    ->Unified.use(~plugin=RehypeFormat.format, ())
-    ->Unified.use(~plugin=RehypeStringify.html, ())
-    ->Unified.process(src, processCallback);
+    |> Unified.use(_, ~plugin=RemarkParse.markdown, ())
+    |> Unified.use(_, ~plugin=RemarkRehype.remark2rehype, ())
+    |> Unified.use(_, ~plugin=RemarkDocument.doc, ~options=remarkOpt, ())
+    |> Unified.use(_, ~plugin=RehypeFormat.format, ())
+    |> Unified.use(_, ~plugin=RehypeStringify.html, ())
+    |> Unified.process(
+         _,
+         src,
+         (error, data) => {
+           let resultSource =
+             switch (Js.Nullable.toOption(error)) {
+             | Some(value) =>
+               Wonka.fromValue(value)
+               |> Wonka.tap((. value) => Js.log(value))
+               |> Wonka.map((. value) => getErrorMessage(value))
+               |> Wonka.map((. value) => Error(value))
+             | None =>
+               VFile.contentsGet(data)
+               |> Wonka.fromValue
+               |> Wonka.map((. value) => Ok(value))
+             };
+           subscription :=
+             resultSource
+             |> Wonka.takeUntil(cancelledSubject.source)
+             |> Wonka.subscribe((. value) => {
+                  observer.next(value);
+                  observer.complete();
+                })
+             |> (value => Some(value));
+         },
+       );
+    (.) => {
+      let _ =
+        subscription^
+        |> Belt.Option.map(_, subscription => subscription.unsubscribe());
+      cancelledSubject.next();
+      cancelledSubject.complete();
+    };
   });
 
 /**
  * runs the md 2 html converter. The **template** parameter specifies
  * which template will be used to style the html document
  */
-let run = (~src: string, ~template: template): Js.Promise.t(result) => {
+let run = (~src: string, ~template: template) => {
   let style = getTemplateStyle(template);
   let css = getTemplateCssResources(template);
   transform(~src, ~style, ~css);
