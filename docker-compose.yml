@@ -20,8 +20,6 @@ services:
       args:
         - GATSBY_API_SCHEME=http
         - GATSBY_API_HOST=127.0.0.1:3000
-        - GATSBY_PDFGEN_SCHEME=http
-        - GATSBY_PDFGEN_HOST=127.0.0.1:4000
     volumes:
       - ./web/src:/home/node/app/src:delegated
       - ./web/scripts:/home/node/app/scripts:delegated

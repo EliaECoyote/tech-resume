@@ -161,22 +161,19 @@ let delete = (~resource: string) => {
   fetchWrapper(~resource, ~requestInit);
 };
 
-let toJson = (result: t): Wonka_types.sourceT(result(Js.Json.t)) =>
+let baseConverter =
+    (converter: Fetch.response => Js.Promise.t('kind), result: t)
+    : Wonka.Types.sourceT(result('kind)) =>
   switch (result) {
   | Ok(res) =>
-    Fetch.Response.json(res)
+    res
+    |> converter
     |> Wonka.fromPromise
     |> Wonka.map((. value) => Ok(value))
   | FailureCode(code) => Wonka.fromValue(FailureCode(code))
   | Failure => Wonka.fromValue(Failure)
   };
 
-let toText = (result: t): Wonka_types.sourceT(result(string)) =>
-  switch (result) {
-  | Ok(res) =>
-    Fetch.Response.text(res)
-    |> Wonka.fromPromise
-    |> Wonka.map((. value) => Ok(value))
-  | FailureCode(code) => Wonka.fromValue(FailureCode(code))
-  | Failure => Wonka.fromValue(Failure)
-  };
+let toJson = baseConverter(Fetch.Response.json);
+let toText = baseConverter(Fetch.Response.text);
+let toArrayBuffer = baseConverter(Fetch.Response.arrayBuffer);
