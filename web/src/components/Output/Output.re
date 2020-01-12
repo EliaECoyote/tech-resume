@@ -4,20 +4,31 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~className=?, ~pdf: Fetch.arrayBuffer=?) => {
+let make = (~className=?, ~pdf=?, ()) => {
   React.useEffect1(
-    () => 
-      // Wonka.fromValue(pdf)
-      // |> Wonka.map((. pdf) => PDF);
-
-      // let url: BsPdfjs.Document.Source.t = {
-      //   data: ,
-      // };
-      // BsPdfjs.Global.getDocument;
-      // let loadingTask =
-      // var loadingTask = pdfjsLib.getDocument({data: pdfData});
-      None
-    ,
+    () =>
+      pdf
+      |> Belt.Option.flatMap(_, pdf =>
+           Wonka.fromValue(pdf)
+           |> Wonka.tap((. value) => Js.log(("Buffer", value)))
+           |> Wonka.map((. pdf) =>
+                pdf
+                // converts buffer to PDFjs source element
+                |> PdfJSHelpers.toTypedArray
+                |> PdfJSHelpers.toPDFjsSource
+              )
+           |> Wonka.tap((. value) => Js.log(("Pdf source", value)))
+           |> Wonka.mergeMap((. source) =>
+                source
+                // uses PDFjs source to load the pdf data
+                |> BsPdfjs.Global.getDocument(_, BsPdfjs.Global.inst)
+                |> BsPdfjs.Global.DocumentLoadingTask.promise
+                |> WonkaHelpers.fromPromise
+              )
+           |> Wonka.tap((. value) => Js.log(("Pdf loaded status", value)))
+           |> Wonka.subscribe((. result) => Js.log(result))
+           |> WonkaHelpers.getEffectCleanup
+         ),
     [|pdf|],
   );
   <canvas

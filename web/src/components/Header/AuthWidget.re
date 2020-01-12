@@ -84,8 +84,7 @@ let make =
     () => {
       switch (authStatus) {
       | UseAuth.Anonymous =>
-        let subscription = startFirebaseUIWidget();
-        Some(subscription.unsubscribe);
+        startFirebaseUIWidget() |> WonkaHelpers.getEffectCleanup
       | _ => None
       }
     },

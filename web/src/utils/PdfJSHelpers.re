@@ -1,7 +1,13 @@
-let generatePDFjsSource = (data: Js.Typed_array.Int8Array.t) =>
-  BsPdfjs.Document.Source.TypedArray({"data": data});
-
 external toTypedArray: Fetch.arrayBuffer => Js.Typed_array.Int8Array.t =
   "%identity";
-let toTypedArray = arrayBuffer =>
-  arrayBuffer |> toTypedArray |> generatePDFjsSource;
+
+/**
+ * converts a **TypedArray** to a PdfJS source element
+ */
+let toPDFjsSource = (data: Js.Typed_array.Int8Array.t) =>
+  BsPdfjs.Document.Source.TypedArray({"data": data});
+
+/**
+ * converts fetch arrayBuffer to an Int8Array **TypedArray**
+ */
+let toTypedArray = arrayBuffer => arrayBuffer |> toTypedArray;

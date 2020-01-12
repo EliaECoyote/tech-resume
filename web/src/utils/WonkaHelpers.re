@@ -29,3 +29,6 @@ let fromPromise = (promise: Js.Promise.t('a)) => {
     (.) => cancelled := true;
   });
 };
+
+let getEffectCleanup = (subscription: Wonka_types.subscriptionT) =>
+  Some(subscription.unsubscribe);

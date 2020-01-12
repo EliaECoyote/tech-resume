@@ -73,7 +73,7 @@ let make = () => {
       |> Wonka.subscribe((. text) =>
            React.Ref.setCurrent(editorTextRef, text)
          )
-      |> (subscription => Some(subscription.unsubscribe)),
+      |> WonkaHelpers.getEffectCleanup,
     [|editorTextSource|],
   );
 
@@ -92,7 +92,7 @@ let make = () => {
              | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
              }
            )
-        |> (subscription => Some(subscription.unsubscribe))
+        |> WonkaHelpers.getEffectCleanup
       | _ => None
       },
     (state, sendEvent),
