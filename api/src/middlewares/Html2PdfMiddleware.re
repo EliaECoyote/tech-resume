@@ -3,8 +3,6 @@ type html2pdfResult('a) =
   | PdfConversionFailure
   | PdfConversionSuccess('a);
 
-external toNodeBuffer: Fetch.arrayBuffer => Node.Buffer.t = "%identity";
-
 let html2pdf = (~html=?, ()) =>
   switch (html) {
   | Some(html) =>
@@ -54,7 +52,7 @@ let middleware =
          | PdfConversionSuccess(value) =>
            res
            |> Express.Response.status(Express.Response.StatusCode.Ok)
-           |> Express.Response.sendBuffer(value |> toNodeBuffer)
+           |> Express.Response.sendBuffer(value |> Node.Buffer.fromString)
          }
        )
     |> Wonka.toPromise

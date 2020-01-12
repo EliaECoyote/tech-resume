@@ -5,4 +5,4 @@ let fetchPdfConversion = (~html) =>
     (),
   )
   |> HttpClient.get(~resource=_)
-  |> Wonka.mergeMap((. value) => HttpClient.toArrayBuffer(value));
+  |> Wonka.mergeMap((. value) => HttpClient.toText(value));
