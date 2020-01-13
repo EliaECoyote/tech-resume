@@ -25,6 +25,7 @@
     "wonka",
     "bs-fetch",
     "bs-css",
+    "bs-webapi",
     "bs-pdfjs"
   ],
   "bs-dev-dependencies": [
