@@ -52,7 +52,13 @@ let middleware =
          | PdfConversionSuccess(value) =>
            res
            |> Express.Response.status(Express.Response.StatusCode.Ok)
-           |> Express.Response.sendBuffer(value |> Node.Buffer.fromString)
+           |> Express.Response.setHeader(
+                "Content-Type",
+                "application/octet-stream",
+              )
+           |> Express.Response.sendBuffer(
+                Node.Buffer.fromStringWithEncoding(value, `binary),
+              )
          }
        )
     |> Wonka.toPromise

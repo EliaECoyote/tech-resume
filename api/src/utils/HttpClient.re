@@ -178,4 +178,16 @@ let to_ =
 
 let toJson = to_(Fetch.Response.json);
 let toText = to_(Fetch.Response.text);
+
 let toArrayBuffer = to_(Fetch.Response.arrayBuffer);
+/*
+fetch('https://assets-cdn.github.com/images/modules/logos_page/Octocat.png')
+    .then(res => {
+        const dest = fs.createWriteStream('./octocat.png');
+        res.body.pipe(dest);
+    });
+*/
+external responseWriteStream: Fetch.response => unit = [%bs.raw
+  {| res => res.buffer().then(a => console.warn("bufferrr::::", typeof a)) |}
+];
+let toWriteStream = to_(Fetch.Response.)

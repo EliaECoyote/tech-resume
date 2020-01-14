@@ -36,7 +36,7 @@ let pdfOptions: Page.pdfOptions = {
   preferCSSPageSize: None,
 };
 
-let generatePdf = html => {
+let generatePdf = html =>
   Puppeteer.launch(~options=launchOptions, ())
   |> Js.Promise.then_(browser =>
        browser
@@ -52,6 +52,7 @@ let generatePdf = html => {
        page
        |> Page.pdf(_, pdfOptions)
        |> Js.Promise.then_(pdfBuffer =>
+        pdfBuffer|> Node.Buffer.toString
             Js.Promise.resolve((browser, pdfBuffer))
           )
      )
@@ -61,7 +62,6 @@ let generatePdf = html => {
        |> Js.Promise.then_(() => Js.Promise.resolve(pdfBuffer))
      )
   |> WonkaHelpers.fromPromise;
-};
 
 let middleware =
   Express.PromiseMiddleware.from((_, req, res) =>
