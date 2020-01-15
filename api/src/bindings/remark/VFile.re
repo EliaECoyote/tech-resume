@@ -1,7 +1,7 @@
 [@bs.deriving abstract]
 type vFileOptions = {
   [@bs.optional]
-  contents: StringBuffer.t,
+  contents: NodeHelper.StringBuffer.t,
   [@bs.optional]
   path: string,
   [@bs.optional]
@@ -25,7 +25,7 @@ type vFile = {
   /**
    * Raw value.
    */
-  contents: StringBuffer.t,
+  contents: NodeHelper.StringBuffer.t,
   /**
    * Base of `path`.
    * Defaults to `process.cwd()`.
@@ -65,4 +65,4 @@ type vFile = {
 };
 
 let contentsGet = (vFile: vFile) =>
-  contentsGet(vFile)->StringBuffer.getStringValue;
+  vFile |> contentsGet |> NodeHelper.StringBuffer.getStringValue;

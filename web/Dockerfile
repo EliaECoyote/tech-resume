@@ -2,13 +2,9 @@ FROM gcr.io/tech-resume/bs-node:latest as builder
 
 ARG GATSBY_API_SCHEME
 ARG GATSBY_API_HOST
-ARG GATSBY_PDFGEN_SCHEME
-ARG GATSBY_PDFGEN_HOST
 
 ENV GATSBY_API_SCHEME=$GATSBY_API_SCHEME
 ENV GATSBY_API_HOST=$GATSBY_API_HOST
-ENV GATSBY_PDFGEN_SCHEME=$GATSBY_PDFGEN_SCHEME
-ENV GATSBY_PDFGEN_HOST=$GATSBY_PDFGEN_HOST
 ENV APPDIR=/home/node/app
 # As described by gatsby docs
 # https://www.gatsbyjs.org/docs/environment-variables/#build-variables

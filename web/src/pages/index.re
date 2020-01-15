@@ -38,19 +38,17 @@ module Styles = {
     style([
       margin4(~top=`zero, ~right=`px(10), ~bottom=`zero, ~left=`zero),
     ]);
-  let outputContent =
-    style([width(`percent(100.0)), height(`percent(100.0))]);
 };
 
-type status =
+type status('data) =
   | Idle
   | Fetching
   | Error
-  | Success(string);
+  | Success('data);
 
-type events =
+type events('data) =
   | LoadData
-  | LoadSuccess(string)
+  | LoadSuccess('data)
   | LoadFailed;
 
 let reducer = (~state, ~event) =>
@@ -66,39 +64,35 @@ let make = () => {
   let (editorRef, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
   let (themeState, _) = React.useContext(ThemeContext.context);
-  let iframeRef = React.useRef(Js.Nullable.null);
   let editorTextRef = React.useRef("");
 
   // *editorRef* value updates handling
   React.useEffect1(
-    () => {
-      let subscription =
-        editorTextSource
-        |> Wonka.subscribe((. text) =>
-             React.Ref.setCurrent(editorTextRef, text)
-           );
-      Some(subscription.unsubscribe);
-    },
+    () =>
+      editorTextSource
+      |> Wonka.subscribe((. text) =>
+           React.Ref.setCurrent(editorTextRef, text)
+         )
+      |> WonkaHelpers.getEffectCleanup,
     [|editorTextSource|],
   );
 
-  // html conversion api handling
+  // md2pdf conversion api handling
   React.useEffect2(
     () =>
       switch (state) {
       | Fetching =>
-        let subscription =
-          editorTextRef
-          |> React.Ref.current
-          |> Apis.fetchHtmlConversion(~md=_)
-          |> Wonka.subscribe((. value) =>
-               switch (value) {
-               | HttpClient.Ok(html) => sendEvent(LoadSuccess(html))
-               | HttpClient.Failure
-               | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
-               }
-             );
-        Some(subscription.unsubscribe);
+        editorTextRef
+        |> React.Ref.current
+        |> Apis.fetchPdfData(~md=_)
+        |> Wonka.subscribe((. value) =>
+             switch (value) {
+             | HttpClient.Ok(data) => sendEvent(LoadSuccess(data))
+             | HttpClient.Failure
+             | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
+             }
+           )
+        |> WonkaHelpers.getEffectCleanup
       | _ => None
       },
     (state, sendEvent),
@@ -108,14 +102,6 @@ let make = () => {
     if (state !== Fetching) {
       sendEvent(LoadData);
     };
-
-  let outputContent =
-    switch (state) {
-    | Success(value) => Some(value)
-    | _ => None
-    };
-
-  let html = Belt.Option.getWithDefault(outputContent, "");
 
   <div className=Styles.app>
     <div className=Styles.editorHeader>
@@ -132,17 +118,17 @@ let make = () => {
         className=Styles.outputTool>
         {React.string("Refresh")}
       </Button>
-      <Link
-        download=true
-        href={Url.make(
-          ~scheme=Config.pdfgenScheme,
-          ~host=Config.pdfgenHost,
-          ~path="",
-          ~qsComponents=[|("html", html)|],
-          (),
-        )}>
-        {React.string("Download")}
-      </Link>
+      // <Link
+      //   download=true
+      //   href={Url.make(
+      //     ~scheme=Config.pdfgenScheme,
+      //     ~host=Config.pdfgenHost,
+      //     ~path="",
+      //     ~qsComponents=[|("html", html)|],
+      //     (),
+      //   )}>
+      //   {React.string("Download")}
+      // </Link>
       <span>
         {switch (state) {
          | Success(_) => React.string("Data loaded successfully!")
@@ -152,13 +138,15 @@ let make = () => {
          }}
       </span>
     </div>
-    <div className=Styles.output>
-      <iframe
-        className=Styles.outputContent
-        srcDoc=?outputContent
-        ref={ReactDOMRe.Ref.domRef(iframeRef)}
-      />
-    </div>
+    <Output
+      className=Styles.output
+      pdf=?{
+        switch (state) {
+        | Success(data) => Some(data)
+        | _ => None
+        }
+      }
+    />
   </div>;
 };
 

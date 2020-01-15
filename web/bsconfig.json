@@ -24,7 +24,9 @@
     "reason-react",
     "wonka",
     "bs-fetch",
-    "bs-css"
+    "bs-css",
+    "bs-webapi",
+    "bs-pdfjs"
   ],
   "bs-dev-dependencies": [
     "@glennsl/bs-jest"

@@ -10,8 +10,6 @@ services:
   web:
     # truthy *tty* is necessary in order to get colored bsb output
     tty: true
-    env_file:
-      - .env
     command: sh ./scripts/startup.sh
     container_name: web
     build:
@@ -20,8 +18,6 @@ services:
       args:
         - GATSBY_API_SCHEME=http
         - GATSBY_API_HOST=127.0.0.1:3000
-        - GATSBY_PDFGEN_SCHEME=http
-        - GATSBY_PDFGEN_HOST=127.0.0.1:4000
     volumes:
       - ./web/src:/home/node/app/src:delegated
       - ./web/scripts:/home/node/app/scripts:delegated
@@ -44,8 +40,6 @@ services:
     environment:
       # note: Networked service-to-service communication use the CONTAINER_PORT
       - ENDPOINT_PDFGEN=http://pdfgen:4000
-    env_file:
-      - .env
     depends_on:
       - pdfgen
     command: sh ./scripts/startup.sh
@@ -67,8 +61,6 @@ services:
     privileged: true
     environment:
       - PORT=4000
-    env_file:
-      - .env
     command: sh ./scripts/startup.sh
     build:
       context: ./pdfgen

@@ -1,4 +1,4 @@
-let fetchHtmlConversion = (~md) =>
+let fetchPdfData = (~md) =>
   Url.make(
     ~scheme=Config.apiScheme,
     ~host=Config.apiHost,
@@ -7,4 +7,4 @@ let fetchHtmlConversion = (~md) =>
     (),
   )
   |> HttpClient.get(~resource=_)
-  |> Wonka.mergeMap((. value) => HttpClient.toText(value));
+  |> Wonka.mergeMap((. value) => HttpClient.toArrayBuffer(value));

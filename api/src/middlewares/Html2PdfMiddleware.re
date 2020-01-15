@@ -3,7 +3,7 @@ type html2pdfResult('a) =
   | PdfConversionFailure
   | PdfConversionSuccess('a);
 
-let html2pdf = (html: option(string)) =>
+let html2pdf = (~html=?, ()) =>
   switch (html) {
   | Some(html) =>
     Apis.fetchPdfConversion(~html)
@@ -28,10 +28,11 @@ let middleware =
     Wonka.fromValue(req)
     |> Wonka.map((. req) =>
          Express.Request.asJsonObject(req)
+         // grabs html template from the request object
          |> Js.Dict.get(_, "html")
          |> Belt.Option.flatMap(_, Js.Json.decodeString)
        )
-    |> Wonka.mergeMap((. html) => html2pdf(html))
+    |> Wonka.mergeMap((. html) => html2pdf(~html?, ()))
     |> Wonka.map((. result) =>
          switch (result) {
          | HtmlNotFound =>
@@ -51,7 +52,11 @@ let middleware =
          | PdfConversionSuccess(value) =>
            res
            |> Express.Response.status(Express.Response.StatusCode.Ok)
-           |> Express.Response.sendBuffer(value |> Node.Buffer.fromString)
+           |> Express.Response.setHeader(
+                "Content-Type",
+                "application/octet-stream",
+              )
+           |> Express.Response.sendBuffer(value)
          }
        )
     |> Wonka.toPromise

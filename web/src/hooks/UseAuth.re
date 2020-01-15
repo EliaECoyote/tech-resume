@@ -33,12 +33,10 @@ let hook = () => {
       // https://firebase.google.com/docs/auth/web/github-auth#handle_the_sign-in_flow_with_the_firebase_sdk
       let _provider = Firebase.GithubAuthProvider.make();
 
-      let subscription =
-        Firebase.Auth.make()
-        |> Firebase.Auth.authStateChange
-        |> Wonka.subscribe((. event) => sendEvent(event));
-
-      Some(subscription.unsubscribe);
+      Firebase.Auth.make()
+      |> Firebase.Auth.authStateChange
+      |> Wonka.subscribe((. event) => sendEvent(event))
+      |> WonkaHelpers.getEffectCleanup;
     },
     [|sendEvent|],
   );
