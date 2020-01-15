@@ -113,11 +113,11 @@ let fetchWrapper = (~resource: string, ~requestInit: Fetch.requestInit) => {
              ? Ok(res)->observerNext
              : {
                res
-               ->Fetch.Response.status
-               ->StatusCode.fromInt
-               ->Belt.Option.map(code => FailureCode(code))
-               ->Belt.Option.getWithDefault(Failure)
-               ->observerNext;
+               |> Fetch.Response.status
+               |> StatusCode.fromInt
+               |> Belt.Option.map(_, code => FailureCode(code))
+               |> Belt.Option.getWithDefault(_, Failure)
+               |> observerNext;
              };
            observerComplete();
            Js.Promise.resolve();
@@ -178,16 +178,7 @@ let to_ =
 
 let toJson = to_(Fetch.Response.json);
 let toText = to_(Fetch.Response.text);
-
 let toArrayBuffer = to_(Fetch.Response.arrayBuffer);
-/*
-fetch('https://assets-cdn.github.com/images/modules/logos_page/Octocat.png')
-    .then(res => {
-        const dest = fs.createWriteStream('./octocat.png');
-        res.body.pipe(dest);
-    });
-*/
-external responseWriteStream: Fetch.response => unit = [%bs.raw
-  {| res => res.buffer().then(a => console.warn("bufferrr::::", typeof a)) |}
-];
-let toWriteStream = to_(Fetch.Response.)
+[@bs.send]
+external toBuffer: Fetch.Response.t => Js.Promise.t(Node.Buffer.t) = "buffer";
+let toBuffer = to_(toBuffer);

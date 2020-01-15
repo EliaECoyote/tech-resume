@@ -56,9 +56,7 @@ let middleware =
                 "Content-Type",
                 "application/octet-stream",
               )
-           |> Express.Response.sendBuffer(
-                Node.Buffer.fromStringWithEncoding(value, `binary),
-              )
+           |> Express.Response.sendBuffer(value)
          }
        )
     |> Wonka.toPromise

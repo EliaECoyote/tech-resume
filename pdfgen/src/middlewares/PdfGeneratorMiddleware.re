@@ -52,7 +52,6 @@ let generatePdf = html =>
        page
        |> Page.pdf(_, pdfOptions)
        |> Js.Promise.then_(pdfBuffer =>
-        pdfBuffer|> Node.Buffer.toString
             Js.Promise.resolve((browser, pdfBuffer))
           )
      )
