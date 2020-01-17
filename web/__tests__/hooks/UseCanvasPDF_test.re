@@ -19,15 +19,28 @@ module TestData = {
     |> PdfJSHelpers.toPDFjsSource;
 };
 
-beforeAll(() => {
-  %bs.raw
-  {|(() => {
-    const pdfjsWorker = require("pdfjs-dist/build/pdf.worker.entry");
-    const pdfjs = require("pdfjs-dist/build/pdf");
-    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-    })()
+beforeAll(
+  [%bs.raw
+    {|
+    () => {
+      const pdfjsWorker = require("pdfjs-dist/build/pdf.worker.entry");
+      const pdfjs = require("pdfjs-dist/build/pdf");
+      pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+    }
   |}
-});
+  ],
+);
+
+afterAll(
+  [%bs.raw
+    {|
+    () => {
+      const pdfjs = require("pdfjs-dist/build/pdf");
+      pdfjs.GlobalWorkerOptions.workerSrc = undefined;
+    }
+  |}
+  ],
+);
 
 describe("pdf document loading", () => {
   testAsync(
