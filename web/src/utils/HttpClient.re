@@ -63,6 +63,11 @@ module StatusCode = {
   let toInt = tToJs;
 };
 
+module Convert = {
+  external toTypedArray: Fetch.arrayBuffer => Js_typed_array.Int8Array.t =
+    "%identity";
+};
+
 type result('kind) =
   | Ok('kind)
   | FailureCode(StatusCode.t)
@@ -176,4 +181,15 @@ let baseConverter =
 
 let toJson = baseConverter(Fetch.Response.json);
 let toText = baseConverter(Fetch.Response.text);
-let toArrayBuffer = baseConverter(Fetch.Response.arrayBuffer);
+let toArrayBuffer = response =>
+  response
+  |> baseConverter(Fetch.Response.arrayBuffer)
+  |> Wonka.map((. result) => {
+       switch (result) {
+       | Ok(value) =>
+         let typedArray = Convert.toTypedArray(value);
+         Ok(typedArray);
+       | FailureCode(status) => FailureCode(status)
+       | Failure => Failure
+       }
+     });

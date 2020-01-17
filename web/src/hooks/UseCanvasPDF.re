@@ -1,11 +1,17 @@
 module Types = {
-  type pdf = option(Fetch.arrayBuffer);
+  type pdf = option(Js.Typed_array.Int8Array.t);
   type canvasRef = React.Ref.t(Js.Nullable.t(Dom.element));
   type documentResult = Belt.Result.t(BsPdfjs.Document.t, Js.Exn.t);
 };
 
 module PDFLoader = {
-  let loadFromDocumentResult = documentResult =>
+  let loadPDFDocument = source =>
+    source
+    |> BsPdfjs.Global.getDocument(_, BsPdfjs.Global.inst)
+    |> BsPdfjs.Global.DocumentLoadingTask.promise
+    |> WonkaHelpers.fromPromise;
+
+  let loadPDFPage = documentResult =>
     switch (documentResult) {
     | Belt.Result.Ok(page) =>
       page
@@ -26,28 +32,23 @@ module PDFLoader = {
       |> Wonka.fromValue
     };
 
-  let load = (pdf: Fetch.arrayBuffer) =>
-    Wonka.fromValue(pdf)
-    |> Wonka.map((. pdf) =>
-         pdf
-         // converts buffer to PDFjs source element
-         |> PdfJSHelpers.toTypedArray
-         |> PdfJSHelpers.toPDFjsSource
-       )
-    |> Wonka.switchMap((. source) =>
-         source
+  let load = pdfData =>
+    Wonka.fromValue(pdfData)
+    |> Wonka.map((. pdfData)
+         // converts pdf typedArray to PDFjs source element
+         => PdfJSHelpers.toPDFjsSource(pdfData))
+    |> Wonka.switchMap((. source)
          // uses PDFjs source to load the pdf data
-         |> BsPdfjs.Global.getDocument(_, BsPdfjs.Global.inst)
-         |> BsPdfjs.Global.DocumentLoadingTask.promise
-         |> WonkaHelpers.fromPromise
-       )
+         => loadPDFDocument(source))
     |> Wonka.switchMap((. documentResult)
          // loads pdf page from documentResult
-         => loadFromDocumentResult(documentResult));
+         => loadPDFPage(documentResult));
 };
 
 module PDFRenderer = {
   let renderInCanvas = (~canvasElement, page) => {
+    // var viewport = page.getViewport(canvas.width / page.getViewport(1.0).width);
+    // canvas.height = viewport.height;
     let scale = BsPdfjs.Viewport.ScalePageFit;
     let viewportParams =
       BsPdfjs.Page.viewportParams(~scale=1.0, ~rotate=1.0, ());
@@ -88,9 +89,11 @@ let hook = (~pdf: Types.pdf, ~canvasRef: Types.canvasRef) => {
     () =>
       pdf
       |> Belt.Option.flatMap(_, pdf =>
-           pdf
-           |> PDFLoader.load
-           |> PDFRenderer.render(canvasRef)
+           Wonka.fromValue(pdf)
+           |> Wonka.switchMap((. pdf) => PDFLoader.load(pdf))
+           |> Wonka.switchMap((. pageResult) =>
+                PDFRenderer.render(canvasRef, pageResult)
+              )
            |> Wonka.subscribe((. result) => Js.log(result))
            |> WonkaHelpers.getEffectCleanup
          ),
