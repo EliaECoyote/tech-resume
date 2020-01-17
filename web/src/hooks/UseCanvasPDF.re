@@ -51,7 +51,7 @@ module PDFRenderer = {
     // canvas.height = viewport.height;
     let scale = BsPdfjs.Viewport.ScalePageFit;
     let viewportParams =
-      BsPdfjs.Page.viewportParams(~scale=1.0, ~rotate=1.0, ());
+      BsPdfjs.Page.viewportParams(~scale=1.0, ~rotate=0.0, ());
     let viewport = BsPdfjs.Page.getViewport(page, viewportParams);
     BsPdfjs.Viewport.convertToViewportPoint(50.0, 50.0);
     let canvasContext =

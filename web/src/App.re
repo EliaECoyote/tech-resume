@@ -5,7 +5,8 @@ module Styles = {
     style([
       display(`grid),
       height(`vh(100.0)),
-      gridTemplateRows([`px(50), `vh(100.0)]),
+      padding(`px(8)),
+      gridTemplateRows([`px(50), `fr(1.0)]),
       gridTemplateAreas(`areas(["header", "content"])),
       gridRowGap(`px(10)),
     ]);
@@ -21,10 +22,11 @@ module AppContent = {
     let primary = Css.Types.Color.toString(state.colors.primary);
     let globalStyle = {j|
       body {
+        margin: 0;
         color: $primary;
         background-color: $background;
         font-family: 'Montserrat', sans-serif;
-        transition: color, background-color 0.3s
+        transition: color, background-color 0.3s;
       }
       * { box-sizing: border-box; }
     |j};
