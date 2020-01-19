@@ -10,8 +10,8 @@ yarn-debug.log*
 lib
 .merlin
 .bsb.lock
-web/src/**/*.js
-web/__tests__/**/*.js
+**/src/**/*.js
+**/__tests__/**/*.js
 
 # Dependency directories
 node_modules/
