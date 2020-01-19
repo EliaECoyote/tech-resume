@@ -80,7 +80,7 @@ run-cmd:
 # Actions
 ## - actions that will affect containers
 serve:
-	@make SERVICE=$(SERVICE) DC_ACTION=up run-docker-cmd
+	@make SERVICE=$(SERVICE) DC_ACTION="run --service-ports --rm" ARGS="sh scripts/startup.sh" run-docker-cmd
 
 build-image:
 	@make SERVICE=$(SERVICE) DC_ACTION=build run-docker-cmd
