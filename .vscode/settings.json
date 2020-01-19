@@ -5,7 +5,7 @@
     "web/src/**/*.js": true,
     "**/.cache": true,
     "**/lib": true,
-    "**/public": true,
+    "**/public": true
   },
   "eslint.enable": false,
   "reason_language_server.autoRebuild": false
