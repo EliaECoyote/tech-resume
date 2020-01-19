@@ -68,3 +68,5 @@ let base64ToString = b64 => {
   | value => Ok(value)
   };
 };
+
+[@bs.val] external devicePixelRatio: option(float) = "devicePixelRatio";

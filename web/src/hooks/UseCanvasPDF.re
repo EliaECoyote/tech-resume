@@ -4,6 +4,25 @@ module Types = {
   type documentResult = Belt.Result.t(BsPdfjs.Document.t, Js.Exn.t);
 };
 
+module CanvasResizer = {
+  let resize = (canvasElement, viewport) => {
+    let devicePixelRatio =
+      Global.devicePixelRatio |> Belt.Option.getWithDefault(_, 1.0);
+    let backingStoreRatio =
+      canvasElement
+      |> Webapi.Canvas.CanvasElement.getContext2d
+      |> Canvas2dHelper.getContextPixelRatio;
+    let pixelRatio = devicePixelRatio /. backingStoreRatio;
+    let newWidth = BsPdfjs.Viewport.width(viewport) |> Js.Math.floor_float;
+    let newHeight = BsPdfjs.Viewport.height(viewport) |> Js.Math.floor_float;
+    let scaleWidth = newWidth *. pixelRatio;
+    let scaleHeight = newHeight *. pixelRatio;
+    DomHelpers.setHeightFloat(canvasElement, scaleHeight);
+    DomHelpers.setWidthFloat(canvasElement, scaleWidth);
+    Js.log(("resizing....", canvasElement, scaleWidth, scaleHeight));
+  };
+};
+
 module PDFLoader = {
   let loadPDFDocument = source =>
     source
@@ -47,13 +66,9 @@ module PDFLoader = {
 
 module PDFRenderer = {
   let renderInCanvas = (~canvasElement, page) => {
-    // var viewport = page.getViewport(canvas.width / page.getViewport(1.0).width);
-    // canvas.height = viewport.height;
-    let scale = BsPdfjs.Viewport.ScalePageFit;
     let viewportParams =
       BsPdfjs.Page.viewportParams(~scale=1.0, ~rotate=0.0, ());
     let viewport = BsPdfjs.Page.getViewport(page, viewportParams);
-    BsPdfjs.Viewport.convertToViewportPoint(50.0, 50.0);
     let canvasContext =
       Webapi.Canvas.CanvasElement.getContext2d(canvasElement);
     page
@@ -63,9 +78,9 @@ module PDFRenderer = {
     |> WonkaHelpers.Result.tapLogError(~message="[Pdf render]")
     |> Wonka.map((. result) =>
          switch (result) {
-         | Belt.Result.Error(error) =>
+         | Belt.Result.Error(_error) =>
            Belt.Result.Error("Something went wrong during PDF page render")
-         | Belt.Result.Ok(data) => Belt.Result.Ok(data)
+         | Belt.Result.Ok(_) => Belt.Result.Ok(viewport)
          }
        );
   };
@@ -87,16 +102,52 @@ module PDFRenderer = {
 let hook = (~pdf: Types.pdf, ~canvasRef: Types.canvasRef) => {
   React.useEffect1(
     () =>
-      pdf
-      |> Belt.Option.flatMap(_, pdf =>
-           Wonka.fromValue(pdf)
-           |> Wonka.switchMap((. pdf) => PDFLoader.load(pdf))
-           |> Wonka.switchMap((. pageResult) =>
-                PDFRenderer.render(canvasRef, pageResult)
-              )
-           |> Wonka.subscribe((. result) => Js.log(result))
-           |> WonkaHelpers.getEffectCleanup
-         ),
+      switch (pdf) {
+      | Some(pdf) =>
+        Wonka.fromValue(pdf)
+        |> Wonka.switchMap((. pdf) => PDFLoader.load(pdf))
+        |> Wonka.switchMap((. pageResult) =>
+             PDFRenderer.render(canvasRef, pageResult)
+           )
+        |> Wonka.subscribe((. result) => {
+             let canvasElement =
+               React.Ref.current(canvasRef) |> Js.Nullable.toOption;
+             switch (canvasElement, result) {
+             | (Some(canvasElement), Belt.Result.Ok(viewport)) =>
+               CanvasResizer.resize(canvasElement, viewport)
+             // TODO: this should be notified to the user as a toast or similar
+             | (_, Belt.Result.Error(errorMsg)) =>
+               Js.Console.error(errorMsg)
+             // TODO: this should be notified to the user as a toast or similar
+             | (None, _) => Js.Console.error("canvas element not found")
+             };
+           })
+        |> WonkaHelpers.getEffectCleanup
+      | None => None
+      },
     [|pdf|],
   );
+  ();
 };
+/*
+ const devicePixelRatio = window.devicePixelRatio || 1
+
+ const ctx = canvas[0].getContext('2d')
+ const backingStoreRatio =
+   ctx.webkitBackingStorePixelRatio ||
+   ctx.mozBackingStorePixelRatio ||
+   ctx.msBackingStorePixelRatio ||
+   ctx.oBackingStorePixelRatio ||
+   ctx.backingStorePixelRatio ||
+   1
+ const pixelRatio = devicePixelRatio / backingStoreRatio
+
+ const scaledWidth = (Math.floor(viewport.width) * pixelRatio) | 0
+ const scaledHeight = (Math.floor(viewport.height) * pixelRatio) | 0
+
+ const newWidth = Math.floor(viewport.width)
+ const newHeight = Math.floor(viewport.height)
+
+ canvas[0].height = scaledHeight
+ canvas[0].width = scaledWidth
+ */
