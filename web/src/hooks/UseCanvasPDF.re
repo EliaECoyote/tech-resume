@@ -17,13 +17,32 @@ module CanvasResizer = {
     let newHeight = BsPdfjs.Viewport.height(viewport) |> Js.Math.floor_float;
     let scaleWidth = newWidth *. pixelRatio;
     let scaleHeight = newHeight *. pixelRatio;
-    ();
+    Js.log(("pdf rateos: ", devicePixelRatio, backingStoreRatio, pixelRatio));
     Js.log(("pdf sizes:", newWidth, newHeight));
     DomHelpers.setHeightFloat(canvasElement, scaleHeight);
     DomHelpers.setWidthFloat(canvasElement, scaleWidth);
     canvasContext
     |> Webapi.Canvas.Canvas2d.scale(~x=devicePixelRatio, ~y=devicePixelRatio);
     Js.log(("resizing....", canvasElement, scaleWidth, scaleHeight));
+  };
+
+  let getCanvasHeight = (pdfWidth, pdfHeight, canvasWidth) =>
+    pdfHeight *. canvasWidth /. pdfWidth;
+
+  let getScale = (canvasWidth, pdfWidth) => canvasWidth /. pdfWidth;
+
+  let resize = (~canvasElement, ~canvasContext, ~viewport) => {
+    let pdfWidth = BsPdfjs.Viewport.width(viewport) |> Js.Math.floor_float;
+    let pdfHeight = BsPdfjs.Viewport.height(viewport) |> Js.Math.floor_float;
+    let canvasWidth =
+      canvasElement
+      |> Webapi.Dom.Element.unsafeAsHtmlElement
+      |> Webapi.Dom.HtmlElement.offsetWidth
+      |> float_of_int;
+    let canvasHeight = getCanvasHeight(pdfWidth, pdfHeight, canvasWidth);
+    let scale = getScale(canvasWidth, pdfWidth);
+    DomHelpers.setHeightFloat(canvasElement, canvasHeight);
+    Webapi.Canvas.Canvas2d.scale(~x=scale, ~y=scale, canvasContext);
   };
 };
 
