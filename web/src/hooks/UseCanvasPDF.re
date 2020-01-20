@@ -5,7 +5,7 @@ module Types = {
 };
 
 module CanvasResizer = {
-  let resize = (canvasElement, viewport) => {
+  let resize = (~canvasElement, ~canvasContext, ~viewport) => {
     let devicePixelRatio =
       Global.devicePixelRatio |> Belt.Option.getWithDefault(_, 1.0);
     let backingStoreRatio =
@@ -17,8 +17,12 @@ module CanvasResizer = {
     let newHeight = BsPdfjs.Viewport.height(viewport) |> Js.Math.floor_float;
     let scaleWidth = newWidth *. pixelRatio;
     let scaleHeight = newHeight *. pixelRatio;
+    ();
+    Js.log(("pdf sizes:", newWidth, newHeight));
     DomHelpers.setHeightFloat(canvasElement, scaleHeight);
     DomHelpers.setWidthFloat(canvasElement, scaleWidth);
+    canvasContext
+    |> Webapi.Canvas.Canvas2d.scale(~x=devicePixelRatio, ~y=devicePixelRatio);
     Js.log(("resizing....", canvasElement, scaleWidth, scaleHeight));
   };
 };
@@ -71,6 +75,7 @@ module PDFRenderer = {
     let viewport = BsPdfjs.Page.getViewport(page, viewportParams);
     let canvasContext =
       Webapi.Canvas.CanvasElement.getContext2d(canvasElement);
+    CanvasResizer.resize(~canvasElement, ~canvasContext, ~viewport);
     page
     |> BsPdfjs.Page.render(_, ~canvasContext, ~viewport, ~transform=None)
     |> BsPdfjs.RenderTask.promise
@@ -114,7 +119,8 @@ let hook = (~pdf: Types.pdf, ~canvasRef: Types.canvasRef) => {
                React.Ref.current(canvasRef) |> Js.Nullable.toOption;
              switch (canvasElement, result) {
              | (Some(canvasElement), Belt.Result.Ok(viewport)) =>
-               CanvasResizer.resize(canvasElement, viewport)
+               Js.log("subscribing....")
+             //  CanvasResizer.resize(canvasElement, viewport)
              // TODO: this should be notified to the user as a toast or similar
              | (_, Belt.Result.Error(errorMsg)) =>
                Js.Console.error(errorMsg)
