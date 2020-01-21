@@ -34,7 +34,7 @@ module Styles = {
 module type FirebaseUIType = {include (module type of FirebaseUI);};
 
 let dynamicImportFirebaseUI: unit => Js.Promise.t(module FirebaseUIType) = [%bs.raw
-  {| () => import("../../bindings/FirebaseUI.js") |}
+  {| () => import("../../bindings/FirebaseUI.bs.js") |}
 ];
 
 let loginUIElementID = "auth";

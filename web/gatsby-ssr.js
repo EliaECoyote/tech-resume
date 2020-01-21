@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import App from './src/App';
+import App from './lib/js/src/App.bs'
 import { renderToString } from "react-dom/server"
 import { renderStylesToString } from 'emotion-server'
 

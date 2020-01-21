@@ -1,6 +1,6 @@
 module.exports = {
   verbose: true,
   testMatch: [
-    "<rootDir>/__tests__/**/*_test.js"
+    "<rootDir>/lib/js/__tests__/**/*_test.bs.js"
   ]
 }

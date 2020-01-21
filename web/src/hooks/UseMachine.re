@@ -27,9 +27,9 @@ let getMextState = (reducer, state, event) => {
   | Ignored => state
   | Invalid(reason) =>
     // right now the only action taken when an invalid
-    // event occurs is loggin. In the future this can
+    // event occurs is logging. In the future this can
     // be tracked in different ways
-    Js.log(reason);
+    Js.Console.error2("[useMachine]", reason);
     state;
   };
 };

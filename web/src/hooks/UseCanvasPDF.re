@@ -93,7 +93,7 @@ module PDFRenderer = {
          switch (result) {
          | Belt.Result.Error(_error) =>
            Belt.Result.Error("Something went wrong during PDF page render")
-         | Belt.Result.Ok(_) => Belt.Result.Ok(viewport)
+         | Belt.Result.Ok(_) => Belt.Result.Ok()
          }
        );
   };
@@ -123,18 +123,11 @@ let hook = (~pdf: Types.pdf, ~canvasRef: Types.canvasRef) => {
              PDFRenderer.render(canvasRef, pageResult)
            )
         |> Wonka.subscribe((. result) => {
-             let canvasElement =
-               React.Ref.current(canvasRef) |> Js.Nullable.toOption;
-             switch (canvasElement, result) {
-             | (Some(canvasElement), Belt.Result.Ok(viewport)) =>
-               Js.log("subscribing....")
-             //  CanvasResizer.resize(canvasElement, viewport)
+             switch (result) {
+             | Belt.Result.Ok(_) => ()
              // TODO: this should be notified to the user as a toast or similar
-             | (_, Belt.Result.Error(errorMsg)) =>
-               Js.Console.error(errorMsg)
-             // TODO: this should be notified to the user as a toast or similar
-             | (None, _) => Js.Console.error("canvas element not found")
-             };
+             | Belt.Result.Error(errorMsg) => Js.Console.error(errorMsg)
+             }
            })
         |> WonkaHelpers.getEffectCleanup
       | None => None
