@@ -5,7 +5,7 @@
  */
 
 import React from 'react'
-import App from './src/App'
+import App from './lib/js/src/App'
 
 export const wrapPageElement = ({ element }) => {
   return <App>{element}</App>

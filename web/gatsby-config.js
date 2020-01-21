@@ -1,11 +1,11 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    title: `Tech resume`,
+    description: `Create and mantain your resume in markdown syntax. Kick off your career by using curriculum vitae templates.`,
+    author: `@EliaECoyote`,
   },
   plugins: [
-    `gatsby-plugin-react-helmet`,
+    // `gatsby-plugin-react-helmet`,
     // {
     //   resolve: `gatsby-source-filesystem`,
     //   options: {
@@ -13,8 +13,25 @@ module.exports = {
     //     path: `${__dirname}/src/images`,
     //   },
     // },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
+  
+    // ignore all pages declared in src/pages
+    {
+      resolve: `gatsby-plugin-page-creator`,
+      options: {
+        path: `${__dirname}/src/pages`,
+        ignore: {
+          patterns: [`**/*.(js|ts)?(x)`],
+        },
+      },
+    },
+    // use bucklescript-created pages inside the
+    // **lib** compilation folder
+    {
+      resolve: `gatsby-plugin-page-creator`,
+      options: {
+        path: `${__dirname}/lib/js/src/pages`,
+      },
+    },
     // {
     //   resolve: `gatsby-plugin-manifest`,
     //   options: {

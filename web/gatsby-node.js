@@ -16,3 +16,20 @@ exports.onCreateWebpackConfig = ({
   const monacoPlugin = new MonacoWebpackPlugin({ languages: ["markdown"] })
   config.plugins = config.plugins.concat(monacoPlugin)
 }
+
+const getPathForComponent = path => {
+  switch (path) {
+    default: 
+      return path.replace(".bs.js", ".js")
+  }
+}
+
+// inspired by https://github.com/jtberglund/gatsby-plugin-reason/blob/6c2fe7c048b6dc425d2401a06aa92936523e9d0c/src/gatsby-node.js
+exports.onCreatePage = async (
+  { page: oldPage, actions: { createPage, deletePage } },
+) => {
+  const path = getPathForComponent(oldPage.path)
+  const newPage = { ...oldPage, path }
+  deletePage(oldPage)
+  createPage(newPage)
+}
