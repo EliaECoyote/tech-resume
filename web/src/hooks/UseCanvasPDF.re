@@ -127,7 +127,6 @@ let hook = (~pdf: Types.pdf, ~canvasRef: Types.canvasRef) => {
                React.Ref.current(canvasRef) |> Js.Nullable.toOption;
              switch (canvasElement, result) {
              | (Some(canvasElement), Belt.Result.Ok(viewport)) =>
-               Js.log("subscribing....")
              //  CanvasResizer.resize(canvasElement, viewport)
              // TODO: this should be notified to the user as a toast or similar
              | (_, Belt.Result.Error(errorMsg)) =>
