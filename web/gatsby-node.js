@@ -18,9 +18,15 @@ exports.onCreateWebpackConfig = ({
 }
 
 const getPathForComponent = path => {
-  switch (path) {
+  switch (true) {
+    // index pages management
+    case /.*\/index.bs\/$/.test(path):
+      return path.replace("index.bs/", "")
+    // standard page management
+    case /\.(bs.js)$/.test(path):
+      return path.replace(".bs", "")
     default: 
-      return path.replace(".bs.js", ".js")
+      return path
   }
 }
 

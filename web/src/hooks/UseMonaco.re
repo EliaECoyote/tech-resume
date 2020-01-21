@@ -1,7 +1,7 @@
 module type MonacoType = {include (module type of Monaco);};
 
 let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
-  {| () => import("../bindings/Monaco.js") |}
+  {| () => import("../bindings/Monaco.bs.js") |}
 ];
 
 /**
