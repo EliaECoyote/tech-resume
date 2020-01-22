@@ -5,33 +5,47 @@ module Types = {
 };
 
 module CanvasResizer = {
-  // calculates the canvas height by following this proportion:
-  // pdfWidth : canvasWidth = pdfHeight : canvasHeight
+  let divideFloat = (a1, a2) => a1 /. a2;
+  let multiplyFloat = (a1, a2) => a1 *. a2;
+  /**
+   * calculates the canvas height by following this proportion:
+   * pdfWidth : canvasWidth = pdfHeight : canvasHeight
+   */
   let getCanvasHeight = (pdfWidth, pdfHeight, canvasWidth) =>
     pdfHeight *. canvasWidth /. pdfWidth;
 
-  // calculates the scale by following this proportion:
-  // pdfWidth : initialScale = canvasWidth : x
-  // (the initial pdf scale is always 1)
-  let getScale = (canvasWidth, pdfWidth) => canvasWidth /. pdfWidth;
+  /**
+   * calculates the scale by following this proportion:
+   * pdfWidth : initialScale = canvasWidth : x
+   * (the initial pdf scale is always 1)
+   */
+  let getPixelRatio = (dpr, canvasContext) =>
+    canvasContext |> Canvas2dHelper.getContextPixelRatio |> divideFloat(dpr);
+
+  /**
+   * updates the canvas *logical* size with the result
+   * of the viewport dimensions * pixelRatio
+   */
+  let updateCanvasLogicalSize = (viewport, pixelRatio, canvasElement) => {
+    viewport
+    |> BsPdfjs.Viewport.width
+    |> Js.Math.floor_float
+    |> multiplyFloat(pixelRatio)
+    |> Js.Math.floor_float
+    |> DomHelpers.setWidthFloat(canvasElement);
+    viewport
+    |> BsPdfjs.Viewport.height
+    |> Js.Math.floor_float
+    |> multiplyFloat(pixelRatio)
+    |> Js.Math.floor_float
+    |> DomHelpers.setHeightFloat(canvasElement);
+  };
 
   let resize = (~canvasElement, ~canvasContext, ~viewport) => {
-    // retrieve PDF width & height from pdf viewport
-    let pdfWidth = BsPdfjs.Viewport.width(viewport) |> Js.Math.floor_float;
-    let pdfHeight = BsPdfjs.Viewport.height(viewport) |> Js.Math.floor_float;
-    let canvasWidth =
-      canvasElement
-      |> Webapi.Dom.Element.unsafeAsHtmlElement
-      |> Webapi.Dom.HtmlElement.offsetWidth
-      |> float_of_int;
-    let canvasHeight = getCanvasHeight(pdfWidth, pdfHeight, canvasWidth);
-    // updates canvasHeight by following the ratio of the pdf
-    // (aka A4 ratio, aka 1.414)
-    DomHelpers.setHeightFloat(canvasElement, canvasHeight);
-    // upscales or downscales the canvas content in order to
-    // respect the canvas size
-    let scale = getScale(canvasWidth, pdfWidth);
-    Webapi.Canvas.Canvas2d.scale(~x=scale, ~y=scale, canvasContext);
+    let dpr = Global.devicePixelRatio |> Belt.Option.getWithDefault(_, 1.0);
+    let pixelRatio = getPixelRatio(dpr, canvasContext);
+    updateCanvasLogicalSize(viewport, pixelRatio, canvasElement);
+    Webapi.Canvas.Canvas2d.scale(~x=pixelRatio, ~y=pixelRatio, canvasContext);
   };
 };
 
@@ -136,25 +150,3 @@ let hook = (~pdf: Types.pdf, ~canvasRef: Types.canvasRef) => {
   );
   ();
 };
-/*
- const devicePixelRatio = window.devicePixelRatio || 1
-
- const ctx = canvas[0].getContext('2d')
- const backingStoreRatio =
-   ctx.webkitBackingStorePixelRatio ||
-   ctx.mozBackingStorePixelRatio ||
-   ctx.msBackingStorePixelRatio ||
-   ctx.oBackingStorePixelRatio ||
-   ctx.backingStorePixelRatio ||
-   1
- const pixelRatio = devicePixelRatio / backingStoreRatio
-
- const scaledWidth = (Math.floor(viewport.width) * pixelRatio) | 0
- const scaledHeight = (Math.floor(viewport.height) * pixelRatio) | 0
-
- const newWidth = Math.floor(viewport.width)
- const newHeight = Math.floor(viewport.height)
-
- canvas[0].height = scaledHeight
- canvas[0].width = scaledWidth
- */
