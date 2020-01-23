@@ -22,6 +22,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-helmet": "^5.2.1",
+    "uuid": "^3.4.0",
     "wonka": "^3.2.2"
   },
   "keywords": [
