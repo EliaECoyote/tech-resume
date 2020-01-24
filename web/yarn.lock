@@ -6022,6 +6022,11 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
+gentype@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/gentype/-/gentype-3.10.0.tgz#df42ac24b65bcac2c5363609252fdd870e039d2c"
+  integrity sha512-NQUnbrCKLd9r1IX/BuNLPUYM/5Mg3/dNI1VvBUzM205ac314wXKt/t0WySA7euoNaPqkDmC9g96YEo79QOZ3iA==
+
 get-caller-file@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.3.tgz#f978fa4c90d1dfe7ff2d6beda2a515e713bdcf4a"
@@ -13131,10 +13136,10 @@ with-open-file@^0.1.6:
     p-try "^2.1.0"
     pify "^4.0.1"
 
-wonka@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/wonka/-/wonka-3.2.2.tgz#4d5c79fee2e6042066ba7aa86bd2f180487cc0c3"
-  integrity sha512-btmYyFDuDpJXJfELkFkoTjfyn0M+/a54/kjqt3qGN/h/90A8Ynq8qxG4b0uXBAOvJNRnWnL8+d0C3r6Clt8PYA==
+wonka@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/wonka/-/wonka-4.0.7.tgz#b4934685bd2449367bd72ce7770bfe3e6cc8a68b"
+  integrity sha512-Uhyl2cgWCUksYtU0Jt8MSzKUqK4BVUrewWxnn1YlKL3Zco4sDcCUDkbgH0i762HJs1rtsq03cfzsCWxJKaDgVg==
 
 word-wrap@~1.2.3:
   version "1.2.3"

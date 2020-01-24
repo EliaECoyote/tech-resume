@@ -40,27 +40,9 @@ module Styles = {
     ]);
 };
 
-type status('data) =
-  | Idle
-  | Fetching
-  | Error
-  | Success('data);
-
-type events('data) =
-  | LoadData
-  | LoadSuccess('data)
-  | LoadFailed;
-
-let reducer = (~state, ~event) =>
-  switch (state, event) {
-  | (_, LoadData) => Fetching->UseMachine.Valid
-  | (Fetching, LoadSuccess(value)) => Success(value)->UseMachine.Valid
-  | (Fetching, LoadFailed) => Error->UseMachine.Valid
-  | _ => UseMachine.Invalid(("invalid template machine event", state, event))
-  };
-
 [@react.component]
 let make = () => {
+  open AsyncTask;
   let (editorRef, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
   let (themeState, _) = React.useContext(ThemeContext.context);

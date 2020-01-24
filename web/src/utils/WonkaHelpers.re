@@ -53,3 +53,17 @@ module Result = {
       (~message: string, source: Wonka.Types.sourceT(Belt.Result.t('a, 'b))) =>
     source |> Wonka.tap((. result) => logResultError(message, result));
 };
+
+let combineArray = sourcesArray =>
+  Belt.Array.reduce(sourcesArray, Wonka.fromValue([||]), (source, accSource) =>
+    Wonka.combine(accSource, source)
+    |> Wonka.map((. (result, resultsArray)) =>
+         Array.append(resultsArray, [|result|])
+       )
+  );
+
+let combineList = sourcesList =>
+  sourcesList
+  |> Array.of_list
+  |> combineArray
+  |> Wonka.map((. sourcesArray) => Array.to_list(sourcesArray));

@@ -22,16 +22,22 @@ module Styles = {
 
 [@react.component]
 let make = (~className=?, ~pdf=?, ()) => {
-  let canvasRef = React.useRef(Js.Nullable.null);
-  UseCanvasPDF.hook(~pdf, ~canvasRef);
+  open UsePDFModelList.Types;
+  let modelState = UsePDFModelList.hook(~pdf);
+  Js.log(modelState);
+
+  let outputContent =
+    switch (modelState) {
+    | Idle => <h1> {React.string @@ "idle"} </h1>
+    | Fetching => <h1> {React.string @@ "fetching"} </h1>
+    | Error => <h1> {React.string @@ "error"} </h1>
+    | Success(modelArray) =>
+      modelArray |> Array.map(model => <Pdfpage model />) |> ReasonReact.array
+    };
+
   <div className={CssHelpers.combine([Some(Styles.output), className])}>
     <div className=Styles.absoluteCanvasList>
-      <div className=Styles.canvasContainer>
-        <canvas
-          className=Styles.canvas
-          ref={ReactDOMRe.Ref.domRef(canvasRef)}
-        />
-      </div>
+      <div className=Styles.canvasContainer> outputContent </div>
     </div>
   </div>;
 };
