@@ -35,12 +35,14 @@ let hook = () => {
     () => {
       // monaco library dynamic import source
       let importSource =
-        dynamicImportMonaco() |> Wonka.fromPromise |> Wonka.share;
+        dynamicImportMonaco()
+        |> Wonka.fromPromise
+        |> WonkaHelpers.Operators.shareReplay(1);
 
       // monaco instance wonka source
       let monacoInstanceSource =
         importSource
-        |> Wonka.mergeMap((. module Monaco: MonacoType) => {
+        |> Wonka.switchMap((. module Monaco: MonacoType) => {
              let minimap = Monaco.Types.mMinimap(~enabled=false);
              let monacoOptions =
                Monaco.Types.options(
@@ -63,12 +65,16 @@ let hook = () => {
                  React.Ref.current(editorRef)
                  |> Js.Nullable.toOption
                  |> Belt.Option.map(_, createMonaco);
-               instance |> observer.next;
-               (.) => Belt.Option.map(instance, destroyMonaco) |> (_ => ());
+               observer.next(instance);
+               observer.complete();
+               (.) => {
+                 let _ = Belt.Option.map(instance, destroyMonaco);
+                 ();
+               };
              })
              |> Wonka.map((. value) => Obj.magic(value));
            })
-        |> Wonka.share;
+        |> WonkaHelpers.Operators.shareReplay(1);
 
       // sets the current monaco instance in a react ref
       let monacoInstanceRefSubscription =
@@ -80,7 +86,6 @@ let hook = () => {
       // pushes events to *textSource* when monaco text changes
       let monacoTextChangeSubscription =
         Wonka.combine(importSource, monacoInstanceSource)
-        |> Wonka.take(1)
         |> Wonka.mergeMap((. (module Monaco: MonacoType, monaco))
              // TODO: remove Obj.magic usage
              // using Obj.magic in order to avoid error
