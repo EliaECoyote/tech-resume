@@ -110,13 +110,16 @@ external onDidChangeModelContent:
  * contain the latest updated monaco text
  * content.
  */
-let makeMonacoTexthangeWonkaSource = (monaco): Wonka.Types.sourceT(string) => {
+let makeMonacoTexthangeWonkaSource = (monaco): Wonka.Types.sourceT(string) =>
   Wonka.make((. observer: Wonka.Types.observerT(string)) => {
     let disposable =
-      monaco->onDidChangeModelContent(_ => {
-        let value = getValue(~monaco, ());
-        observer.next(value);
-      });
+      monaco
+      |> onDidChangeModelContent(
+           _,
+           _ => {
+             let value = getValue(~monaco, ());
+             observer.next(value);
+           },
+         );
     (.) => dispose(disposable);
   });
-};
