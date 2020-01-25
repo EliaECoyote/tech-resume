@@ -50,6 +50,20 @@ let middleware =
            res
            |> Express.Response.status(Express.Response.StatusCode.BadRequest)
            |> Express.Response.sendString("[api] pdf generation failed")
+         | PdfConversionFailureWithStatus(code) =>
+           res
+           |> Express.Response.status(
+                code
+                |> HttpClient.StatusCode.toInt
+                |> Express.Response.StatusCode.fromInt
+                |> Belt.Option.getWithDefault(
+                     _,
+                     Express.Response.StatusCode.InternalServerError,
+                   ),
+              )
+           |> Express.Response.sendString(
+                "[api] pdf generation service encountered an error",
+              )
          | PdfConversionSuccess(value) =>
            res
            |> Express.Response.status(Express.Response.StatusCode.Ok)
