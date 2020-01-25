@@ -85,7 +85,7 @@ let middleware =
              |> Express.Response.status(Express.Response.StatusCode.Ok)
              |> Express.Response.sendBuffer(pdfBuffer)
            | Belt.Result.Error(value) =>
-             Js.log(value);
+             Js.Console.error(value);
              res
              |> Express.Response.status(
                   Express.Response.StatusCode.BadRequest,

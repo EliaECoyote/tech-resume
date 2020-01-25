@@ -1,6 +1,7 @@
 type html2pdfResult('a) =
   | HtmlNotFound
   | PdfConversionFailure
+  | PdfConversionFailureWithStatus(HttpClient.StatusCode.t)
   | PdfConversionSuccess('a);
 
 let html2pdf = (~html=?, ()) =>
@@ -14,7 +15,7 @@ let html2pdf = (~html=?, ()) =>
          // the pdf service response
          | HttpClient.FailureCode(code) =>
            Js.Console.error @@ {j| pdf conversion failed with status $code |j};
-           PdfConversionFailure;
+           PdfConversionFailureWithStatus(code);
          | HttpClient.Failure =>
            Js.Console.error @@ {j| pdf conversion failed with generic error |j};
            PdfConversionFailure;
@@ -49,6 +50,20 @@ let middleware =
            res
            |> Express.Response.status(Express.Response.StatusCode.BadRequest)
            |> Express.Response.sendString("[api] pdf generation failed")
+         | PdfConversionFailureWithStatus(code) =>
+           res
+           |> Express.Response.status(
+                code
+                |> HttpClient.StatusCode.toInt
+                |> Express.Response.StatusCode.fromInt
+                |> Belt.Option.getWithDefault(
+                     _,
+                     Express.Response.StatusCode.InternalServerError,
+                   ),
+              )
+           |> Express.Response.sendString(
+                "[api] pdf generation service encountered an error",
+              )
          | PdfConversionSuccess(value) =>
            res
            |> Express.Response.status(Express.Response.StatusCode.Ok)
