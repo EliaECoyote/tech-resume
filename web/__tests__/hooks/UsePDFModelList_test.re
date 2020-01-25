@@ -1,19 +1,13 @@
 open Jest;
-open Expect;
 
 module TestData = {
   [@bs.val] external dirname: string = "__dirname";
   external toTypedArray: Node.Buffer.t => Js_typed_array.Int8Array.t =
     "%identity";
-
   let invalidPdfSource =
     Js_typed_array.Int8Array.make([|1, 2, 3|]) |> PdfJSHelpers.toPDFjsSource;
-
   let validPdfSource =
-    Node.Fs.readFileSync(
-      Node.Path.resolve(dirname, "../sample.pdf"),
-      `binary,
-    )
+    Node.Fs.readFileSync("__tests__/sample.pdf", `binary)
     |> Node.Buffer.fromStringWithEncoding(_, `binary)
     |> toTypedArray
     |> PdfJSHelpers.toPDFjsSource;
@@ -22,23 +16,23 @@ module TestData = {
 beforeAll(
   [%bs.raw
     {|
-    () => {
-      const pdfjsWorker = require("pdfjs-dist/build/pdf.worker.entry");
-      const pdfjs = require("pdfjs-dist/build/pdf");
-      pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-    }
-  |}
+     () => {
+       const pdfjsWorker = require("pdfjs-dist/build/pdf.worker.entry");
+       const pdfjs = require("pdfjs-dist/build/pdf");
+       pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+     }
+   |}
   ],
 );
 
 afterAll(
   [%bs.raw
     {|
-    () => {
-      const pdfjs = require("pdfjs-dist/build/pdf");
-      pdfjs.GlobalWorkerOptions.workerSrc = undefined;
-    }
-  |}
+     () => {
+       const pdfjs = require("pdfjs-dist/build/pdf");
+       pdfjs.GlobalWorkerOptions.workerSrc = undefined;
+     }
+   |}
   ],
 );
 
@@ -50,7 +44,7 @@ describe("pdf document loading", () => {
       let _ =
         Wonka.fromValue(TestData.invalidPdfSource)
         |> Wonka.switchMap((. invalidPdf) =>
-             UseCanvasPDF.PDFLoader.loadPDFDocument(invalidPdf)
+             UsePDFModelList.PDFLoader.loadDocument(invalidPdf)
            )
         |> Wonka.subscribe((. document) => {
              let assertion =
@@ -68,7 +62,7 @@ describe("pdf document loading", () => {
       let _ =
         Wonka.fromValue(TestData.validPdfSource)
         |> Wonka.switchMap((. validPdf) =>
-             UseCanvasPDF.PDFLoader.loadPDFDocument(validPdf)
+             UsePDFModelList.PDFLoader.loadDocument(validPdf)
            )
         |> Wonka.subscribe((. document) => {
              let assertion =
