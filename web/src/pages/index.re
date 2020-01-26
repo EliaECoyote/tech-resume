@@ -35,7 +35,7 @@ module Styles = {
 [@react.component]
 let make = () => {
   open AsyncTask;
-  let (editorRef, monacoRef, editorTextSource) = UseMonaco.hook();
+  let (editorRef, layout, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
   let (themeState, _) = React.useContext(ThemeContext.context);
   let editorTextRef = React.useRef("");
@@ -112,16 +112,7 @@ let make = () => {
       <Resizer.Container side=Resizer_container.Left>
         <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
       </Resizer.Container>
-      <Resizer.Bar
-        onResizeEnd={() => {
-          Js.log(("resize completed", monacoRef |> React.Ref.current));
-          let _ =
-            monacoRef
-            |> React.Ref.current
-            |> Belt.Option.map(_, Monaco.layout(_, ()));
-          ();
-        }}
-      />
+      <Resizer.Bar onResizeEnd=layout />
       <Resizer.Container side=Resizer_container.Right>
         <Output
           className=Styles.output
