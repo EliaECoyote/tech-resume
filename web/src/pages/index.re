@@ -5,15 +5,19 @@ module Styles = {
     style([
       height(`percent(100.0)),
       display(`grid),
-      gridTemplateColumns([`minContent, `fr(1.0)]),
+      gridTemplateColumns([`fr(1.0), `fr(1.0)]),
       gridTemplateRows([`minContent, `fr(1.0)]),
-      gridTemplateAreas(`areas(["editor-header output-header", "content"])),
+      gridTemplateAreas(
+        `areas(["editor-header output-header", "content content"]),
+      ),
       gridColumnGap(`px(10)),
       gridRowGap(`px(10)),
       alignItems(`center),
     ]);
   let editorHeader = style([gridArea(`ident("editor-header"))]);
   let outputHeader = style([gridArea(`ident("output-header"))]);
+  let resizer =
+    style([gridArea(`ident("content")), height(`percent(100.0))]);
   let editor = (colors: ThemeContext.colors) =>
     style([
       border(`px(2), `solid, colors.accent),
@@ -77,7 +81,6 @@ let make = () => {
     <div className=Styles.editorHeader>
       <span> {React.string("source (md)")} </span>
     </div>
-    <div className={Styles.editor(themeState.colors)} />
     <div className=Styles.outputHeader>
       <Button
         onClick=startFetching
@@ -105,12 +108,12 @@ let make = () => {
          }}
       </span>
     </div>
-    <Resizer>
-      <Resizer.Container>
+    <Resizer className=Styles.resizer>
+      <Resizer.Container side=Resizer_container.Left>
         <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
       </Resizer.Container>
       <Resizer.Bar />
-      <Resizer.Container>
+      <Resizer.Container side=Resizer_container.Right>
         <Output
           className=Styles.output
           pdf=?{

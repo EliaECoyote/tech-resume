@@ -4,8 +4,9 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~children) => {
+let make = (~children, ~className=?, ()) => {
   let resizerRef = React.useRef(Js.Nullable.null);
+  let (state, dispatch) = React.useContext(Resizer_context.context);
 
   React.useEffect0(() => {
     Webapi.Dom.document
@@ -22,9 +23,8 @@ let make = (~children) => {
     |> WonkaHelpers.getEffectCleanup
   });
 
-  <div className=Styles.resizer ref={ReactDOMRe.Ref.domRef(resizerRef)}>
-    children
-  </div>;
+  let className = CssHelpers.combine([Some(Styles.resizer), className]);
+  <div className ref={ReactDOMRe.Ref.domRef(resizerRef)}> children </div>;
 };
 
 let container = Resizer_container.make;
