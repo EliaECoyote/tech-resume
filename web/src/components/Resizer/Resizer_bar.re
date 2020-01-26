@@ -4,39 +4,25 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~children) => {
+let make = () => {
   let barRef = React.useRef(Js.Nullable.null);
 
   React.useEffect0(() => {
-    let mouseDownSubscription =
-      barRef
-      |> React.Ref.current
-      |> Js.Nullable.toOption
-      |> Belt.Option.map(_, element =>
-           Wonka.fromDomEvent(element, "mousedown")
-         )
-      |> Belt.Option.getWithDefault(_, Wonka.never)
-      |> Wonka.subscribe((. event) => Js.log(event));
+    let element = barRef |> React.Ref.current |> Js.Nullable.toOption;
 
     let touchStartSubscription =
-      barRef
-      |> React.Ref.current
-      |> Js.Nullable.toOption
+      element
       |> Belt.Option.map(_, element =>
-           Wonka.fromDomEvent(element, "touchstart")
+           Wonka.merge([|
+             Wonka.fromDomEvent(element, "mousedown"),
+             Wonka.fromDomEvent(element, "touchstart"),
+           |])
          )
       |> Belt.Option.getWithDefault(_, Wonka.never)
       |> Wonka.subscribe((. event) => Js.log(event));
 
-    Some(
-      () => {
-        mouseDownSubscription.unsubscribe();
-        touchStartSubscription.unsubscribe();
-      },
-    );
+    Some(() => {touchStartSubscription.unsubscribe()});
   });
 
-  <div className=Styles.bar ref={ReactDOMRe.Ref.domRef(barRef)}>
-    children
-  </div>;
+  <div className=Styles.bar ref={ReactDOMRe.Ref.domRef(barRef)} />;
 };

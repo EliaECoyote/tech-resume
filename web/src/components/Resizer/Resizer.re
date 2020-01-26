@@ -5,5 +5,5 @@ let make = (~children) => {
   </Resizer_context>;
 };
 
-let container = Resizer_container.make;
-let bar = Resizer_bar.make;
+module Container = Resizer_container;
+module Bar = Resizer_bar;
