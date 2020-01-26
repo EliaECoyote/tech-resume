@@ -1,6 +1,16 @@
 module Styles = {
   open Css;
-
+  // TODO: check if transition is actually applied
+  // only after js evaluation! This is important in
+  // order to avoid triggering the color transition
+  // on page load
+  global(
+    "body",
+    [
+      transition(~duration=300, "color"),
+      transition(~duration=300, "background-color"),
+    ],
+  );
   let app =
     style([
       display(`grid),
@@ -26,7 +36,6 @@ module AppContent = {
         color: $primary;
         background-color: $background;
         font-family: 'Montserrat', sans-serif;
-        transition: color, background-color 0.3s;
       }
       * { box-sizing: border-box; }
     |j};
