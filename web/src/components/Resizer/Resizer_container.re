@@ -1,6 +1,6 @@
 module Styles = {
   open Css;
-  let resizer = style([display(`flex)]);
+  let resizer = style([overflowX(`hidden)]);
 };
 
 type side =
@@ -9,7 +9,7 @@ type side =
 
 [@react.component]
 let make = (~children, ~side) => {
-  let (state, dispatch) = React.useContext(Resizer_context.context);
+  let (state, _dispatch) = React.useContext(Resizer_context.context);
 
   let flexGrow =
     switch (side) {
@@ -17,7 +17,6 @@ let make = (~children, ~side) => {
     | Right => state.right
     };
   let flexGrow = Js.Float.toString(flexGrow);
-  let style = ReactDOMRe.Style.make(~flex=flexGrow ++ "0 0px", ());
-
+  let style = ReactDOMRe.Style.make(~flex=flexGrow ++ " 0 0px", ());
   <div className=Styles.resizer style> children </div>;
 };

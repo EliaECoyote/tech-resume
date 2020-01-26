@@ -13,8 +13,8 @@ let make =
         className=Styles.editor
         ref=?{
           editorRef
-          ->Js.Nullable.toOption
-          ->Belt.Option.map(ReactDOMRe.Ref.domRef)
+          |> Js.Nullable.toOption
+          |> Belt.Option.map(_, ReactDOMRe.Ref.domRef)
         }
       />
     </div>;
