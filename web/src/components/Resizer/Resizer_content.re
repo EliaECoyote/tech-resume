@@ -9,8 +9,8 @@ let make = (~children, ~className=?, ()) => {
   let (state, dispatch) = React.useContext(Resizer_context.context);
 
   React.useEffect0(() => {
-    Webapi.Dom.document
-    |> Webapi.Dom.Document.documentElement
+    Webapi.Dom.window
+    |> DomHelpers.windowElement
     |> Wonka.fromDomEvent(_, "resize")
     |> Wonka.subscribe((. event) =>
          Js.Console.warn((
