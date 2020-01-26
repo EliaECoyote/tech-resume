@@ -85,18 +85,24 @@ module Sources = {
     };
 
     let source = sink => {
+      let isClosed = ref(false);
       state.sinks = Rebel.Array.append(state.sinks, sink);
       sink(.
         Start(
           (. signal) =>
             switch (signal) {
             | Close =>
-              state.sinks = Rebel.Array.filter(state.sinks, x => x !== sink)
+              state.sinks = Rebel.Array.filter(state.sinks, x => x !== sink);
+              isClosed := true;
             | _ => ()
             },
         ),
       );
-      Rebel.Array.forEach(state.values, value => sink(. Push(value)));
+      Rebel.Array.forEach(state.values, value =>
+        if (! isClosed^) {
+          sink(. Push(value));
+        }
+      );
     };
 
     let next = value =>
