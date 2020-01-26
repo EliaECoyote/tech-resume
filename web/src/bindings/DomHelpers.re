@@ -5,3 +5,5 @@
 
 external windowElement: Webapi.Dom.Window.t => Webapi.Dom.Element.t =
   "%identity";
+
+external asMouseEvent: Dom.event => Webapi.Dom.MouseEvent.t = "%identity";
