@@ -5,10 +5,10 @@ module Styles = {
     style([
       height(`percent(100.0)),
       display(`grid),
-      gridTemplateColumns([`minContent, `fr(1.0)]),
+      gridTemplateColumns([`fr(1.0), `fr(1.0)]),
       gridTemplateRows([`minContent, `fr(1.0)]),
       gridTemplateAreas(
-        `areas(["editor-header output-header", "editor output"]),
+        `areas(["editor-header output-header", "content content"]),
       ),
       gridColumnGap(`px(10)),
       gridRowGap(`px(10)),
@@ -16,24 +16,16 @@ module Styles = {
     ]);
   let editorHeader = style([gridArea(`ident("editor-header"))]);
   let outputHeader = style([gridArea(`ident("output-header"))]);
+  let resizer =
+    style([gridArea(`ident("content")), height(`percent(100.0))]);
   let editor = (colors: ThemeContext.colors) =>
     style([
-      gridArea(`ident("editor")),
-      resize(`horizontal),
-      overflow(`auto),
-      minWidth(`vw(30.0)),
-      width(`vw(45.0)),
       border(`px(2), `solid, colors.accent),
       height(`percent(100.0)),
       display(`flex),
       flexDirection(`column),
     ]);
-  let output =
-    style([
-      gridArea(`ident("output")),
-      minWidth(`vw(30.0)),
-      height(`percent(100.0)),
-    ]);
+  let output = style([height(`percent(100.0))]);
   let outputTool =
     style([
       margin4(~top=`zero, ~right=`px(10), ~bottom=`zero, ~left=`zero),
@@ -43,7 +35,7 @@ module Styles = {
 [@react.component]
 let make = () => {
   open AsyncTask;
-  let (editorRef, editorTextSource) = UseMonaco.hook();
+  let (editorRef, layout, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
   let (themeState, _) = React.useContext(ThemeContext.context);
   let editorTextRef = React.useRef("");
@@ -89,10 +81,6 @@ let make = () => {
     <div className=Styles.editorHeader>
       <span> {React.string("source (md)")} </span>
     </div>
-    <div className={Styles.editor(themeState.colors)}>
-      <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
-      <ResizerIndicator />
-    </div>
     <div className=Styles.outputHeader>
       <Button
         onClick=startFetching
@@ -120,15 +108,23 @@ let make = () => {
          }}
       </span>
     </div>
-    <Output
-      className=Styles.output
-      pdf=?{
-        switch (state) {
-        | Success(data) => Some(data)
-        | _ => None
-        }
-      }
-    />
+    <Resizer className=Styles.resizer>
+      <Resizer.Container side=Resizer_container.Left>
+        <Editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
+      </Resizer.Container>
+      <Resizer.Bar onResizeEnd=layout />
+      <Resizer.Container side=Resizer_container.Right>
+        <Output
+          className=Styles.output
+          pdf=?{
+            switch (state) {
+            | Success(data) => Some(data)
+            | _ => None
+            }
+          }
+        />
+      </Resizer.Container>
+    </Resizer>
   </div>;
 };
 

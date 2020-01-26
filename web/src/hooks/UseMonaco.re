@@ -10,12 +10,20 @@ let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
  */
 let hook = () => {
   let editorRef = React.useRef(Js.Nullable.null);
-  let (textSubject, _) = React.useState(() => Wonka.makeSubject());
+  let (textSubject, _) = React.useState(Wonka.makeSubject);
   let monacoInstanceRef = React.useRef(None);
 
   let (state, _) = React.useContext(ThemeContext.context);
 
   let {Wonka.Types.source: textSource, Wonka.Types.next: textNext} = textSubject;
+
+  let layout =
+    React.useCallback0(() => {
+      switch (React.Ref.current(monacoInstanceRef)) {
+      | Some(value) => Monaco.layout(value, ())
+      | None => ()
+      }
+    });
 
   // reacts to *theme* change by updating Monaco editor theme
   React.useEffect1(
@@ -48,7 +56,7 @@ let hook = () => {
                Monaco.Types.options(
                  ~value="",
                  ~language="markdown",
-                 ~automaticLayout=true,
+                 ~automaticLayout=false,
                  ~minimap,
                );
              let createMonaco = monaco =>
@@ -104,5 +112,5 @@ let hook = () => {
     [|textNext|],
   );
 
-  (editorRef, textSource);
+  (editorRef, layout, textSource);
 };

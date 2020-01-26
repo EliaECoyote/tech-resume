@@ -24,7 +24,6 @@ module Styles = {
 let make = (~className=?, ~pdf=?, ()) => {
   open UsePDFModelList.Types;
   let modelState = UsePDFModelList.hook(~pdf);
-  Js.log(modelState);
 
   let outputContent =
     switch (modelState) {

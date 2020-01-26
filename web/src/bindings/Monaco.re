@@ -92,6 +92,8 @@ let getValue =
     (~monaco: Types.monaco, ~options: option(Types.getValueOptions)=None, ()) =>
   Js.Nullable.fromOption(options) |> getValue(monaco);
 
+[@bs.send] external layout: (Types.monaco, unit) => unit = "layout";
+
 /**
  * calls the callback upon monaco editor
  * content change.

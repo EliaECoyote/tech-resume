@@ -19,8 +19,8 @@ let make =
       className={Controls.Styles.cta(theme.colors, ~size?, ())}
       ref=?{
         buttonRef
-        ->Js.Nullable.toOption
-        ->Belt.Option.map(ReactDOMRe.Ref.domRef)
+        |> Js.Nullable.toOption
+        |> Belt.Option.map(_, ReactDOMRe.Ref.domRef)
       }>
       children
     </a>;
