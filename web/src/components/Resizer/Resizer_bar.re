@@ -8,7 +8,7 @@ module Styles = {
 };
 
 [@react.component]
-let make = () => {
+let make = (~onResizeEnd=() => ()) => {
   let barRef = React.useRef(Js.Nullable.null);
   let (state, dispatch) = React.useContext(Resizer_context.context);
 
@@ -40,7 +40,9 @@ let make = () => {
                 Wonka.fromDomEvent(windowElement, "mouseup"),
                 Wonka.fromDomEvent(windowElement, "touchend"),
                 Wonka.fromDomEvent(windowElement, "touchcancel"),
-              |]),
+              |])
+              |> Wonka.take(1)
+              |> Wonka.onPush((. _event) => onResizeEnd()),
             )
        )
     |> Wonka.map((. event) =>

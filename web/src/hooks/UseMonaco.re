@@ -48,7 +48,7 @@ let hook = () => {
                Monaco.Types.options(
                  ~value="",
                  ~language="markdown",
-                 ~automaticLayout=true,
+                 ~automaticLayout=false,
                  ~minimap,
                );
              let createMonaco = monaco =>
@@ -104,5 +104,5 @@ let hook = () => {
     [|textNext|],
   );
 
-  (editorRef, textSource);
+  (editorRef, monacoInstanceRef, textSource);
 };
