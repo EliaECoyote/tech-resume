@@ -32,9 +32,7 @@ let hook =
         DocumentRe.getElementById(model.id, Webapi.Dom.document)
         |> Belt.Option.flatMap(_, canvasElement =>
              render(model, canvasElement)
-             |> Wonka.subscribe((. _result) => {
-                  Js.log("rendering page....")
-                })
+             |> Wonka.publish
              |> WonkaHelpers.getEffectCleanup
            )
       | Belt.Result.Error(_) => None

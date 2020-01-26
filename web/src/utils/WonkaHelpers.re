@@ -130,7 +130,6 @@ module Operators = {
     let _subscription =
       source
       |> Wonka.onPush((. value) => state.replaySubject.next(value))
-      |> Wonka.onPush((. value) => Js.log(("shareReplay onPush", value)))
       |> Wonka.onEnd((.) => state.replaySubject.complete())
       |> Wonka.publish;
 
