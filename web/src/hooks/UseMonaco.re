@@ -45,6 +45,7 @@ let hook = () => {
       let importSource =
         dynamicImportMonaco()
         |> Wonka.fromPromise
+        |> Wonka.take(1)
         |> WonkaHelpers.Operators.shareReplay(1);
 
       // monaco instance wonka source
@@ -82,6 +83,7 @@ let hook = () => {
              })
              |> Wonka.map((. value) => Obj.magic(value));
            })
+        |> Wonka.take(1)
         |> WonkaHelpers.Operators.shareReplay(1);
 
       // sets the current monaco instance in a react ref
