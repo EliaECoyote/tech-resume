@@ -27,7 +27,6 @@ let getTemplateStyle = template => {
         body {
           background: white;
           font-family: $fontFamily;
-          padding: 30px 50px;
         }
         h1 {
           color: #626262;

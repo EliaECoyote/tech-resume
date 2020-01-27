@@ -20,20 +20,27 @@ let launchOptions: Puppeteer.launchOptions = {
   pipe: None,
 };
 
+let margin: Page.margin = {
+  top: Some("30"),
+  bottom: Some("30"),
+  left: Some("50"),
+  right: Some("50"),
+};
+
 let pdfOptions: Page.pdfOptions = {
   path: None,
   scale: None,
   displayHeaderFooter: None,
   headerTemplate: None,
   footerTemplate: None,
-  printBackground: None,
+  printBackground: Some(true),
   landscape: None,
   pageRanges: None,
-  format: Some("A4"),
+  format: None,
   width: None,
   height: None,
-  margin: None,
-  preferCSSPageSize: None,
+  margin: Some(margin),
+  preferCSSPageSize: Some(true),
 };
 
 let generatePdf = html =>
