@@ -2,7 +2,7 @@
 	"name": "pdfgen",
 	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	"dockerComposeFile": [
-		"../docker-compose.yml",
+		"../docker-compose.yml"
 	],
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use.
@@ -20,25 +20,21 @@
 		"editor.formatOnSave": true,
 		"search.exclude": {
 			"**/node_modules": true,
-			"**/src/**/*.js": true,
-			"**/.cache": true,
-			"**/lib": true,
-			"**/public": true
+			"**/lib": true
 		},
 		"reason_language_server.autoRebuild": false
 	},
 	// Uncomment the next line to have VS Code connect as an existing non-root user in the container. See
 	// https://aka.ms/vscode-remote/containers/non-root for details on adding a non-root user if none exist.
-	"remoteUser": "node",
+	"remoteUser": "root",
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
 	// "runServices": [],
 	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
 	"shutdownAction": "none",
 	// Uncomment the next line to run commands after the container is created - for example installing git.
-	"postCreateCommand": "apk update && apk upgrade && apk add git",
+	"postCreateCommand": "/bin/sh scripts/postCreateCommand.sh",
 	// Add the IDs of extensions you want installed when the container is created in the array below.
 	"extensions": [
-		"eamodio.gitlens",
 		"jaredly.reason-vscode"
 	]
 }
