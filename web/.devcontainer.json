@@ -20,7 +20,6 @@
 		"editor.formatOnSave": true,
 		"search.exclude": {
 			"**/node_modules": true,
-			"**/src/**/*.js": true,
 			"**/.cache": true,
 			"**/lib": true,
 			"**/public": true
