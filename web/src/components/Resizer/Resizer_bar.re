@@ -2,14 +2,30 @@ module Styles = {
   open Css;
   let bar =
     style([
-      flex3(~grow=0.0, ~shrink=0.0, ~basis=`px(20)),
+      flex3(~grow=0.0, ~shrink=0.0, ~basis=`px(12)),
       cursor(`colResize),
+      display(`flex),
+      opacity(0.8),
+      flexDirection(`column),
+      justifyContent(`center),
+      alignItems(`center),
+      hover([opacity(1.0)]),
+      transition(~duration=200, "opacity"),
+    ]);
+
+  let dragIndicator = (colors: ThemeContext.colors) =>
+    style([
+      width(`px(4)),
+      height(`percent(30.0)),
+      backgroundColor(colors.accent),
+      borderRadius(`px(50)),
     ]);
 };
 
 [@react.component]
 let make = (~onResizeEnd=() => ()) => {
   let barRef = React.useRef(Js.Nullable.null);
+  let (theme, _) = React.useContext(ThemeContext.context);
   let (state, dispatch) = React.useContext(Resizer_context.context);
 
   // setting context state dimensions in react refs in order to
@@ -76,5 +92,7 @@ let make = (~onResizeEnd=() => ()) => {
     |> WonkaHelpers.getEffectCleanup;
   });
 
-  <div className=Styles.bar ref={ReactDOMRe.Ref.domRef(barRef)} />;
+  <div className=Styles.bar ref={ReactDOMRe.Ref.domRef(barRef)}>
+    <div className={Styles.dragIndicator(theme.colors)} />
+  </div>;
 };
