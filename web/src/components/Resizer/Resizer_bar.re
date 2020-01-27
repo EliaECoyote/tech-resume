@@ -46,6 +46,7 @@ let make = (~onResizeEnd=() => ()) => {
          |])
        )
     |> Belt.Option.getWithDefault(_, Wonka.never)
+    |> Wonka.onPush((. _event) => {dispatch(Resizer_context.StartResizing)})
     |> Wonka.switchMap((. _) =>
          Wonka.merge([|
            Wonka.fromDomEvent(windowElement, "mousemove"),
@@ -58,7 +59,10 @@ let make = (~onResizeEnd=() => ()) => {
                 Wonka.fromDomEvent(windowElement, "touchcancel"),
               |])
               |> Wonka.take(1)
-              |> Wonka.onPush((. _event) => onResizeEnd()),
+              |> Wonka.onPush((. _event) => {
+                   onResizeEnd();
+                   dispatch(Resizer_context.EndResizing);
+                 }),
             )
        )
     |> Wonka.map((. event) =>
