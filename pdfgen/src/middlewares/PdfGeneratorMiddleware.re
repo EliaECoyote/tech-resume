@@ -75,11 +75,7 @@ let middleware =
   Express.PromiseMiddleware.from((_, req, res) =>
     Express.Request.bodyText(req)
     |> Wonka.fromValue
-    |> Wonka.map((. body) => {
-         // grabs the html string from request body
-         Js.log(body);
-         body |> Belt.Option.getWithDefault(_, "");
-       })
+    |> Wonka.map((. body) => Belt.Option.getWithDefault(body, ""))
     |> Wonka.mergeMap((. html)
          // generates the pdf
          => generatePdf(html))

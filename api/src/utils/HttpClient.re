@@ -146,7 +146,6 @@ let post =
     ) => {
   let requestInit =
     Fetch.RequestInit.make(~method_=Fetch.Post, ~body, ~headers?, ());
-  Js.log(("making request: ", resource, requestInit));
   fetchWrapper(~resource, ~requestInit);
 };
 

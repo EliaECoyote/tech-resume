@@ -3,8 +3,12 @@ let fetchPdfData = (~md) =>
     ~scheme=Config.apiScheme,
     ~host=Config.apiHost,
     ~path="convert",
-    ~qsComponents=[|("md", md)|],
     (),
   )
-  |> HttpClient.get(~resource=_)
+  |> HttpClient.post(
+       ~resource=_,
+       ~body=Fetch.BodyInit.make(md),
+       ~headers=
+         Fetch.HeadersInit.makeWithArray([|("Content-Type", "text/html")|]),
+     )
   |> Wonka.mergeMap((. value) => HttpClient.toArrayBuffer(value));

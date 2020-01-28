@@ -136,16 +136,20 @@ let fetchWrapper = (~resource: string, ~requestInit: Fetch.requestInit) => {
   });
 };
 
+let defaultHeaders =
+  Fetch.HeadersInit.makeWithArray([|("Content-Type", "application/json")|]);
+
 let get = (~resource: string) => {
   let requestInit = Fetch.RequestInit.make(~method_=Fetch.Get, ());
   fetchWrapper(~resource, ~requestInit);
 };
 
-let post = (~resource: string, ~body: Fetch.bodyInit) => {
-  let headers =
-    Fetch.HeadersInit.makeWithArray([|
-      ("Content-Type", "application/json"),
-    |]);
+let post =
+    (
+      ~resource: string,
+      ~headers: Fetch.HeadersInit.t=defaultHeaders,
+      ~body: Fetch.bodyInit,
+    ) => {
   let requestInit =
     Fetch.RequestInit.make(~method_=Fetch.Post, ~body, ~headers, ());
   fetchWrapper(~resource, ~requestInit);
