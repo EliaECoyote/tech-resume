@@ -16,6 +16,7 @@
     "nodemon": "^1.19.3"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0",
     "rehype-document": "^3.1.0",

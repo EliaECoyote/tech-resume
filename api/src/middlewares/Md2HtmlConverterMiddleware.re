@@ -2,10 +2,8 @@ exception ConversionFailed(string);
 
 let middleware =
   Express.PromiseMiddleware.from((next, req, res) => {
-    let query = Express.Request.query(req);
     let template = MarkdownToHtmlConverter.Standard;
-    Js.Dict.get(query, "md")
-    |> Belt.Option.flatMap(_, Js.Json.decodeString)
+    Express.Request.bodyText(req)
     |> Belt.Option.getWithDefault(_, "")
     |> MarkdownToHtmlConverter.run(~src=_, ~template)
     |> Wonka.map((. result) =>

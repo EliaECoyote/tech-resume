@@ -1,6 +1,6 @@
 let middleware =
   Express.Middleware.fromError((_, err, _, res) => {
-    Js.log(err);
+    Js.Console.error(err);
     switch (err) {
     | Failure(f) =>
       res
