@@ -10,10 +10,20 @@ let onListen = e =>
 
 let startupBackend = () => {
   let app = Express.express();
-  Express.App.getWithMany(
+  let bodyParserOptions: BodyParser.textOptions = {
+    defaultCharset: None,
+    inflate: None,
+    limit: None,
+    type_: Some("text/html"),
+  };
+  Express.App.postWithMany(
     app,
     ~path="/",
-    [|CorsMiddleware.middlewareFactory(), PdfGeneratorMiddleware.middleware|],
+    [|
+      CorsMiddleware.middlewareFactory(),
+      BodyParser.textWithOptions(bodyParserOptions),
+      PdfGeneratorMiddleware.middleware,
+    |],
   );
   Express.App.listen(app, ~port, ~onListen, ());
 };

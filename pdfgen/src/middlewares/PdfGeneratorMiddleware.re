@@ -43,7 +43,8 @@ let pdfOptions: Page.pdfOptions = {
   preferCSSPageSize: Some(true),
 };
 
-let generatePdf = html =>
+let generatePdf = html => {
+  Js.log(("Html: ", html));
   Puppeteer.launch(~options=launchOptions, ())
   |> Js.Promise.then_(browser =>
        browser
@@ -68,18 +69,17 @@ let generatePdf = html =>
        |> Js.Promise.then_(() => Js.Promise.resolve(pdfBuffer))
      )
   |> WonkaHelpers.fromPromise;
+};
 
 let middleware =
   Express.PromiseMiddleware.from((_, req, res) =>
-    Express.Request.query(req)
+    Express.Request.bodyText(req)
     |> Wonka.fromValue
-    |> Wonka.map((. query)
-         // grabs the html string from request query string
-         =>
-           Js.Dict.get(query, "html")
-           ->Belt.Option.flatMap(Js.Json.decodeString)
-           ->Belt.Option.getWithDefault("")
-         )
+    |> Wonka.map((. body) => {
+         // grabs the html string from request body
+         Js.log(body);
+         body |> Belt.Option.getWithDefault(_, "");
+       })
     |> Wonka.mergeMap((. html)
          // generates the pdf
          => generatePdf(html))

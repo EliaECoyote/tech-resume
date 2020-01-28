@@ -83,7 +83,7 @@ let transform = (~src: string, ~style: array(string), ~css: array(string)) =>
              switch (Js.Nullable.toOption(error)) {
              | Some(value) =>
                Wonka.fromValue(value)
-               |> Wonka.tap((. value) => Js.log(value))
+               |> Wonka.tap((. value) => Js.Console.error(value))
                |> Wonka.map((. value) => getErrorMessage(value))
                |> Wonka.map((. value) => Error(value))
              | None =>

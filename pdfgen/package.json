@@ -15,6 +15,7 @@
     "nodemon": "^1.19.3"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "wonka": "^3.2.2"
   }

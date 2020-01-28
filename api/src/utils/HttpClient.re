@@ -138,13 +138,15 @@ let get = (~resource: string) => {
   fetchWrapper(~resource, ~requestInit);
 };
 
-let post = (~resource: string, ~body: Fetch.bodyInit) => {
-  let headers =
-    Fetch.HeadersInit.makeWithArray([|
-      ("Content-Type", "application/json"),
-    |]);
+let post =
+    (
+      ~resource: string,
+      ~headers: option(Fetch.HeadersInit.t)=?,
+      ~body: Fetch.bodyInit,
+    ) => {
   let requestInit =
-    Fetch.RequestInit.make(~method_=Fetch.Post, ~body, ~headers, ());
+    Fetch.RequestInit.make(~method_=Fetch.Post, ~body, ~headers?, ());
+  Js.log(("making request: ", resource, requestInit));
   fetchWrapper(~resource, ~requestInit);
 };
 
