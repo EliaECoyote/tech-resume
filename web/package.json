@@ -28,7 +28,6 @@
   "keywords": [
     "gatsby"
   ],
-  "license": "MIT",
   "scripts": {
     "clean": "yarn bsb -clean-world && yarn gatsby clean"
   },

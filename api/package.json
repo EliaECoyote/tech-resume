@@ -6,7 +6,6 @@
   "scripts": {
     "clean": "yarn bsb -clean-world"
   },
-  "license": "ISC",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.9",
     "bs-express": "^0.12.1",
