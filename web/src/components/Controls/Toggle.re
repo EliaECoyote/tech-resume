@@ -13,7 +13,7 @@ module Styles = {
       position(`relative),
     ]);
 
-  let thumb = (colors: ThemeContext.colors, ~checked: bool) =>
+  let thumb = (colors: ThemeContext.colors, ~checked: bool, ~hasFocus: bool) =>
     style([
       position(`absolute),
       top(`px(1)),
@@ -24,17 +24,27 @@ module Styles = {
       backgroundColor(`hex("fafafa")),
       transition(~duration=300, ~timingFunction=`easeInOut, "all"),
       transform(translateX(`px(checked ? 0 : 26))),
-      active([
-        boxShadow(
-          Shadow.box(
-            ~x=`zero,
-            ~y=`zero,
-            ~blur=`px(2),
-            ~spread=`px(3),
-            colors.primary,
-          ),
-        ),
-      ]),
+      hasFocus
+        ? boxShadow(
+            Shadow.box(
+              ~x=`zero,
+              ~y=`zero,
+              ~blur=`px(5),
+              ~spread=`px(5),
+              colors.primary,
+            ),
+          )
+        : active([
+            boxShadow(
+              Shadow.box(
+                ~x=`zero,
+                ~y=`zero,
+                ~blur=`px(2),
+                ~spread=`px(3),
+                colors.primary,
+              ),
+            ),
+          ]),
     ]);
 };
 
@@ -49,12 +59,43 @@ let make =
   let trackRef = React.useRef(Js.Nullable.null);
   let (theme, _) = React.useContext(ThemeContext.context);
 
+  let (hasFocus, setHasFocus) = React.useState(() => false);
+
+  React.useEffect0(() => {
+    let windowElement = DomHelpers.windowElement(Webapi.Dom.window);
+    let trackElement = React.Ref.current(trackRef) |> Js.Nullable.toOption;
+    trackElement
+    |> Belt.Option.flatMap(_, element =>
+         Wonka.merge([|
+           Wonka.fromDomEvent(element, "mousedown"),
+           Wonka.fromDomEvent(element, "touchstart"),
+         |])
+         |> Wonka.onPush((. event) => {
+              Webapi.Dom.Event.preventDefault(event);
+              setHasFocus(_prev => true);
+            })
+         |> Wonka.switchMap((. _event) =>
+              Wonka.merge([|
+                Wonka.fromDomEvent(windowElement, "mouseup"),
+                Wonka.fromDomEvent(windowElement, "touchend"),
+                Wonka.fromDomEvent(windowElement, "touchcancel"),
+              |])
+            )
+         |> Wonka.onPush((. _event) => setHasFocus(_prev => false))
+         |> Wonka.subscribe((. event) => {
+              // Webapi.Dom.Event.preventDefault(event)
+              ()
+            })
+         |> WonkaHelpers.getEffectCleanup
+       );
+  });
+
   <div
     onClick={_ => onChange(!checked)}
     className={Styles.track(theme.colors)}
     ref={ReactDOMRe.Ref.domRef(trackRef)}>
     {renderUnchecked()}
     {renderChecked()}
-    <div className={Styles.thumb(theme.colors, ~checked)} />
+    <div className={Styles.thumb(theme.colors, ~checked, ~hasFocus)} />
   </div>;
 };
