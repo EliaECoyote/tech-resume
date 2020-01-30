@@ -1,34 +1,3 @@
-type json;
-
-type firebaseAppConfig = {
-  name: option(string),
-  automaticDataCollectionEnabled: option(bool),
-};
-
-type firebaseOptions = {
-  apiKey: option(string),
-  authDomain: option(string),
-  databaseURL: option(string),
-  projectId: option(string),
-  storageBucket: option(string),
-  messagingSenderId: option(string),
-  appId: option(string),
-  measurementId: option(string),
-};
-[@bs.module "firebase/app"]
-external initializeApp: (~firebaseOptions: firebaseOptions) => unit =
-  "initializeApp";
-[@bs.module "firebase/app"]
-external initializeAppByName:
-  (~firebaseOptions: firebaseOptions, ~name: string, unit) => unit =
-  "initializeApp";
-[@bs.module "firebase/app"]
-external initializeAppByConfig:
-  (~firebaseOptions: firebaseOptions, ~config: firebaseAppConfig, unit) => unit =
-  "initializeApp";
-
-[@bs.module "firebase/app"] external analytics: unit => unit = "analytics";
-
 module AuthProvider = {
   type t;
   type providerId;
@@ -53,6 +22,8 @@ module AuthCredential = {
     providerId: AuthProvider.providerId,
     signInMethod: string,
   };
+
+  type json;
 
   [@bs.send] external toJSON: (t, unit) => json = "toJSON";
 };
@@ -241,53 +212,51 @@ module UserUtils = {
     "sendEmailVerification";
 };
 
-module Auth = {
-  type t;
+type t;
 
-  [%bs.raw {| require("firebase/auth") |}];
+[%bs.raw {| require("firebase/auth") |}];
 
-  [@bs.module "firebase/app"] external make: unit => t = "auth";
+[@bs.module "firebase/app"] external make: unit => t = "auth";
 
-  type nextOrObserver = Js.Nullable.t(User.t) => unit;
-  type error = Js.Exn.t => unit;
-  type unsubscribe = unit => unit;
-  type events =
-    | AnonymousLogin
-    | UserLoginSuccess(User.t)
-    | UserLoginFailed(Js.Exn.t);
+type nextOrObserver = Js.Nullable.t(User.t) => unit;
+type error = Js.Exn.t => unit;
+type unsubscribe = unit => unit;
+type events =
+  | AnonymousLogin
+  | UserLoginSuccess(User.t)
+  | UserLoginFailed(Js.Exn.t);
 
-  [@bs.send]
-  external getRedirectResult: t => Js.Promise.t(string) = "getRedirectResult";
-  [@bs.send]
-  external signInWithRedirect: (t, AuthProvider.t) => unit =
-    "signInWithRedirect";
-  [@bs.send] external signOut: t => Js.Promise.t(unit) = "signOut";
-  [@bs.send]
-  external onAuthStateChanged:
-    (
-      t,
-      ~nextOrObserver: nextOrObserver,
-      ~error: error=?,
-      ~completed: unsubscribe=?,
-      unit
-    ) =>
-    unsubscribe =
-    "onAuthStateChanged";
-  let getAuthEventFromUser = (user: Js.Nullable.t(User.t)) =>
-    switch (user->Js.Nullable.toOption) {
-    | Some(value) => UserLoginSuccess(value)
-    | None => AnonymousLogin
-    };
-  // onAuthStateChanged wonka wrapper
-  let authStateChange = auth =>
-    Wonka.make((. observer: Wonka.Types.observerT(events)) => {
-      let unsubscribe =
-        onAuthStateChanged(
-          auth,
-          ~nextOrObserver=user => getAuthEventFromUser(user) |> observer.next,
-          ~error=error => UserLoginFailed(error) |> observer.next,
-          (),
-        );
-      (.) => unsubscribe();
-    });
-};
+[@bs.send]
+external getRedirectResult: t => Js.Promise.t(string) = "getRedirectResult";
+[@bs.send]
+external signInWithRedirect: (t, AuthProvider.t) => unit =
+  "signInWithRedirect";
+[@bs.send] external signOut: t => Js.Promise.t(unit) = "signOut";
+[@bs.send]
+external onAuthStateChanged:
+  (
+    t,
+    ~nextOrObserver: nextOrObserver,
+    ~error: error=?,
+    ~completed: unsubscribe=?,
+    unit
+  ) =>
+  unsubscribe =
+  "onAuthStateChanged";
+let getAuthEventFromUser = (user: Js.Nullable.t(User.t)) =>
+  switch (user->Js.Nullable.toOption) {
+  | Some(value) => UserLoginSuccess(value)
+  | None => AnonymousLogin
+  };
+// onAuthStateChanged wonka wrapper
+let authStateChange = auth =>
+  Wonka.make((. observer: Wonka.Types.observerT(events)) => {
+    let unsubscribe =
+      onAuthStateChanged(
+        auth,
+        ~nextOrObserver=user => getAuthEventFromUser(user) |> observer.next,
+        ~error=error => UserLoginFailed(error) |> observer.next,
+        (),
+      );
+    (.) => unsubscribe();
+  });

@@ -67,7 +67,6 @@ module Theme = {
     switch (color) {
     | Standard => "vs"
     | Dark => "vs-dark"
-    | Black => "hc-black"
     };
 };
 

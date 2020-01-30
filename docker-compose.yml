@@ -29,10 +29,6 @@ services:
       - ./web/gatsby-node.js:/home/node/app/gatsby-node.js:delegated
       - ./web/gatsby-ssr.js:/home/node/app/gatsby-ssr.js:delegated
       - ./web/jest.config.js:/home/node/app/jest.config.js:delegated
-      # volumes that allows reason-language-server vscode plugin
-      # to correctly read the built artifacts
-      - ./web/lib:/home/node/app/lib:cached
-      # - ./web/.merlin:/home/node/app/.merlin:cached
     ports:
       - "8000:8000"
   api:

@@ -31,19 +31,13 @@ module Styles = {
     ]);
 };
 
-module type FirebaseUIType = {include (module type of FirebaseUI);};
-
-let dynamicImportFirebaseUI: unit => Js.Promise.t(module FirebaseUIType) = [%bs.raw
-  {| () => import("../../bindings/FirebaseUI.bs.js") |}
-];
-
 let loginUIElementID = "auth";
 
 let startFirebaseUIWidget = () =>
-  dynamicImportFirebaseUI()
+  Firebase.UI.importDinamically()
   |> Wonka.fromPromise
   // FirebaseUI library dynamic import source
-  |> Wonka.subscribe((. module FirebaseUI: FirebaseUIType) => {
+  |> Wonka.subscribe((. module FirebaseUI: Firebase.UI.FirebaseUiType) => {
        let callbacks: FirebaseUI.callbacks = {
          // signInSuccessWithAuthResult callback returns false in
          // order to avoid redirects after a successful login as
@@ -63,7 +57,7 @@ let startFirebaseUIWidget = () =>
          queryParameterForSignInSuccessUrl: Some("login-success"),
          queryParameterForWidgetMode: Some("mode"),
          signInFlow: Some("popup"),
-         signInOptions: Some([|Firebase.GithubAuthProvider.providerId|]),
+         signInOptions: Some([|Firebase.Auth.GithubAuthProvider.providerId|]),
          signInSuccessUrl: None,
          siteName: None,
          tosUrl: None,
