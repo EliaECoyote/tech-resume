@@ -16,12 +16,8 @@ module Styles = {
   let themeSelector =
     style([
       gridArea(`ident("theme-selector")),
-      flexDirection(`column),
-      justifyContent(`center),
-      display(`grid),
-      gridTemplateRows([`fr(1.0), `auto]),
-      height(`rem(3.0)),
-      ...TextStyles.xsFont,
+      display(`flex),
+      alignItems(`center),
     ]);
   let spacer = style([gridArea(`ident("title"))]);
   let authWidget =
@@ -36,10 +32,7 @@ let make = (~children, ~className=?) => {
     |> Belt.Option.getWithDefault(_, Styles.header);
   <header className>
     <h1 className=Styles.title> {React.string("# Tech resume")} </h1>
-    <div className=Styles.themeSelector>
-      <span> {React.string("Theme")} </span>
-      <ThemeDropdown />
-    </div>
+    <div className=Styles.themeSelector> <ToggleTheme /> </div>
     <div className=Styles.authWidget> children </div>
   </header>;
 };
