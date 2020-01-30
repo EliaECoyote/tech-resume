@@ -5,7 +5,7 @@
 type status =
   | Idle
   | Anonymous
-  | Logged(Firebase.User.t);
+  | Logged(Firebase.Auth.User.t);
 
 let reducer = (~state, ~event) =>
   switch (state, event) {
@@ -31,7 +31,7 @@ let hook = () => {
     () => {
       // instantiating the github auth provider as described in the docs
       // https://firebase.google.com/docs/auth/web/github-auth#handle_the_sign-in_flow_with_the_firebase_sdk
-      let _provider = Firebase.GithubAuthProvider.make();
+      let _provider = Firebase.Auth.GithubAuthProvider.make();
 
       Firebase.Auth.make()
       |> Firebase.Auth.authStateChange
