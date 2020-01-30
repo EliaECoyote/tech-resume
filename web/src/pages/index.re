@@ -5,17 +5,19 @@ module Styles = {
     style([
       height(`percent(100.0)),
       display(`grid),
-      gridTemplateColumns([`fr(1.0), `fr(1.0)]),
+      gridTemplateColumns([`fr(1.0)]),
       gridTemplateRows([`minContent, `fr(1.0)]),
-      gridTemplateAreas(
-        `areas(["editor-header output-header", "content content"]),
-      ),
+      gridTemplateAreas(`areas(["header", "content"])),
       gridColumnGap(`px(10)),
       gridRowGap(`px(10)),
       alignItems(`center),
     ]);
-  let editorHeader = style([gridArea(`ident("editor-header"))]);
-  let outputHeader = style([gridArea(`ident("output-header"))]);
+  let header =
+    style([
+      gridArea(`ident("header")),
+      display(`flex),
+      justifyContent(`center),
+    ]);
   let resizer =
     style([gridArea(`ident("content")), height(`percent(100.0))]);
   let editor = (colors: ThemeContext.colors) =>
@@ -78,10 +80,7 @@ let make = () => {
     };
 
   <div className=Styles.app>
-    <div className=Styles.editorHeader>
-      <span> {React.string("source (md)")} </span>
-    </div>
-    <div className=Styles.outputHeader>
+    <div className=Styles.header>
       <Button
         onClick=startFetching
         disabled={state == Fetching}
