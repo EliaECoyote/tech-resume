@@ -83,8 +83,6 @@ let make =
   let trackRef = React.useRef(Js.Nullable.null);
   let inputRef = React.useRef(Js.Nullable.null);
   let (hasFocus, setHasFocus) = React.useState(() => false);
-  let hasFocusRef = React.useRef(hasFocus);
-  React.Ref.setCurrent(hasFocusRef, hasFocus);
 
   React.useEffect0(() => {
     let windowElement = DomHelpers.windowElement(Webapi.Dom.window);
@@ -98,8 +96,6 @@ let make =
          |> Wonka.onPush((. event) =>
               Webapi.Dom.Event.preventDefault(event)
             )
-         |> Wonka.map((. _) => React.Ref.current(hasFocusRef))
-         |> Wonka.onPush((. _) => setHasFocus(_prev => true))
          |> Wonka.switchMap((. hadFocusOnTouchStart) =>
               Wonka.merge([|
                 Wonka.fromDomEvent(windowElement, "mouseup"),
@@ -109,22 +105,7 @@ let make =
               |> Wonka.take(1)
               |> Wonka.map((. _) => hadFocusOnTouchStart)
             )
-         |> Wonka.subscribe((. hadFocusOnTouchStart) => {
-              if (!hadFocusOnTouchStart) {
-                setHasFocus(_prev => false);
-              };
-              let inputElement =
-                React.Ref.current(inputRef) |> Js.Nullable.toOption;
-              switch (inputElement) {
-              | Some(element) =>
-                let _ =
-                  element
-                  |> Webapi.Dom.HtmlElement.ofElement
-                  |> Belt.Option.map(_, Webapi.Dom.HtmlElement.focus);
-                ();
-              | None => ()
-              };
-            })
+         |> Wonka.publish
          |> WonkaHelpers.getEffectCleanup
        );
   });
@@ -144,7 +125,20 @@ let make =
   });
 
   <div
-    onClick={_ => onChange(!checked)}
+    onClick={_ => {
+      let _ =
+        React.Ref.current(inputRef)
+        |> Js.Nullable.toOption
+        |> Belt.Option.flatMap(_, Webapi.Dom.HtmlElement.ofElement)
+        |> Belt.Option.map(
+             _,
+             el => {
+               Webapi.Dom.HtmlElement.focus(el);
+               Webapi.Dom.HtmlElement.click(el);
+             },
+           );
+      ();
+    }}
     className={Styles.track(theme.colors)}
     ref={ReactDOMRe.Ref.domRef(trackRef)}>
     {renderUnchecked()}
@@ -153,6 +147,12 @@ let make =
     <input
       type_="checkbox"
       ariaLabel="Switch between Dark and Light mode"
+      onChange={event => {
+        let target = ReactEvent.Form.target(event);
+        let checked = target##checked;
+        onChange(checked);
+        ();
+      }}
       checked
       className=Styles.hiddenInput
       ref={ReactDOMRe.Ref.domRef(inputRef)}
