@@ -28,7 +28,7 @@ type emailSignInOption = {
   forceSameDevice: option(bool),
   requireDisplayName: option(bool),
   signInMethod: option(string),
-  emailLinkSignIn: option(unit => Firebase.ActionCodeSettings.t),
+  emailLinkSignIn: option(unit => Firebase_auth.ActionCodeSettings.t),
 };
 
 type recaptchaParameters = {
@@ -78,7 +78,7 @@ type config = {
   queryParameterForSignInSuccessUrl: option(string),
   queryParameterForWidgetMode: option(string),
   signInFlow: option(string),
-  signInOptions: option(array(Firebase.AuthProvider.providerId)),
+  signInOptions: option(array(Firebase_auth.AuthProvider.providerId)),
   signInSuccessUrl: option(string),
   siteName: option(string),
   tosUrl: option(urlKind),
@@ -87,7 +87,7 @@ type config = {
 };
 
 [@bs.new] [@bs.module "firebaseui"] [@bs.scope "auth"]
-external authUI: (Firebase.Auth.t, ~appId: string=?, unit) => t = "AuthUI";
+external authUI: (Firebase_auth.t, ~appId: string=?, unit) => t = "AuthUI";
 let authUI = authUI;
 [@bs.send] external disableAutoSignIn: t => unit = "disableAutoSignIn";
 [@bs.send]
