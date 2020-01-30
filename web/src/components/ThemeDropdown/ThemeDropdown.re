@@ -7,7 +7,6 @@ type detail = {
 let themesDetails = [
   {id: 0, theme: Themes.Standard, description: "STANDARD"},
   {id: 1, theme: Themes.Dark, description: "DARK"},
-  {id: 2, theme: Themes.Black, description: "BLACK"},
 ];
 
 [@react.component]

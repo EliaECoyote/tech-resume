@@ -1,7 +1,11 @@
 type colors = {
+  text: Css.Types.Color.t,
+  text2: Css.Types.Color.t,
   primary: Css.Types.Color.t,
   background: Css.Types.Color.t,
+  surface: Css.Types.Color.t,
   accent: Css.Types.Color.t,
+  error: Css.Types.Color.t,
 };
 
 type state = {
@@ -14,20 +18,23 @@ type actions =
 
 let getColors = theme =>
   switch (theme) {
-  | Themes.Black => {
-      primary: `hex("fff"),
-      background: `hex("000"),
-      accent: `hex("f38518"),
-    }
   | Themes.Dark => {
-      primary: `hex("d4d4d4"),
-      background: `hex("1e1e1e"),
-      accent: `hex("c6c6c6"),
+      text: `hex("fff"),
+      text2: `hex("000"),
+      primary: `hex("03dac6"),
+      background: `hex("282c33"),
+      surface: `hex("282c33c7"),
+      accent: `hex("03dac6"),
+      error: `hex("cf6679"),
     }
   | Themes.Standard => {
-      primary: `hex("000"),
-      background: `hex("fffffe"),
+      text: `hex("000"),
+      text2: `hex("fff"),
+      primary: `hex("006064"),
+      background: `hex("f6f7f9"),
+      surface: `hex("282c33c7"),
       accent: `hex("c6c6c6"),
+      error: `hex("cf6679"),
     }
   };
 

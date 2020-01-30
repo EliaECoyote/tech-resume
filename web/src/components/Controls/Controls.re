@@ -8,12 +8,13 @@ module Styles = {
   let cta = (colors: ThemeContext.colors, ~size: size=Large, ()) =>
     style([
       textDecoration(`none),
-      backgroundColor(colors.background),
-      border(`px(2), `solid, colors.accent),
+      backgroundColor(colors.primary),
+      border(`px(0), `none, `transparent),
       textTransform(`uppercase),
       borderRadius(`px(4)),
-      color(colors.primary),
+      color(colors.text2),
       transition(~duration=250, "opacity"),
+      cursor(`pointer),
       hover([opacity(0.8)]),
       focus([opacity(0.6)]),
       disabled([opacity(0.3)]),

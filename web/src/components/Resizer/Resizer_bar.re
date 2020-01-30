@@ -10,6 +10,7 @@ module Styles = {
       justifyContent(`center),
       alignItems(`center),
       hover([opacity(1.0)]),
+      backgroundColor(`hex("000")),
       transition(~duration=200, "opacity"),
     ]);
 
