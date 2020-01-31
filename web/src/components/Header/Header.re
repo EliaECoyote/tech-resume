@@ -17,7 +17,8 @@ module Styles = {
     style([
       gridArea(`ident("theme-selector")),
       display(`flex),
-      alignItems(`center),
+      height(`percent(100.0)),
+      alignItems(`flexEnd),
     ]);
   let spacer = style([gridArea(`ident("title"))]);
   let authWidget =
