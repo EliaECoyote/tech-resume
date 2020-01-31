@@ -39,7 +39,6 @@ let make = () => {
   open AsyncTask;
   let (editorRef, layout, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
-  let (themeState, _) = React.useContext(ThemeContext.context);
   let editorTextRef = React.useRef("");
 
   // *editorRef* value updates handling
@@ -113,15 +112,7 @@ let make = () => {
       </Resizer.Container>
       <Resizer.Bar onResizeEnd=layout />
       <Resizer.Container side=Resizer_container.Right>
-        <Output
-          className=Styles.output
-          pdf=?{
-            switch (state) {
-            | Success(data) => Some(data)
-            | _ => None
-            }
-          }
-        />
+        <Output className=Styles.output requestState=state />
       </Resizer.Container>
     </Resizer>
   </div>;
