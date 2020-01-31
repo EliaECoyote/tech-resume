@@ -1,7 +1,18 @@
 module Styles = {
   open Css;
   let canvas =
-    style([width(`percent(100.0)), backgroundColor(Css_Colors.white)]);
+    style([
+      width(`percent(100.0)),
+      backgroundColor(Css_Colors.white),
+      boxShadow(
+        Shadow.box(
+          ~x=`zero,
+          ~y=`zero,
+          ~blur=`px(10),
+          `rgba((0, 0, 0, 0.5)),
+        ),
+      ),
+    ]);
 };
 
 [@react.component]

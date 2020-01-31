@@ -1,3 +1,16 @@
+module Styles = {
+  open Css;
+
+  let disabledRules = [opacity(0.3)];
+
+  let link =
+      (colors: ThemeContext.colors, ~size=Controls.Large, ~disabled=false, ()) =>
+    merge([
+      Controls.Styles.cta(colors, ~size, ()),
+      style(disabled ? Controls.Styles.disabledRules : []),
+    ]);
+};
+
 [@react.component]
 let make =
   React.forwardRef(
