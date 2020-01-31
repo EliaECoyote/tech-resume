@@ -47,7 +47,10 @@ let make = (~onResizeEnd=() => ()) => {
          |])
        )
     |> Belt.Option.getWithDefault(_, Wonka.never)
-    |> Wonka.onPush((. _event) => {dispatch(Resizer_context.StartResizing)})
+    |> Wonka.onPush((. event) => {
+         Webapi.Dom.Event.preventDefault(event);
+         dispatch(Resizer_context.StartResizing);
+       })
     |> Wonka.switchMap((. _) =>
          Wonka.merge([|
            Wonka.fromDomEvent(windowElement, "mousemove"),
