@@ -1,8 +1,8 @@
 module Styles = {
   open Css;
   let resizer =
-    style([overflowX(`hidden), transition(~duration=200, "filter")]);
-  let resizing = style([filter([`blur(`px(5))])]);
+    style([overflowX(`hidden), transition(~duration=200, "opacity")]);
+  let resizing = style([opacity(0.75)]);
 };
 
 type side =

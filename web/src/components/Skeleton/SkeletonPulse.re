@@ -19,7 +19,7 @@ module Styles = {
       backgroundColor(`hex("eee")),
       backgroundRepeat(`noRepeat),
       unsafe(
-        "background-image",
+        "backgroundImage",
         "linear-gradient(90deg, #eee, #d0d0d0, #eee)",
       ),
       animationName(pulse),

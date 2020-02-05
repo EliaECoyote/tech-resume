@@ -54,7 +54,7 @@ let make = (~className=?, ~requestState, ()) => {
     | (Fetching, _)
     | (_, Fetching) => <SkeletonPulse className=Styles.skeleton />
     | (Idle, _)
-    | (_, Idle) => <SkeletonPulse className=Styles.skeleton />
+    | (_, Idle) => React.null
     | (Error, _)
     | (_, Error) => React.string @@ "error"
     | (Success(_), Success(modelArray)) =>
