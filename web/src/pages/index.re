@@ -19,7 +19,11 @@ module Styles = {
       justifyContent(`center),
     ]);
   let resizer =
-    style([gridArea(`ident("content")), height(`percent(100.0))]);
+    style([
+      gridArea(`ident("content")),
+      height(`percent(100.0)),
+      border(`px(2), `solid, Css.darkcyan),
+    ]);
   let editor = (colors: ThemeContext.colors) =>
     style([
       border(`px(2), `solid, colors.accent),
@@ -39,7 +43,6 @@ let make = () => {
   open AsyncTask;
   let (editorRef, layout, editorTextSource) = UseMonaco.hook();
   let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
-  let (themeState, _) = React.useContext(ThemeContext.context);
   let editorTextRef = React.useRef("");
 
   // *editorRef* value updates handling
@@ -87,25 +90,17 @@ let make = () => {
         className=Styles.outputTool>
         {React.string("Refresh")}
       </Button>
-      // <Link
-      //   download=true
-      //   href={Url.make(
-      //     ~scheme=Config.pdfgenScheme,
-      //     ~host=Config.pdfgenHost,
-      //     ~path="",
-      //     ~qsComponents=[|("html", html)|],
-      //     (),
-      //   )}>
-      //   {React.string("Download")}
-      // </Link>
-      <span>
-        {switch (state) {
-         | Success(_) => React.string("Data loaded successfully!")
-         | Fetching => React.string("Fetching....")
-         | Error => React.string("Data failed to load")
-         | Idle => React.string("Ready for some fetching!")
-         }}
-      </span>
+      <Link
+        download=true
+        disabled={
+          switch (state) {
+          | Success(_) => false
+          | _ => true
+          }
+        }
+        href="">
+        {React.string("Download")}
+      </Link>
     </div>
     <Resizer className=Styles.resizer>
       <Resizer.Container side=Resizer_container.Left>
@@ -113,15 +108,7 @@ let make = () => {
       </Resizer.Container>
       <Resizer.Bar onResizeEnd=layout />
       <Resizer.Container side=Resizer_container.Right>
-        <Output
-          className=Styles.output
-          pdf=?{
-            switch (state) {
-            | Success(data) => Some(data)
-            | _ => None
-            }
-          }
-        />
+        <Output className=Styles.output requestState=state />
       </Resizer.Container>
     </Resizer>
   </div>;
