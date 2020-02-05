@@ -5,8 +5,7 @@ module Styles = {
 
 [@react.component]
 let make =
-  React.forwardRef(editorRef => {
-    let (state, _) = React.useContext(ThemeContext.context);
+  React.forwardRef(editorRef =>
     <div
       className=Styles.editor
       ref=?{
@@ -14,5 +13,5 @@ let make =
         |> Js.Nullable.toOption
         |> Belt.Option.map(_, ReactDOMRe.Ref.domRef)
       }
-    />;
-  });
+    />
+  );

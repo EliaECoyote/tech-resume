@@ -32,7 +32,6 @@ let hook = () => {
       // instantiating the github auth provider as described in the docs
       // https://firebase.google.com/docs/auth/web/github-auth#handle_the_sign-in_flow_with_the_firebase_sdk
       let _provider = Firebase.Auth.GithubAuthProvider.make();
-
       Firebase.Auth.make()
       |> Firebase.Auth.authStateChange
       |> Wonka.subscribe((. event) => sendEvent(event))
@@ -43,19 +42,21 @@ let hook = () => {
 
   let signOut =
     React.useCallback1(
-      () => {
+      () =>
         Firebase.Auth.make()
         |> Firebase.Auth.signOut
         |> WonkaHelpers.fromPromise
-        |> Wonka.subscribe((. result) =>
+        |> Wonka.take(1)
+        |> Wonka.onPush((. result) =>
              switch (result) {
              | Belt.Result.Ok(_) => ()
              | Belt.Result.Error(error) =>
-               Js.log(error);
+               Js.Console.error(error);
                sendEvent(Firebase.Auth.AnonymousLogin);
              }
            )
-      },
+        |> Wonka.publish
+        |> (_ => ()),
       [|sendEvent|],
     );
 

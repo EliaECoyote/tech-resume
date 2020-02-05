@@ -1,11 +1,15 @@
 // Further types docs: https://github.com/firebase/firebase-js-sdk/blob/master/packages/firestore/index.ts
-[%bs.raw {| require("firebase/firestore") |}];
 
 type firestoreT;
 
 type documentDataT = Js.Json.t;
 type dataConverterT('converterData);
+
+type documentChangeT('data');
+type snapshotMetadataT;
 type documentSnapshotT('data);
+type querySnapshotT('data);
+type queryDocumentSnapshotT('data);
 
 type documentReferenceT('data);
 type collectionReferenceT('data);
@@ -13,6 +17,69 @@ type collectionReferenceT('data);
 type setOptionsT = {
   merge: option(bool),
   mergeFields: option(array(string)),
+};
+type getOptionsT = {source: option(string)};
+type snapshotOptionsT = {serverTimestamps: option(string)};
+type snapshotListenOptionsT = {includeMetadataChanges: option(bool)};
+
+module DocumentSnapshot = {
+  type t('data) = documentSnapshotT('data);
+
+  [@bs.send] external data: (t('data'), unit) => option('data) = "data";
+
+  [@bs.send]
+  external dataWithOptions: (t('data), snapshotOptionsT) => option('data) =
+    "data";
+
+  [@bs.send]
+  external get: (t('data), ~fieldPath: string) => Js.Json.t = "get";
+
+  [@bs.send]
+  external getWithOptions:
+    (t('data), ~fieldPath: string, ~options: snapshotOptionsT) => Js.Json.t =
+    "get";
+
+  [@bs.get] external get_id: t('data) => string = "id";
+
+  [@bs.get] external get_ref: t('data) => documentReferenceT('data) = "ref";
+
+  [@bs.get] external get_exists: t('data) => bool = "exists";
+
+  [@bs.get] external get_metadata: t('data) => snapshotMetadataT = "metadata";
+
+  [@bs.send]
+  external isEqual: (t('data), ~other: t('data)) => bool = "isEqual";
+};
+
+module QueryDocumentSnapshot = {
+  type t('data) = queryDocumentSnapshotT('data);
+
+  external toQuerySnapshot: t('data) => querySnapshotT('data) = "%identity";
+
+  [@bs.send] external data: t('data) => 'data = "data";
+
+  [@bs.send]
+  external dataWithOptions: (t('data), snapshotOptionsT) => 'data = "data";
+};
+
+module QuerySnapshot = {
+  type t('data) = querySnapshotT('data);
+
+  [@bs.send]
+  external docChanges: t('data) => array(documentChangeT('data')) =
+    "docChanges";
+
+  [@bs.send]
+  external docChangesWithOptions:
+    (t('data), snapshotListenOptionsT) => array(documentChangeT('data')) =
+    "docChanges";
+
+  [@bs.send]
+  external forEach:
+    (t('data), (. queryDocumentSnapshotT('data)) => unit) => unit =
+    "forEach";
+
+  external isEqual: (t('data), ~other: t('data)) => bool = "isEqual";
 };
 
 module DocumentReference = {
@@ -39,8 +106,7 @@ module DocumentReference = {
 
   [@bs.send]
   external getWithOptions:
-    (t('data), [@bs.string] [ | `default | `server | `cache]) =>
-    Js.Promise.t(documentSnapshotT('data)) =
+    (t('data), getOptionsT) => Js.Promise.t(documentSnapshotT('data)) =
     "get";
 
   [@bs.send] external delete: t('data) => Js.Promise.t(unit) = "delete";
@@ -103,15 +169,24 @@ module CollectionReference = {
 
   [@bs.get] external get_path: t('data) => string = "path";
 
+  // [@bs.get] external get(options?: GetOptions): Promise<QuerySnapshot<T>>;
+
   [@bs.send]
   external doc:
-    (t('data), ~documentPath: option(string)=?) =>
-    DocumentReference.t('data) =
+    (t('data), ~documentPath: string=?) => DocumentReference.t('data) =
     "doc";
 
   [@bs.send]
   external add: (t('data), ~data: 'data) => DocumentReference.t('data) =
     "add";
+
+  [@bs.send]
+  external get: t('data) => Js.Promise.t(querySnapshotT('data)) = "get";
+
+  [@bs.send]
+  external getWithOptions:
+    (t('data), getOptionsT) => Js.Promise.t(querySnapshotT('data)) =
+    "get";
 
   [@bs.send]
   external isEqual: (t('data), ~other: t('data)) => bool = "isEqual";

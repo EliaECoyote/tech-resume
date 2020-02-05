@@ -6,8 +6,6 @@ module AuthProvider = {
 module GithubAuthProvider = {
   type t = AuthProvider.t;
 
-  [%bs.raw {| require("firebase/auth") |}];
-
   [@bs.new] [@bs.module "firebase/app"] [@bs.scope "auth"]
   external make: unit => t = "GithubAuthProvider";
 

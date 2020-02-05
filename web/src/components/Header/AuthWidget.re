@@ -72,8 +72,7 @@ let startFirebaseUIWidget = () =>
      });
 
 [@react.component]
-let make =
-    (~authStatus: UseAuth.status, ~signOut: unit => Wonka.Types.subscriptionT) => {
+let make = (~authStatus: UseAuth.status, ~signOut: unit => unit) => {
   React.useEffect1(
     () => {
       switch (authStatus) {
@@ -94,9 +93,7 @@ let make =
          |> React.string}
       </span>
       <Button
-        className=Styles.cta
-        size=Controls.Small
-        onClick={_ => signOut() |> (_ => ())}>
+        className=Styles.cta size=Controls.Small onClick={_ => signOut()}>
         {React.string("Log out")}
       </Button>
       // user mini thumb rendering
