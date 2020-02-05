@@ -24,10 +24,6 @@ module Styles = {
   let content = style([gridArea(`ident("content"))]);
 };
 
-[%bs.raw {| require("firebase/app") |}];
-[%bs.raw {| require("firebase/auth") |}];
-[%bs.raw {| require("firebase/firestore") |}];
-
 InitializeFirebase.init();
 
 module AppContent = {

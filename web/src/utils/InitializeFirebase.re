@@ -1,3 +1,7 @@
+[%bs.raw {| require("firebase/app") |}];
+[%bs.raw {| require("firebase/auth") |}];
+[%bs.raw {| require("firebase/firestore") |}];
+
 let firebaseOptions: Firebase.firebaseOptions = {
   apiKey: Some("AIzaSyBfPVUI614vItgOep-x9ZGCgJZSV4HRcoI"),
   authDomain: Some("tech-resume.firebaseapp.com"),

@@ -212,8 +212,6 @@ module UserUtils = {
 
 type t;
 
-[%bs.raw {| require("firebase/auth") |}];
-
 [@bs.module "firebase/app"] external make: unit => t = "auth";
 
 type nextOrObserver = Js.Nullable.t(User.t) => unit;
