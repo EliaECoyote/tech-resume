@@ -9,12 +9,13 @@ type parsedSetDataT;
 type maybeDocumentT;
 type transactionT;
 type documentKeyT;
-type documentChangeT('data');
+type documentChangeT('data);
 type snapshotMetadataT;
 type documentSnapshotT('data);
 type querySnapshotT('data);
 type queryDocumentSnapshotT('data);
 
+type queryT('data);
 type documentReferenceT('data);
 type collectionReferenceT('data);
 
@@ -32,26 +33,114 @@ module DocumentKey = {
   [@bs.send] external hasCollectionId: (t, string) => bool = "hasCollectionId";
 
   [@bs.send] external isEqual: (t, t) => bool = "isEqual";
-  // TODO continue implementing document key methods
+
+  [@bs.send] external toString: t => string = "toString";
 };
 
 module Transaction = {
   type t = transactionT;
 
   [@bs.send]
-  external lookup:
-    (t, ~keys: array(documentKeyT)) => Js.Promise.t(array(maybeDocumentT)) =
-    "lookup";
+  external get:
+    (t, ~documentRef: documentReferenceT('data)) =>
+    Js.Promise.t(documentSnapshotT('data)) =
+    "get";
 
   [@bs.send]
-  external set: (t, ~key: documentKeyT, ~data: parsedSetDataT) => unit = "set";
-  // TODO continue implementing transaction methods
+  external set:
+    (t, ~documentRef: documentReferenceT('data), ~data: 'data) => transactionT =
+    "set";
+
+  [@bs.send]
+  external setWithOptions:
+    (
+      t,
+      ~documentRef: documentReferenceT('data),
+      ~data: 'data,
+      ~options: setOptionsT
+    ) =>
+    transactionT =
+    "set";
+
+  [@bs.send]
+  external update:
+    (t, ~documentRef: documentReferenceT('data), ~data: Js.Json.t) =>
+    transactionT =
+    "update";
+
+  [@bs.send]
+  external updateValue:
+    (
+      t,
+      ~documentRef: documentReferenceT('data),
+      ~field: string,
+      ~value: 'value
+    ) =>
+    transactionT =
+    "update";
+
+  [@bs.send]
+  external delete:
+    (t, ~documentRef: documentReferenceT('data)) => transactionT =
+    "delete";
+};
+
+module Query = {
+  type t('data) = queryT('data);
+  type orderByDirectionT;
+
+  [@bs.send]
+  external where:
+    (t('data), ~fieldPath: string, ~opStr: string, ~value: Js.Json.t) =>
+    t('data) =
+    "where";
+
+  [@bs.send]
+  external orderBy:
+    (t('data), ~fieldPath: string, ~directionStr: orderByDirectionT=?) =>
+    t('data) =
+    "orderBy";
+
+  [@bs.send] external limit: (t('data), ~limit: int) => t('data) = "limit";
+
+  [@bs.send]
+  external limitToLast: (t('data), ~limit: int) => t('data) = "limitToLast";
+
+  [@bs.send]
+  external startAt:
+    (t('data), ~snapshot: documentSnapshotT(Js.Json.t)) => t('data) =
+    "startAt";
+
+  [@bs.send]
+  external startAfter:
+    (t('data), ~snapshot: documentSnapshotT(Js.Json.t)) => t('data) =
+    "startAfter";
+
+  [@bs.send]
+  external endBefore:
+    (t('data), ~snapshot: documentSnapshotT(Js.Json.t)) => t('data) =
+    "endBefore";
+
+  [@bs.send]
+  external endAt:
+    (t('data), ~snapshot: documentSnapshotT(Js.Json.t)) => t('data) =
+    "endAt";
+
+  [@bs.send]
+  external isEqual: (t('data), ~other: t('data)) => bool = "isEqual";
+
+  [@bs.send] external get: t('data) => querySnapshotT('data) = "get";
+
+  [@bs.send]
+  external getWithOptions:
+    (t('data), getOptionsT) => Js.Promise.t(querySnapshotT('data)) =
+    "get";
 };
 
 module DocumentSnapshot = {
   type t('data) = documentSnapshotT('data);
 
-  [@bs.send] external data: (t('data'), unit) => option('data) = "data";
+  [@bs.send] external data: (t('data), unit) => option('data) = "data";
 
   [@bs.send]
   external dataWithOptions: (t('data), snapshotOptionsT) => option('data) =
@@ -91,13 +180,21 @@ module QueryDocumentSnapshot = {
 module QuerySnapshot = {
   type t('data) = querySnapshotT('data);
 
+  [@bs.get] external get_query: t('data) => queryT('data) = "query";
+  [@bs.get] external get_metadata: t('data) => snapshotMetadataT = "metadata";
+  [@bs.get]
+  external get_docs: t('data) => array(queryDocumentSnapshotT('data)) =
+    "docs";
+  [@bs.get] external get_size: t('data) => int = "size";
+  [@bs.get] external get_empty: t('data) => bool = "empty";
+
   [@bs.send]
-  external docChanges: t('data) => array(documentChangeT('data')) =
+  external docChanges: t('data) => array(documentChangeT('data)) =
     "docChanges";
 
   [@bs.send]
   external docChangesWithOptions:
-    (t('data), snapshotListenOptionsT) => array(documentChangeT('data')) =
+    (t('data), snapshotListenOptionsT) => array(documentChangeT('data)) =
     "docChanges";
 
   [@bs.send]
