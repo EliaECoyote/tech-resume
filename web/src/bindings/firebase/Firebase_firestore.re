@@ -296,8 +296,6 @@ module CollectionReference = {
 
   [@bs.get] external get_path: t('data) => string = "path";
 
-  // [@bs.get] external get(options?: GetOptions): Promise<QuerySnapshot<T>>;
-
   [@bs.send]
   external doc:
     (t('data), ~documentPath: string=?) => DocumentReference.t('data) =

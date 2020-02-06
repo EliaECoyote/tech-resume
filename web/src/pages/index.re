@@ -38,8 +38,12 @@ module Styles = {
     ]);
 };
 
-// Js.Dict.set(dict, "resumes", Js.Json.array([||]));
-let getDefaultUserObject = () => Js.Dict.empty() |> Js.Json.object_;
+let getDefaultResumeObject = () => {
+  let resume = Js.Dict.empty();
+  Js.Dict.set(resume, "template", Js.Json.string(""));
+  Js.Dict.set(resume, "theme", Js.Json.string("124aa2e3"));
+  Js.Json.object_(resume);
+};
 
 [@react.component]
 let make = () => {
@@ -79,7 +83,29 @@ let make = () => {
         // |> Firebase.Firestore.DocumentReference.
         Firebase.Firestore.CollectionReference.get(resumesDetailsRef)
         |> WonkaHelpers.fromPromise
-        |> Wonka.subscribe((. result) => Js.log(result))
+        |> Wonka.subscribe((. snapshot) => {
+             let _ =
+               switch (snapshot) {
+               | Belt.Result.Ok(snapshot) =>
+                 let empty =
+                   Firebase.Firestore.QuerySnapshot.get_empty(snapshot);
+                 if (empty) {
+                   let _ =
+                     Firebase.Firestore.CollectionReference.add(
+                       resumesDetailsRef,
+                       ~data=getDefaultResumeObject(),
+                     )
+                     |> WonkaHelpers.fromPromise
+                     |> Wonka.subscribe((. value) =>
+                          Js.log(("default resume value added", value))
+                        );
+                   ();
+                 };
+                 Js.log2("empty: ", empty);
+               | Belt.Result.Error(error) => Js.Console.error(error)
+               };
+             Js.log(snapshot);
+           })
         |> WonkaHelpers.getEffectCleanup;
       // |> Firebase.Firestore.DocumentReference.collection(
       //      _,
