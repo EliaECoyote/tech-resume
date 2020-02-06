@@ -5,6 +5,10 @@ type firestoreT;
 type documentDataT = Js.Json.t;
 type dataConverterT('converterData);
 
+type parsedSetDataT;
+type maybeDocumentT;
+type transactionT;
+type documentKeyT;
 type documentChangeT('data');
 type snapshotMetadataT;
 type documentSnapshotT('data);
@@ -21,6 +25,28 @@ type setOptionsT = {
 type getOptionsT = {source: option(string)};
 type snapshotOptionsT = {serverTimestamps: option(string)};
 type snapshotListenOptionsT = {includeMetadataChanges: option(bool)};
+
+module DocumentKey = {
+  type t = documentKeyT;
+
+  [@bs.send] external hasCollectionId: (t, string) => bool = "hasCollectionId";
+
+  [@bs.send] external isEqual: (t, t) => bool = "isEqual";
+  // TODO continue implementing document key methods
+};
+
+module Transaction = {
+  type t = transactionT;
+
+  [@bs.send]
+  external lookup:
+    (t, ~keys: array(documentKeyT)) => Js.Promise.t(array(maybeDocumentT)) =
+    "lookup";
+
+  [@bs.send]
+  external set: (t, ~key: documentKeyT, ~data: parsedSetDataT) => unit = "set";
+  // TODO continue implementing transaction methods
+};
 
 module DocumentSnapshot = {
   type t('data) = documentSnapshotT('data);
@@ -177,7 +203,8 @@ module CollectionReference = {
     "doc";
 
   [@bs.send]
-  external add: (t('data), ~data: 'data) => DocumentReference.t('data) =
+  external add:
+    (t('data), ~data: 'data) => Js.Promise.t(DocumentReference.t('data)) =
     "add";
 
   [@bs.send]
@@ -203,3 +230,8 @@ module CollectionReference = {
 external collection:
   (firestoreT, ~collectionPath: string) => collectionReferenceT(documentDataT) =
   "collection";
+
+[@bs.send]
+external runTransaction:
+  (firestoreT, transactionT => Js.Promise.t('a)) => Js.Promise.t('a) =
+  "runTransaction";

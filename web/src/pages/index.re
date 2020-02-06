@@ -38,22 +38,61 @@ module Styles = {
     ]);
 };
 
+// Js.Dict.set(dict, "resumes", Js.Json.array([||]));
+let getDefaultUserObject = () => Js.Dict.empty() |> Js.Json.object_;
+
 [@react.component]
 let make = () => {
   open AsyncTask;
-  let (editorRef, layout, editorTextSource) = UseMonaco.hook();
-  let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
   let editorTextRef = React.useRef("");
+  let (editorRef, layout) =
+    UseMonaco.hook(~onTextChange=React.Ref.setCurrent(editorTextRef));
+  let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
+  let (authStatus, _signOut) = React.useContext(AuthContext.context);
 
-  // *editorRef* value updates handling
   React.useEffect1(
-    () =>
-      editorTextSource
-      |> Wonka.subscribe((. text) =>
-           React.Ref.setCurrent(editorTextRef, text)
-         )
-      |> WonkaHelpers.getEffectCleanup,
-    [|editorTextSource|],
+    () => {
+      switch (authStatus) {
+      | Logged(user) =>
+        let db = Firebase.Firestore.make();
+        let uid = user.uid;
+        let collectionPath = {j|users/$uid/resumesDetails|j};
+        let resumesDetailsRef =
+          Firebase.Firestore.collection(db, ~collectionPath);
+        Js.log(("requesting", collectionPath));
+        // Firebase.Firestore.DocumentReference.setWithOptions(
+        //   userDocRef,
+        //   ~value=getDefaultUserObject(),
+        //   ~options={merge: Some(true), mergeFields: None},
+        // )
+        // let data = getDefaultUserObject();
+        // let documentRef =
+        //   Firebase.Firestore.CollectionReference.add(
+        //     resumesDetailsRef,
+        //     ~data,
+        //   );
+        // Js.log(("document ref: ", documentRef));
+        // Js.log((
+        //   "document ID: ",
+        //   Firebase.Firestore.DocumentReference.get_id(documentRef),
+        // ));
+        // |> Firebase.Firestore.DocumentReference.
+        Firebase.Firestore.CollectionReference.get(resumesDetailsRef)
+        |> WonkaHelpers.fromPromise
+        |> Wonka.subscribe((. result) => Js.log(result))
+        |> WonkaHelpers.getEffectCleanup;
+      // |> Firebase.Firestore.DocumentReference.collection(
+      //      _,
+      //      ~pathString="resumes",
+      //    )
+      // |> Firebase.Firestore.CollectionReference.getWithOptions(
+      //      _,
+      //      {source: Some("server")},
+      //    )
+      | _ => None
+      }
+    },
+    [|authStatus|],
   );
 
   // md2pdf conversion api handling
