@@ -181,11 +181,15 @@ module QuerySnapshot = {
   type t('data) = querySnapshotT('data);
 
   [@bs.get] external get_query: t('data) => queryT('data) = "query";
+
   [@bs.get] external get_metadata: t('data) => snapshotMetadataT = "metadata";
+
   [@bs.get]
   external get_docs: t('data) => array(queryDocumentSnapshotT('data)) =
     "docs";
+
   [@bs.get] external get_size: t('data) => int = "size";
+
   [@bs.get] external get_empty: t('data) => bool = "empty";
 
   [@bs.send]
