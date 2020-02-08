@@ -1,11 +1,3 @@
-module InitialValue = {
-  type fn('input, 'output) = 'input => 'output;
-
-  external toReactCallback:
-    fn('input, 'output) => React.callback('input, 'output) =
-    "%identity";
-};
-
 type state = (
   UseAuth.status,
   React.callback(unit, Wonka_types.subscriptionT),
