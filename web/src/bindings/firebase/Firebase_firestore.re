@@ -129,7 +129,8 @@ module Query = {
   [@bs.send]
   external isEqual: (t('data), ~other: t('data)) => bool = "isEqual";
 
-  [@bs.send] external get: t('data) => querySnapshotT('data) = "get";
+  [@bs.send]
+  external get: t('data) => Js.Promise.t(querySnapshotT('data)) = "get";
 
   [@bs.send]
   external getWithOptions:
@@ -140,7 +141,7 @@ module Query = {
 module DocumentSnapshot = {
   type t('data) = documentSnapshotT('data);
 
-  [@bs.send] external data: (t('data), unit) => option('data) = "data";
+  [@bs.send] external data: t('data) => option('data) = "data";
 
   [@bs.send]
   external dataWithOptions: (t('data), snapshotOptionsT) => option('data) =
@@ -170,6 +171,8 @@ module QueryDocumentSnapshot = {
   type t('data) = queryDocumentSnapshotT('data);
 
   external toQuerySnapshot: t('data) => querySnapshotT('data) = "%identity";
+  external toDocumentSnapshot: t('data) => documentSnapshotT('data) =
+    "%identity";
 
   [@bs.send] external data: t('data) => 'data = "data";
 
@@ -288,6 +291,8 @@ module DocumentReference = {
 module CollectionReference = {
   type t('data) = collectionReferenceT('data);
 
+  external asQuery: t('data) => queryT('data) = "%identity";
+
   [@bs.get] external get_id: t('data) => string = "id";
 
   [@bs.get]
@@ -305,14 +310,6 @@ module CollectionReference = {
   external add:
     (t('data), ~data: 'data) => Js.Promise.t(DocumentReference.t('data)) =
     "add";
-
-  [@bs.send]
-  external get: t('data) => Js.Promise.t(querySnapshotT('data)) = "get";
-
-  [@bs.send]
-  external getWithOptions:
-    (t('data), getOptionsT) => Js.Promise.t(querySnapshotT('data)) =
-    "get";
 
   [@bs.send]
   external isEqual: (t('data), ~other: t('data)) => bool = "isEqual";
