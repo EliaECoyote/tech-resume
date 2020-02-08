@@ -217,10 +217,6 @@ type t;
 type nextOrObserver = Js.Nullable.t(User.t) => unit;
 type error = Js.Exn.t => unit;
 type unsubscribe = unit => unit;
-type events =
-  | AnonymousLogin
-  | UserLoginSuccess(User.t)
-  | UserLoginFailed(Js.Exn.t);
 
 [@bs.send]
 external getRedirectResult: t => Js.Promise.t(string) = "getRedirectResult";
@@ -239,20 +235,3 @@ external onAuthStateChanged:
   ) =>
   unsubscribe =
   "onAuthStateChanged";
-let getAuthEventFromUser = (user: Js.Nullable.t(User.t)) =>
-  switch (user->Js.Nullable.toOption) {
-  | Some(value) => UserLoginSuccess(value)
-  | None => AnonymousLogin
-  };
-// onAuthStateChanged wonka wrapper
-let authStateChange = auth =>
-  Wonka.make((. observer: Wonka.Types.observerT(events)) => {
-    let unsubscribe =
-      onAuthStateChanged(
-        auth,
-        ~nextOrObserver=user => getAuthEventFromUser(user) |> observer.next,
-        ~error=error => UserLoginFailed(error) |> observer.next,
-        (),
-      );
-    (.) => unsubscribe();
-  });
