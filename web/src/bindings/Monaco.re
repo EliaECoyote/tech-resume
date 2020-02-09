@@ -87,6 +87,7 @@ let setTheme = (. theme) => Theme.stringOfColors(theme)->setTheme;
 external getValue:
   (Types.monaco, Js.Nullable.t(Types.getValueOptions)) => string =
   "getValue";
+
 let getValue =
     (~monaco: Types.monaco, ~options: option(Types.getValueOptions)=None, ()) =>
   Js.Nullable.fromOption(options) |> getValue(monaco);
@@ -103,24 +104,3 @@ let getValue =
 external onDidChangeModelContent:
   (Types.monaco, Types.modelContentChangedEvent => unit) => Types.disposable =
   "onDidChangeModelContent";
-
-/**
- * builds a wonka source that pushes values
- * each time the content of the monaco
- * instance changes. The pushed values
- * contain the latest updated monaco text
- * content.
- */
-let makeMonacoTexthangeWonkaSource = (monaco): Wonka.Types.sourceT(string) =>
-  Wonka.make((. observer: Wonka.Types.observerT(string)) => {
-    let disposable =
-      monaco
-      |> onDidChangeModelContent(
-           _,
-           _ => {
-             let value = getValue(~monaco, ());
-             observer.next(value);
-           },
-         );
-    (.) => dispose(disposable);
-  });

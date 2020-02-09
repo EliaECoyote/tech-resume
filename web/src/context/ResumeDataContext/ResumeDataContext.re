@@ -3,7 +3,7 @@ type state = (
   React.callback(UseResumeData.resumeDataT, unit),
 );
 
-let context = React.createContext((AsyncTask.Idle, () => ()));
+let context = React.createContext((AsyncTask.Idle, _ => ()));
 
 module Provider = {
   let makeProps = (~value, ~children, ()) => {

@@ -47,6 +47,7 @@ let hook = () => {
     () => {
       switch (authStatus) {
       | Logged(user) =>
+        send(LoadData);
         let db = Firebase.Firestore.make();
         let uid = user.uid;
         let collectionPath = {j|users/$uid/resumesDetails|j};
@@ -126,6 +127,7 @@ let hook = () => {
         // load template & theme from localStorage -
         // when resume data isn't available, set it
         // on the fly in localStorage
+        send(LoadData);
         let template =
           Dom.Storage.localStorage |> Dom.Storage.getItem("template");
         let theme = Dom.Storage.localStorage |> Dom.Storage.getItem("theme");
