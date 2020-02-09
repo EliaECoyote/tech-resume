@@ -24,10 +24,13 @@ module Styles = {
   let content = style([gridArea(`ident("content"))]);
 };
 
+InitializeFirebase.init();
+
 module AppContent = {
   [@react.component]
   let make = (~children) => {
     let (state, _) = React.useContext(ThemeContext.context);
+    let (authStatus, signOut) = React.useContext(AuthContext.context);
     let background = Css.Types.Color.toString(state.colors.background);
     let primary = Css.Types.Color.toString(state.colors.primary);
     let globalStyle = {j|
@@ -39,9 +42,6 @@ module AppContent = {
       }
       * { box-sizing: border-box; }
     |j};
-
-    UseFirebase.hook();
-    let (authStatus, signOut) = UseAuth.hook();
 
     <div className=Styles.app>
       <ReactHelmet>
@@ -66,6 +66,8 @@ module AppContent = {
 
 [@react.component]
 let make = (~children) =>
-  <ThemeContext> <AppContent> children </AppContent> </ThemeContext>;
+  <AuthContext>
+    <ThemeContext> <AppContent> children </AppContent> </ThemeContext>
+  </AuthContext>;
 
 let default = make;

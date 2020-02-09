@@ -118,6 +118,7 @@ module Sources = {
     let complete = () =>
       if (!state.ended) {
         state.ended = true;
+        state.values = Rebel.Array.makeEmpty();
         Rebel.Array.forEach(state.sinks, sink => sink(. End));
       };
 

@@ -31,6 +31,7 @@ external initializeAppByConfig:
 [@bs.module "firebase/app"] external analytics: unit => unit = "analytics";
 
 module Auth = Firebase_auth;
+module Firestore = Firebase_firestore;
 module UI = {
   module type FirebaseUiType = {include (module type of Firebase_ui);};
 
