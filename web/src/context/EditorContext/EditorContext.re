@@ -1,5 +1,5 @@
 type state = {
-  loadMonaco: React.callback(Dom.element, unit => unit),
+  loadMonaco: React.callback(Dom.element, (string, unit) => unit),
   disposeOfMonaco: React.callback(unit, unit),
   layout: React.callback(unit, unit),
   textChangeSource: Wonka_types.sourceT(string),
@@ -7,7 +7,7 @@ type state = {
 
 let context =
   React.createContext({
-    loadMonaco: (_, ()) => (),
+    loadMonaco: (_, _, _) => (),
     disposeOfMonaco: () => (),
     layout: () => (),
     textChangeSource: Wonka.never,
@@ -59,25 +59,31 @@ let make = (~children) => {
    * returns an *unsubscribe* fn
    */
   let loadMonaco =
-    React.useCallback0((editorElement: Dom.element) => {
-      let subscription =
-        dynamicImportMonaco()
-        |> Wonka.fromPromise
-        |> Wonka.take(1)
-        |> Wonka.subscribe((. module Monaco: MonacoType) => {
-             let minimap = Monaco.Types.mMinimap(~enabled=false);
-             Monaco.Types.options(
-               ~value="",
-               ~language="markdown",
-               ~automaticLayout=false,
-               ~minimap,
-             )
-             |> Monaco.create(editorElement)
-             |> Obj.magic
-             |> setMonacoInstance;
-           });
-      () => subscription.unsubscribe();
-    });
+    React.useCallback1(
+      (editorElement: Dom.element, content: string) => {
+        let subscription =
+          dynamicImportMonaco()
+          |> Wonka.fromPromise
+          |> Wonka.take(1)
+          |> Wonka.subscribe((. module Monaco: MonacoType) => {
+               let minimap = Monaco.Types.mMinimap(~enabled=false);
+               let instance =
+                 Monaco.Types.options(
+                   ~value="",
+                   ~language="markdown",
+                   ~automaticLayout=false,
+                   ~minimap,
+                 )
+                 |> Monaco.create(editorElement)
+                 |> Obj.magic;
+               setMonacoInstance(instance);
+               Monaco.setValue(instance, content);
+               textChangeSubject.next(content);
+             });
+        () => subscription.unsubscribe();
+      },
+      [|textChangeSubject|],
+    );
 
   /**
    * destroys current monaco instance

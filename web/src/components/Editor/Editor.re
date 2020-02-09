@@ -25,9 +25,11 @@ let make = (~editorData) => {
     () => {
       let editorElement =
         React.Ref.current(editorRef) |> Js.Nullable.toOption;
+
       switch (editorData, editorElement) {
       | (Content(content), Some(editorElement)) =>
-        let unsubscribe = editorService.loadMonaco(editorElement);
+        let unsubscribe =
+          editorService.loadMonaco(editorElement, content.template);
         Some(unsubscribe);
       | _ => None
       };
