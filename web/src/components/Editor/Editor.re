@@ -1,7 +1,16 @@
 module Styles = {
   open Css;
   let editor = style([height(`percent(100.0))]);
-  let skeleton = style([height(`percent(100.0))]);
+  let skeleton = (colors: ThemeContext.colors) => {
+    style([
+      display(`flex),
+      backgroundColor(colors.background),
+      unsafe(
+        "backgroundImage",
+        "linear-gradient(90deg, #282c33, #000, #282c33)",
+      ),
+    ]);
+  };
 };
 
 type editorDataT =
@@ -43,11 +52,7 @@ let make = (~editorData) => {
   );
 
   switch (editorData) {
-  | Loading =>
-    <SkeletonPulse
-      className=Styles.skeleton
-      background={Css.Types.Color.toString(theme.colors.background)}
-    />
+  | Loading => <SkeletonPulse className={Styles.skeleton(theme.colors)} />
   | Content(_resumeData) =>
     <div className=Styles.editor ref={ReactDOMRe.Ref.domRef(editorRef)} />
   | Error => <div> <h1> {React.string("something went wrong")} </h1> </div>

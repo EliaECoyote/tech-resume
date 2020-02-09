@@ -30,9 +30,8 @@ module Styles = {
 };
 
 [@react.component]
-let make = (~className=?, ~background=?) => {
+let make = (~className=?) => {
   let className =
     CssHelpers.combine([Some(Styles.skeletonPulse), className]);
-  let style = ReactDOMRe.Style.make(~backgroundColor=?background, ());
-  <div className style />;
+  <div className />;
 };

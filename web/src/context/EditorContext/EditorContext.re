@@ -52,6 +52,7 @@ let makeMonacoTextSource = (monaco): Wonka.Types.sourceT(string) =>
 let make = (~children) => {
   let (textChangeSubject, _setTextChangeSubject) =
     React.useState(() => Wonka.makeSubject());
+  let (themeState, _) = React.useContext(ThemeContext.context);
   let (monacoInstance, setMonacoInstance) = React.useState(() => None);
 
   /**
@@ -132,6 +133,18 @@ let make = (~children) => {
       }
     },
     (textChangeSubject, monacoInstance),
+  );
+
+  // reacts to *theme* change by updating Monaco editor theme
+  React.useEffect1(
+    () =>
+      dynamicImportMonaco()
+      |> Wonka.fromPromise
+      |> Wonka.subscribe((. module Monaco: MonacoType) =>
+           Monaco.setTheme(. themeState.theme)
+         )
+      |> WonkaHelpers.getEffectCleanup,
+    [|themeState.theme|],
   );
 
   let textChangeSource = textChangeSubject.source;
