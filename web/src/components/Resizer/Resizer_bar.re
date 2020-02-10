@@ -74,7 +74,6 @@ let make = (~onResizeEnd=() => ()) => {
          |> Webapi.Dom.MouseEvent.clientX
          |> Js.Int.toFloat
        )
-    |> Wonka.tap((. x) => Js.log(("touchMove event", x)))
     |> Wonka.subscribe((. x) => {
          let (width, offset) = (
            React.Ref.current(widthRef),
