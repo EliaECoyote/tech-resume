@@ -28,6 +28,8 @@ let make = (~onResizeEnd=() => ()) => {
   let barRef = React.useRef(Js.Nullable.null);
   let (theme, _) = React.useContext(ThemeContext.context);
   let (state, dispatch) = React.useContext(Resizer_context.context);
+  let onResizeEndRef = React.useRef(onResizeEnd);
+  React.Ref.setCurrent(onResizeEndRef, onResizeEnd);
 
   // setting context state dimensions in react refs in order to
   // avoid re-applying useEffect listeners upon value update
@@ -64,7 +66,7 @@ let make = (~onResizeEnd=() => ()) => {
               |])
               |> Wonka.take(1)
               |> Wonka.onPush((. _event) => {
-                   onResizeEnd();
+                   React.Ref.current(onResizeEndRef, ());
                    dispatch(Resizer_context.EndResizing);
                  }),
             )
