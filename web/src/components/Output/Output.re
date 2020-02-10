@@ -32,7 +32,16 @@ module Styles = {
       backgroundColor(Css_Colors.white),
     ]);
 
-  let skeleton = style([paddingTop(`percent(141.0)), customBoxShadow]);
+  let skeleton =
+    style([
+      paddingTop(`percent(141.0)),
+      customBoxShadow,
+      backgroundColor(`hex("eee")),
+      unsafe(
+        "backgroundImage",
+        "linear-gradient(90deg, #eee, #d0d0d0, #eee)",
+      ),
+    ]);
 
   let fakePdf = style([paddingTop(`percent(141.0)), customBoxShadow]);
 };

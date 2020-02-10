@@ -14,7 +14,7 @@ module Styles = {
       border(`px(0), `none, `transparent),
       textTransform(`uppercase),
       borderRadius(`px(4)),
-      color(colors.text2),
+      color(colors.secondary),
       transition(~duration=250, "opacity"),
       cursor(`pointer),
       hover([opacity(0.8)]),

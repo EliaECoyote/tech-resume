@@ -1,11 +1,11 @@
 type colors = {
-  text: Css.Types.Color.t,
-  text2: Css.Types.Color.t,
   primary: Css.Types.Color.t,
+  secondary: Css.Types.Color.t,
   background: Css.Types.Color.t,
   surface: Css.Types.Color.t,
   accent: Css.Types.Color.t,
   error: Css.Types.Color.t,
+  skeletonAccentColor: Css.Types.Color.t,
 };
 
 type state = {
@@ -19,22 +19,22 @@ type actions =
 let getColors = theme =>
   switch (theme) {
   | Themes.Dark => {
-      text: `hex("fff"),
-      text2: `hex("000"),
       primary: `hex("03dac6"),
+      secondary: `hex("000"),
       background: `hex("282c33"),
       surface: `hex("282c33c7"),
       accent: `hex("03dac6"),
       error: `hex("cf6679"),
+      skeletonAccentColor: `hex("1B1B1E"),
     }
   | Themes.Standard => {
-      text: `hex("000"),
-      text2: `hex("fff"),
-      primary: `hex("006064"),
-      background: `hex("f6f7f9"),
-      surface: `hex("282c33c7"),
-      accent: `hex("c6c6c6"),
+      primary: `hex("4E8098"),
+      secondary: `hex("fff"),
+      background: `hex("FCF7F8"),
+      surface: `hex("CED3DC"),
+      accent: `hex("fff"),
       error: `hex("cf6679"),
+      skeletonAccentColor: `hex("fff"),
     }
   };
 
