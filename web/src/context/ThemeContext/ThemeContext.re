@@ -60,8 +60,46 @@ module Provider = {
   let make = React.Context.provider(context);
 };
 
+module Utils = {
+  let themeOfString = theme =>
+    switch (theme) {
+    | Themes.Standard => "standard"
+    | Themes.Dark => "dark"
+    };
+
+  let stringOfTheme = string =>
+    switch (string) {
+    | "dark" => Some(Themes.Dark)
+    | "standard" => Some(Themes.Standard)
+    | _ => None
+    };
+};
+
 [@react.component]
 let make = (~children) => {
   let (state, dispatch) = React.useReducer(reducer, initialState);
+
+  React.useEffect0(() => {
+    let theme =
+      Dom.Storage.localStorage
+      |> Dom.Storage.getItem("theme")
+      |> Belt.Option.getWithDefault(_, "dark")
+      |> Utils.stringOfTheme;
+    switch (theme) {
+    | Some(theme) => dispatch(ChangeTheme(theme))
+    | None => ()
+    };
+    None;
+  });
+
+  React.useEffect1(
+    () => {
+      Dom.Storage.localStorage
+      |> Dom.Storage.setItem("theme", Utils.themeOfString(state.theme));
+      None;
+    },
+    [|state.theme|],
+  );
+
   <div> <Provider value=(state, dispatch)> children </Provider> </div>;
 };
