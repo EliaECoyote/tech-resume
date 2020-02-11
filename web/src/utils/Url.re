@@ -1,7 +1,7 @@
 let a = 5;
 
 let encode = ((key: string, value: string)) =>
-  key ++ "=" ++ Global.encodeURIComponent(value);
+  key ++ "=" ++ Js.Global.encodeURIComponent(value);
 let joinWithAmpersand = Js.Array.joinWith("&");
 let addInitialQuestionMark = value => {j|?$value|j};
 
