@@ -29,7 +29,7 @@ module Styles = {
       gridRowGap(`px(10)),
     ]);
   let header = style([gridArea(`ident("header"))]);
-  let content = style([gridArea(`ident("content"))]);
+  let content = style([gridArea(`ident("content")), overflow(`hidden)]);
 };
 
 InitializeFirebase.init();

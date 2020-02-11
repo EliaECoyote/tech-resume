@@ -7,22 +7,23 @@ module Styles = {
       display(`grid),
       gridTemplateColumns([`fr(1.0)]),
       gridTemplateRows([`minContent, `fr(1.0)]),
-      gridTemplateAreas(`areas(["header", "content"])),
+      gridTemplateAreas(`areas(["toolbar", "editor-and-output"])),
       gridColumnGap(`px(10)),
       gridRowGap(`px(10)),
       alignItems(`center),
     ]);
   let header =
     style([
-      gridArea(`ident("header")),
+      gridArea(`ident("toolbar")),
       display(`flex),
       justifyContent(`center),
     ]);
   let resizer =
     style([
-      gridArea(`ident("content")),
+      gridArea(`ident("editor-and-output")),
       height(`percent(100.0)),
       border(`px(2), `solid, Css.darkcyan),
+      overflow(`hidden),
     ]);
   let editor = (colors: ThemeContext.colors) =>
     style([
@@ -105,7 +106,7 @@ module PageContent = {
 
     let href = buildDownloadHref(state);
 
-    <div className=Styles.app>
+    <main className=Styles.app>
       <div className=Styles.header>
         <Button
           onClick={_ =>
@@ -130,7 +131,7 @@ module PageContent = {
           <Output className=Styles.output requestState=state />
         </Resizer.Container>
       </Resizer>
-    </div>;
+    </main>;
   };
 };
 
