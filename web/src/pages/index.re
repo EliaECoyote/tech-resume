@@ -46,10 +46,9 @@ let makeDownloadHref = state =>
       type_: Some("application/pdf"),
       endings: None,
     };
-    let url =
-      Js2.Blob.makeFromInt8Array([|data|], ~options, ())
-      |> Js2.Url.createObjectURL;
-    Some(url);
+    Js2.Blob.makeFromInt8Array([|data|], ~options, ())
+    |> Js2.Url.createObjectURL
+    |> (url => Some(url));
   | _ => None
   };
 
