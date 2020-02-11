@@ -22,7 +22,11 @@ module Styles = {
     ]);
   let spacer = style([gridArea(`ident("title"))]);
   let authWidget =
-    style([gridArea(`ident("auth-widget")), justifyContent(`flexEnd)]);
+    style([
+      gridArea(`ident("auth-widget")),
+      justifyContent(`flexEnd),
+      alignSelf(`flexEnd),
+    ]);
 };
 
 [@react.component]

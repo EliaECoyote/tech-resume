@@ -11,6 +11,14 @@ module Styles = {
       transition(~duration=300, "background-color"),
     ],
   );
+
+  global(
+    ".firebaseui-container .firebaseui-idp-list, "
+    ++ ".firebaseui-container .firebaseui-idp-list>.firebaseui-list-item, "
+    ++ ".firebaseui-container .firebaseui-tenant-list>.firebaseui-list-item",
+    [margin(`zero)],
+  );
+
   let app =
     style([
       display(`grid),

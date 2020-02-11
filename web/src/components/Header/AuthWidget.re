@@ -1,6 +1,6 @@
 module Styles = {
   open Css;
-  let authWidget = style([]);
+
   let loggedUserGrid =
     style([
       display(`grid),
@@ -10,6 +10,7 @@ module Styles = {
       gridTemplateAreas(`areas(["username avatar", "cta avatar"])),
       gridColumnGap(`rem(1.0)),
     ]);
+
   let username =
     [
       gridArea(`ident("username")),
@@ -20,7 +21,9 @@ module Styles = {
     |> (styles => List.concat([styles, TextStyles.textEllipsis]))
     |> (styles => List.concat([styles, TextStyles.xsFont]))
     |> style;
+
   let cta = style([gridArea(`ident("cta"))]);
+
   let thumb =
     style([
       gridArea(`ident("avatar")),
