@@ -4,10 +4,10 @@ module Styles = {
   let disabledRules = [opacity(0.3)];
 
   let link =
-      (colors: ThemeContext.colors, ~size=Controls.Large, ~disabled=false, ()) =>
+      (colors: ThemeContext.colors, ~size=Controls.Large, ~empty=false, ()) =>
     merge([
       Controls.Styles.cta(colors, ~size, ()),
-      style(disabled ? Controls.Styles.disabledRules : []),
+      style(empty ? Controls.Styles.disabledRules : []),
     ]);
 };
 
@@ -17,19 +17,18 @@ let make =
     (
       ~children,
       ~size=?,
-      ~disabled=?,
       ~download: bool=false,
       ~onClick=?,
       ~href=?,
       buttonRef,
     ) => {
     let (theme, _) = React.useContext(ThemeContext.context);
+    let empty = Belt.Option.isNone(href);
     <a
       ?href
       ?onClick
       download=?{download ? Some("") : None}
-      ?disabled
-      className={Controls.Styles.cta(theme.colors, ~size?, ())}
+      className={Styles.link(theme.colors, ~size?, ~empty, ())}
       ref=?{
         buttonRef
         |> Js.Nullable.toOption

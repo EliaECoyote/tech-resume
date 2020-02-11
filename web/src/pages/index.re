@@ -39,16 +39,18 @@ module Styles = {
     ]);
 };
 
-let buildDownloadHref = state =>
+let makeDownloadHref = state =>
   switch (state) {
   | AsyncTask.Success(data) =>
     let options: Js2.Blob.makeBlobOptionsT = {
       type_: Some("application/pdf"),
       endings: None,
     };
-    Js2.Blob.makeFromInt8Array([|data|], ~options, ())
-    |> Js2.Url.createObjectURL;
-  | _ => ""
+    let url =
+      Js2.Blob.makeFromInt8Array([|data|], ~options, ())
+      |> Js2.Url.createObjectURL;
+    Some(url);
+  | _ => None
   };
 
 module PageContent = {
@@ -104,7 +106,7 @@ module PageContent = {
         [|resumeDataState|],
       );
 
-    let href = buildDownloadHref(state);
+    let href = makeDownloadHref(state);
 
     <main className=Styles.app>
       <div className=Styles.header>
@@ -118,9 +120,7 @@ module PageContent = {
           className=Styles.outputTool>
           {React.string("Refresh")}
         </Button>
-        <Link download=true disabled={href === ""} href>
-          {React.string("Download")}
-        </Link>
+        <Link download=true ?href> {React.string("Download")} </Link>
       </div>
       <Resizer className=Styles.resizer>
         <Resizer.Container side=Resizer_container.Left>

@@ -5,7 +5,7 @@ type size =
 module Styles = {
   open Css;
 
-  let disabledRules = [opacity(0.3)];
+  let disabledRules = [opacity(0.3), cursor(`default)];
 
   let cta = (colors: ThemeContext.colors, ~size: size=Large, ()) =>
     style([
