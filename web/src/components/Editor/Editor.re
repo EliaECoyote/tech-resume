@@ -25,7 +25,6 @@ let make = (~editorData) => {
       Webapi.Dom.window
       |> DomHelpers.windowElement
       |> Wonka.fromDomEvent(_, "resize")
-      |> Wonka.throttle((. _event) => 100)
       |> Wonka.subscribe((. _event) => editorService.layout())
       |> WonkaHelpers.getEffectCleanup,
     [|editorService.layout|],
