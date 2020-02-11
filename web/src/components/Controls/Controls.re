@@ -7,8 +7,14 @@ module Styles = {
 
   let disabledRules = [opacity(0.3), cursor(`default)];
 
-  let cta = (colors: ThemeContext.colors, ~size: size=Large, ()) =>
-    style([
+  let cta =
+      (
+        colors: ThemeContext.colors,
+        ~size: size=Large,
+        ~disabled: bool=false,
+        (),
+      ) =>
+    [
       textDecoration(`none),
       backgroundColor(colors.primary),
       border(`px(0), `none, `transparent),
@@ -17,10 +23,8 @@ module Styles = {
       color(colors.secondary),
       transition(~duration=250, "opacity"),
       cursor(`pointer),
-      hover([opacity(0.8)]),
-      focus([opacity(0.6)]),
       fontFamily("'Montserrat', sans-serif"),
-      disabled(disabledRules),
+      Css.disabled(disabledRules),
       letterSpacing(`initial),
       switch (size) {
       | Small => fontSize(`rem(0.6))
@@ -30,5 +34,9 @@ module Styles = {
       | Small => padding2(~v=`px(1), ~h=`px(2))
       | Large => padding2(~v=`px(4), ~h=`px(8))
       },
-    ]);
+    ]
+    |> List.append(
+         disabled ? [] : [hover([opacity(0.8)]), focus([opacity(0.6)])],
+       )
+    |> style;
 };
