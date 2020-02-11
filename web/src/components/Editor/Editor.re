@@ -20,6 +20,17 @@ let make = (~editorData) => {
   let editorRef = React.useRef(Js.Nullable.null);
   let editorService = React.useContext(EditorContext.context);
 
+  React.useEffect1(
+    () =>
+      Webapi.Dom.window
+      |> DomHelpers.windowElement
+      |> Wonka.fromDomEvent(_, "resize")
+      |> Wonka.throttle((. _event) => 100)
+      |> Wonka.subscribe((. _event) => editorService.layout())
+      |> WonkaHelpers.getEffectCleanup,
+    [|editorService.layout|],
+  );
+
   React.useEffect2(
     () => {
       let editorElement =
