@@ -138,7 +138,7 @@ let hook = () => {
           Dom.Storage.localStorage
           |> Dom.Storage.setItem("template", initialResumeData.template);
           Dom.Storage.localStorage
-          |> Dom.Storage.setItem("template", initialResumeData.theme);
+          |> Dom.Storage.setItem("theme", initialResumeData.theme);
           send(LoadSuccess(initialResumeData));
         };
         None;
