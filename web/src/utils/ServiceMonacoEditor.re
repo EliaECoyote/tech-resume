@@ -73,6 +73,9 @@ let make = (): monacoEditorServiceT => {
                  );
                ((.) => Monaco.dispose(disposable));
              })
+             // *shareReplay* makes sure that the first *observer.next*
+             // invocation is received by the subscriber
+             |> WonkaHelpers.Operators.shareReplay(1)
            | None => Wonka.never
            }
          )

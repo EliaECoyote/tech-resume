@@ -93,6 +93,19 @@ module PageContent = {
       (state, sendEvent),
     );
 
+    // loads the pdf automatically, right after the
+    // content has been loaded
+    React.useEffect1(
+      () =>
+        switch (resumeDataState) {
+        | Success(_data) =>
+          sendEvent(LoadData);
+          None;
+        | _ => None
+        },
+      [|resumeDataState|],
+    );
+
     let editorData =
       React.useMemo1(
         () =>
@@ -119,7 +132,15 @@ module PageContent = {
           className=Styles.outputTool>
           {React.string("Refresh")}
         </Button>
-        <Link download=true ?href> {React.string("Download")} </Link>
+        // onClick={_ =>
+        //   if (state !== Fetching) {
+        //     sendEvent(LoadData);
+        //   }
+        // }
+        <Button disabled={state == Fetching} className=Styles.outputTool>
+          {React.string("Save")}
+        </Button>
+        <Link download="resume" ?href> {React.string("Download")} </Link>
       </div>
       <Resizer className=Styles.resizer>
         <Resizer.Container side=Resizer_container.Left>

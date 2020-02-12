@@ -17,9 +17,10 @@ let make =
     (
       ~children,
       ~size=?,
-      ~download: bool=false,
+      ~download=?,
       ~onClick=?,
       ~href=?,
+      ~title=?,
       buttonRef,
     ) => {
     let (theme, _) = React.useContext(ThemeContext.context);
@@ -27,8 +28,9 @@ let make =
     <a
       ?href
       ?onClick
+      ?title
+      ?download
       disabled
-      download=?{download ? Some("") : None}
       className={Styles.link(theme.colors, ~size?, ~disabled, ())}
       ref=?{
         buttonRef
