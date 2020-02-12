@@ -32,7 +32,9 @@ module Styles = {
   let content = style([gridArea(`ident("content")), overflow(`hidden)]);
 };
 
-InitializeFirebase.init();
+if (Config.isBrowser) {
+  InitializeFirebase.init();
+};
 
 module AppContent = {
   [@react.component]

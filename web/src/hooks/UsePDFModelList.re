@@ -94,7 +94,7 @@ module PDFModel = {
     let viewportParams =
       BsPdfjs.Page.viewportParams(~scale=1.0, ~rotate=0.0, ());
     let viewport = BsPdfjs.Page.getViewport(page, viewportParams);
-    let dpr = Belt.Option.getWithDefault(Global.devicePixelRatio, 1.0);
+    let dpr = Belt.Option.getWithDefault(Js2.Global.devicePixelRatio, 1.0);
     let (width, height) =
       PDFDimensions.getCanvasLogicalDimensions(viewport, dpr);
     let model: Types.pdfValidModel = {

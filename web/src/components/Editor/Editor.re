@@ -11,10 +11,6 @@ type editorDataT =
 
 module type MonacoType = {include (module type of Monaco);};
 
-let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
-  {| () => import("../../bindings/Monaco.bs.js") |}
-];
-
 [@react.component]
 let make = (~editorData) => {
   let editorRef = React.useRef(Js.Nullable.null);
@@ -36,18 +32,13 @@ let make = (~editorData) => {
         React.Ref.current(editorRef) |> Js.Nullable.toOption;
       switch (editorData, editorElement) {
       | (Content(content), Some(editorElement)) =>
-        let unsubscribe =
+        let destroy =
           editorService.loadMonaco(editorElement, content.template);
-        Some(unsubscribe);
+        Some(destroy);
       | _ => None
       };
     },
-    (editorData, editorService.loadMonaco),
-  );
-
-  React.useEffect1(
-    () => Some(() => editorService.disposeOfMonaco()),
-    [|editorService.disposeOfMonaco|],
+    (editorData, editorService),
   );
 
   switch (editorData) {
