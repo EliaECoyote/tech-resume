@@ -34,57 +34,22 @@ module Styles = {
     ]);
 };
 
-let loginUIElementID = "auth";
-
-let startFirebaseUIWidget = () =>
-  Firebase.UI.importDinamically()
-  |> Wonka.fromPromise
-  // FirebaseUI library dynamic import source
-  |> Wonka.subscribe((. module FirebaseUI: Firebase.UI.FirebaseUiType) => {
-       let callbacks: FirebaseUI.callbacks = {
-         // signInSuccessWithAuthResult callback returns false in
-         // order to avoid redirects after a successful login as
-         // described in
-         // https://github.com/firebase/firebaseui-web/blob/master/README.md#signinsuccesswithauthresultauthresult-redirecturl
-         signInSuccessWithAuthResult:
-           Some((~authResult as _, ~redirectUrl as _=?, ()) => false),
-         signInFailure: None,
-         uiShown: None,
-       };
-       let uiConfig: FirebaseUI.config = {
-         acUiConfig: None,
-         autoUpgradeAnonymousUsers: None,
-         callbacks: Some(callbacks),
-         credentialHelper: None,
-         popupMode: None,
-         queryParameterForSignInSuccessUrl: Some("login-success"),
-         queryParameterForWidgetMode: Some("mode"),
-         signInFlow: Some("popup"),
-         signInOptions: Some([|Firebase.Auth.GithubAuthProvider.providerId|]),
-         signInSuccessUrl: None,
-         siteName: None,
-         tosUrl: None,
-         privacyPolicyUrl: None,
-         widgetUrl: None,
-       };
-       let id = "#" ++ loginUIElementID;
-       // starts actual firebase UI widget
-       Firebase.Auth.make()
-       |> FirebaseUI.authUI(_, ())
-       |> FirebaseUI.start(_, `Id(id), uiConfig);
-     });
+let firebaseUiElementId = "auth";
 
 [@react.component]
 let make = (~authStatus: UseAuth.status, ~signOut: unit => unit) => {
-  React.useEffect1(
+  let firebaseUiService =
+    UseLazyRef.hook(() => ServiceFirebaseUi.make(firebaseUiElementId));
+
+  React.useEffect2(
     () => {
       switch (authStatus) {
       | UseAuth.Anonymous =>
-        startFirebaseUIWidget() |> WonkaHelpers.getEffectCleanup
+        firebaseUiService.startFirebaseUi() |> WonkaHelpers.getEffectCleanup
       | _ => None
       }
     },
-    [|authStatus|],
+    (authStatus, firebaseUiService),
   );
 
   switch (authStatus) {
@@ -105,6 +70,6 @@ let make = (~authStatus: UseAuth.status, ~signOut: unit => unit) => {
        | None => ReasonReact.null
        }}
     </div>
-  | UseAuth.Anonymous => <div id=loginUIElementID />
+  | UseAuth.Anonymous => <div id=firebaseUiElementId />
   };
 };
