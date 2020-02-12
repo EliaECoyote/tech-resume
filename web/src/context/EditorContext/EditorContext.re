@@ -16,12 +16,12 @@ let make = (~children) => {
   let monacoEditorService = UseLazyRef.hook(ServiceMonacoEditor.make);
 
   // reacts to *theme* change by updating Monaco editor theme
-  React.useEffect1(
+  React.useEffect2(
     () => {
-      Monaco.setTheme(. themeState.theme);
+      monacoEditorService.setTheme(themeState.theme);
       None;
     },
-    [|themeState.theme|],
+    (themeState.theme, monacoEditorService),
   );
 
   <Provider value=monacoEditorService> children </Provider>;

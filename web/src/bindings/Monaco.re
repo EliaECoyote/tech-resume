@@ -76,12 +76,13 @@ external toDisposable: Types.monaco => Types.disposable = "%identity";
 
 [@bs.module "monaco-editor"] [@bs.scope "editor"]
 external create: (Dom.element, Types.options) => Types.monaco = "create";
-// ⚠️ needed in order to make dyanmic imports work
+// ⚠️ needed in order to make dynamic imports work correctly
 let create = create;
 
 [@bs.module "monaco-editor"] [@bs.scope "editor"]
 external setTheme: string => unit = "setTheme";
-let setTheme = (. theme) => Theme.stringOfColors(theme)->setTheme;
+// ⚠️ needed in order to make dynamic imports work correctly
+let setTheme = setTheme;
 
 [@bs.send]
 external getValue:

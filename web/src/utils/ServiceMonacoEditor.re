@@ -1,36 +1,40 @@
 module type MonacoType = {include (module type of Monaco);};
 
 type monacoEditorServiceT = {
-  monaco: Pervasives.ref(option(Monaco.Types.monaco)),
   textChangeSource: Wonka_types.sourceT(string),
   loadMonaco: (Dom.element, string, unit) => unit,
+  setTheme: Themes.t => unit,
   layout: unit => unit,
 };
-
-let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
-  {| () => import("../bindings/Monaco.bs.js") |}
-];
-
-let dynamicImportMonaco = () =>
-  dynamicImportMonaco() |> Wonka.fromPromise |> Wonka.take(1);
 
 let make = (): monacoEditorServiceT => {
   let monaco = ref(None);
   let textChangeSubject = Wonka.makeSubject();
+  let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
+    {| () => import("../bindings/Monaco.bs.js") |}
+  ];
+  let dynamicImportMonaco = () =>
+    dynamicImportMonaco() |> Wonka.fromPromise |> Wonka.take(1);
 
   /**
    * destroys current monaco instance
    */
-  let disposeOfMonaco = () =>
-    switch (monaco^) {
-    | Some(instance) =>
-      Obj.magic(instance)
-      // destroy monaco instance on cleanup
-      |> Monaco.toDisposable
-      |> Monaco.dispose;
-      monaco := None;
-    | None => ()
-    };
+  let disposeOfMonaco = () => {
+    let _ =
+      dynamicImportMonaco()
+      |> Wonka.subscribe((. module Monaco: MonacoType) =>
+           switch (monaco^) {
+           | Some(instance) =>
+             Obj.magic(instance)
+             // destroy monaco instance on cleanup
+             |> Monaco.toDisposable
+             |> Monaco.dispose;
+             monaco := None;
+           | None => ()
+           }
+         );
+    ();
+  };
 
   /**
    * loads the monaco editor, given an HTMLElement.
@@ -83,15 +87,33 @@ let make = (): monacoEditorServiceT => {
   /**
    * layouts monaco editor.
    */
-  let layout = () =>
-    switch (monaco^) {
-    | Some(instance) => Monaco.layout(instance, ())
-    | None => ()
-    };
+  let layout = () => {
+    let _ =
+      dynamicImportMonaco()
+      |> Wonka.subscribe((. module Monaco: MonacoType) =>
+           switch (monaco^) {
+           | Some(instance) => Monaco.layout(Obj.magic(instance), ())
+           | None => ()
+           }
+         );
+    ();
+  };
+
+  /**
+   * changes editor theme.
+   */
+  let setTheme = theme => {
+    let _ =
+      dynamicImportMonaco()
+      |> Wonka.subscribe((. module Monaco: MonacoType) =>
+           Monaco.setTheme @@ Monaco.Theme.stringOfColors(theme)
+         );
+    ();
+  };
 
   // expose only the source of the subject from
   // the service
   let textChangeSource = textChangeSubject.source;
 
-  {textChangeSource, monaco, loadMonaco, layout};
+  {textChangeSource, loadMonaco, setTheme, layout};
 };
