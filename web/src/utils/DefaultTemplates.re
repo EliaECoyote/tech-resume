@@ -2,6 +2,8 @@ let dwightTemplate = {|
 
 [//]: # (inspired by https://www.pongoresume.com/images/upload/Dwight-Schrute-Sample-Resume_l.gif)
 
+[//]: # (tip: use &nbsp; followed by blank line to create multiple consequent blank lines)
+
 # Dwight K. Schrute III
 
 > C/O Schrute Farms, Main street, Honesdale, PA 18431
@@ -27,6 +29,7 @@ let dwightTemplate = {|
 - Close more sales with revenues totaling more US dollars than any other employee, past, present, and future (projected)
 - Act as Regional Manager's eyes, ears, and right hand, overseeing and reporting on employee conduct, productivity, and arrival/departure times
 - Instituted "Schrute Bucks" reward system, immeasurably raising office morale
+- Provided services to the office such as martial arts and surveillance
 - Serve as self-appointed enforcer of The Rules (Policies and Procedures Manual)
 
 **Schrute Farms**, Honesdale, PA [1980-present]\
@@ -40,8 +43,10 @@ let dwightTemplate = {|
 
 ## Education
 
-**Seranton University**, Scranton, PA [1992]\
+**Seranton University**, Scranton, PA [1998-1992]\
 **Bachelor's Degree** Business Administration GPA: 2.99987
+
+&nbsp;
 
 ## Specialized skills
 
