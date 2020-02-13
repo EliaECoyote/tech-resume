@@ -58,6 +58,7 @@ let make = (~className=?, ~requestState, ()) => {
   let modelState = UsePDFModelList.hook(~pdf=getPdf(requestState));
   let (theme, _) = React.useContext(ThemeContext.context);
 
+  // TODO: combine request & model state in order to simplify this flow
   let outputContent =
     switch (requestState, modelState) {
     | (Error, _)
