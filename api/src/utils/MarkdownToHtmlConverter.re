@@ -67,19 +67,23 @@ let transform = (~src: string, ~style: array(string), ~css: array(string)) =>
   Wonka.make((. observer: Wonka.Types.observerT(result)) => {
     let cancelledSubject = Wonka.makeSubject();
     let subscription = ref(None);
-    let parseOpt: RemarkParse.optionsT = {
-      gfm: true,
-      commonmark: true,
-      footnotes: false,
-      pedantic: false,
-      blocks: [|"link", "iframe", "dialog"|],
-    };
-    let remarkOpt =
-      RemarkDocument.options(~title="test title", ~style, ~css, ());
+    let parseOptions = RemarkParse.options(~commonmark=true, ());
+    let documentOptions =
+      RemarkDocument.options(~title="resume document", ~style, ~css, ());
     Unified.unified()
-    |> Unified.use(_, ~plugin=RemarkParse.markdown, ~options=parseOpt, ())
+    |> Unified.use(
+         _,
+         ~plugin=RemarkParse.markdown,
+         ~options=parseOptions,
+         (),
+       )
     |> Unified.use(_, ~plugin=RemarkRehype.remark2rehype, ())
-    |> Unified.use(_, ~plugin=RemarkDocument.doc, ~options=remarkOpt, ())
+    |> Unified.use(
+         _,
+         ~plugin=RemarkDocument.doc,
+         ~options=documentOptions,
+         (),
+       )
     |> Unified.use(_, ~plugin=RehypeFormat.format, ())
     |> Unified.use(_, ~plugin=RehypeStringify.html, ())
     |> Unified.process(
