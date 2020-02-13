@@ -60,12 +60,12 @@ let make = (~className=?, ~requestState, ()) => {
 
   let outputContent =
     switch (requestState, modelState) {
+    | (Error, _)
+    | (_, Error) => React.string @@ "error"
     | (Fetching, _)
     | (_, Fetching) => <SkeletonPulse className=Styles.skeleton />
     | (Idle, _)
     | (_, Idle) => React.null
-    | (Error, _)
-    | (_, Error) => React.string @@ "error"
     | (Success(_), Success(modelArray)) =>
       modelArray |> Array.map(model => <Pdfpage model />) |> ReasonReact.array
     };
