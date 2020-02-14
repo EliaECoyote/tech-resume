@@ -11,12 +11,12 @@ steps:
       - "build"
       - "--cache-from"
       - "gcr.io/$PROJECT_ID/api:latest"
-      # - "--tag"
-      # - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
       - "--tag"
       - "gcr.io/$PROJECT_ID/api:latest"
       - "./api/"
-    timeout: 600s
+    timeout: 300s
   # test
   - name: "gcr.io/cloud-builders/docker"
     args:
@@ -24,7 +24,7 @@ steps:
       - "gcr.io/$PROJECT_ID/api:latest"
       - "sh"
       - "./scripts/test.sh"
-    timeout: 600s
+    timeout: 300s
   # deploy
   - name: "gcr.io/cloud-builders/gcloud"
     args:
@@ -42,4 +42,4 @@ steps:
       - "ENDPOINT_PDFGEN=https://pdfgen-europe-west1-67xb7jfyla-ew.a.run.app"
 images:
   - "gcr.io/$PROJECT_ID/api:latest"
-  # - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
