@@ -43,4 +43,4 @@ RUN npm install -g firebase-tools
 COPY --from=builder ${APPDIR}/public ${APPDIR}/public/
 COPY --from=builder ${APPDIR}/firebase.json ${APPDIR}/.firebaserc ./
 USER node
-CMD npx http-server ./public
+ENTRYPOINT ["/usr/local/bin/firebase"]

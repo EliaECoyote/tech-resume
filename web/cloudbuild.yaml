@@ -46,10 +46,8 @@ steps:
       - "./web/"
     timeout: 720s # 12 minutes
   # deploy
-  - name: "gcr.io/cloud-builders/docker"
+  - name: "gcr.io/$PROJECT_ID/web:latest"
     args:
-      - "run"
-      - "gcr.io/$PROJECT_ID/web:latest"
-      - "firebase deploy"
-    timeout: 300s
+      - "deploy"
+    timeout: 100s
 timeout: 1200s
