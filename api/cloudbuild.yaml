@@ -16,7 +16,7 @@ steps:
       - "--tag"
       - "gcr.io/$PROJECT_ID/api:latest"
       - "."
-    timeout: 200s
+    timeout: 300s
   # test
   - name: "gcr.io/cloud-builders/docker"
     args:
@@ -24,7 +24,7 @@ steps:
       - "gcr.io/$PROJECT_ID/api:latest"
       - "sh"
       - "./scripts/test.sh"
-    timeout: 200s
+    timeout: 300s
   # deploy
   - name: "gcr.io/cloud-builders/gcloud"
     args:
