@@ -24,7 +24,7 @@ steps:
       - "gcr.io/$PROJECT_ID/api:latest"
       - "sh"
       - "./scripts/test.sh"
-    timeout: 900s
+    timeout: 600s
   # deploy
   - name: "gcr.io/cloud-builders/gcloud"
     args:
