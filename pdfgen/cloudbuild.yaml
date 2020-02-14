@@ -11,12 +11,12 @@ steps:
       - "build"
       - "--cache-from"
       - "gcr.io/$PROJECT_ID/pdfgen:latest"
-      # - "--tag
-      # - "gcr.io/$PROJECT_ID/api:$SHORT_SHA
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/pdfgen:$SHORT_SHA"
       - "--tag"
       - "gcr.io/$PROJECT_ID/pdfgen:latest"
-      - "."
-    timeout: 200s
+      - "./pdfgen/"
+    timeout: 300s
   # deploy
   - name: "gcr.io/cloud-builders/gcloud"
     args:
@@ -32,4 +32,4 @@ steps:
       - "--allow-unauthenticated"
 images:
   - "gcr.io/$PROJECT_ID/pdfgen:latest"
-  # - "gcr.io/$PROJECT_ID/pdfgen:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/pdfgen:$SHORT_SHA"
