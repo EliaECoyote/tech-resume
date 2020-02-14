@@ -1,6 +1,14 @@
 steps:
+  # pull cached image
   - name: "gcr.io/cloud-builders/docker"
-    args: [
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "docker pull gcr.io/$PROJECT_ID/bs-node:latest || exit 0"
+  # build final image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
         "build",
         "--build-arg",
         "BS_PLATFORM_VERSION=7.0.1",
@@ -8,8 +16,8 @@ steps:
         "gcr.io/$PROJECT_ID/bs-node:$COMMIT_SHA",
         "--tag",
         "gcr.io/$PROJECT_ID/bs-node:latest",
-        # "--cache-from",
-        # "gcr.io/$PROJECT_ID/bs-node:latest",
+        "--cache-from",
+        "gcr.io/$PROJECT_ID/bs-node:latest",
         ".",
       ]
     timeout: 500s
