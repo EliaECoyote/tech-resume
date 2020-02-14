@@ -15,8 +15,8 @@ steps:
       # - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
       - "--tag"
       - "gcr.io/$PROJECT_ID/api:latest"
-      - "."
-    timeout: 300s
+      - "./api/"
+    timeout: 600s
   # test
   - name: "gcr.io/cloud-builders/docker"
     args:
