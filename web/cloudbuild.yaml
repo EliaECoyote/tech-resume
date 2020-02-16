@@ -5,6 +5,16 @@ steps:
     args:
       - "-c"
       - "docker pull gcr.io/$PROJECT_ID/web:latest || exit 0"
+  # decrypt kms encrypted env
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+    - kms
+    - decrypt
+    - --ciphertext-file=.env.enc
+    - --plaintext-file=.env
+    - --location=global
+    - --keyring=myproject
+    - --key=cloudbuild-env
   # build *builder* image
   - name: "gcr.io/cloud-builders/docker"
     args:
@@ -46,8 +56,14 @@ steps:
       - "./web/"
     timeout: 720s # 12 minutes
   # deploy
-  - name: "gcr.io/$PROJECT_ID/web:latest"
+  - name: "gcr.io/cloud-builders/docker"
     args:
+      - "run"
+      - "gcr.io/$PROJECT_ID/web:latest"
+      - "firebase"
       - "deploy"
-    timeout: 100s
+      - "--token"
+      - "$FIREBASE_TOKEN"
+      - "--only"
+      - "hosting"
 timeout: 1200s
