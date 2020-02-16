@@ -20,7 +20,8 @@ steps:
         "gcr.io/$PROJECT_ID/bs-node:latest",
         ".",
       ]
-    timeout: 720s
+    timeout: 800s
+timeout: 1200s
 images:
   [
     "gcr.io/$PROJECT_ID/bs-node:latest",
