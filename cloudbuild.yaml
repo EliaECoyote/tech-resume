@@ -13,7 +13,7 @@ steps:
         "--build-arg",
         "BS_PLATFORM_VERSION=7.0.1",
         "--tag",
-        "gcr.io/$PROJECT_ID/bs-node:$COMMIT_SHA",
+        "gcr.io/$PROJECT_ID/bs-node:$SHORT_SHA",
         "--tag",
         "gcr.io/$PROJECT_ID/bs-node:latest",
         "--cache-from",
@@ -24,5 +24,5 @@ steps:
 images:
   [
     "gcr.io/$PROJECT_ID/bs-node:latest",
-    "gcr.io/$PROJECT_ID/bs-node:$COMMIT_SHA",
+    "gcr.io/$PROJECT_ID/bs-node:$SHORT_SHA",
   ]
