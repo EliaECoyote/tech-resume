@@ -21,6 +21,7 @@ let make =
       ~onClick=?,
       ~href=?,
       ~title=?,
+      (),
       forwardedRef,
     ) => {
     let (theme, _) = React.useContext(ThemeContext.context);
