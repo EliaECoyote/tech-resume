@@ -59,5 +59,5 @@ steps:
   - name: "gcr.io/$PROJECT_ID/web:latest"
     args:
       - "sh"
-      - "./scripts/deploy.sh"
+      - "./deploy.sh"
 timeout: 1200s
