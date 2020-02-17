@@ -41,6 +41,7 @@ WORKDIR ${APPDIR}
 RUN npm install -g firebase-tools
 # copy generated build & config from builder stage
 COPY --from=builder ${APPDIR}/public ${APPDIR}/public/
+COPY --from=builder ${APPDIR}/scripts/deploy.sh ${APPDIR}/scripts/deploy.sh
 COPY --from=builder ${APPDIR}/firebase.json ${APPDIR}/.firebaserc ./
 USER node
 CMD npx http-server ./public

@@ -13,7 +13,7 @@ steps:
     - --ciphertext-file=.env.enc
     - --plaintext-file=.env
     - --location=global
-    - --keyring=myproject
+    - --keyring=tech-resume
     - --key=cloudbuild-env
   # build *builder* image
   - name: "gcr.io/cloud-builders/docker"
@@ -49,21 +49,15 @@ steps:
       - "GATSBY_API_SCHEME=https"
       - "--build-arg"
       - "GATSBY_API_HOST=api-europe-west1-67xb7jfyla-ew.a.run.app"
-      - "--tag"
-      - "gcr.io/$PROJECT_ID/web:$SHORT_SHA"
+      # - "--tag"
+      # - "gcr.io/$PROJECT_ID/web:$SHORT_SHA"
       - "--tag"
       - "gcr.io/$PROJECT_ID/web:latest"
       - "./web/"
     timeout: 720s # 12 minutes
   # deploy
-  - name: "gcr.io/cloud-builders/docker"
+  - name: "gcr.io/$PROJECT_ID/web:latest"
     args:
-      - "run"
-      - "gcr.io/$PROJECT_ID/web:latest"
-      - "firebase"
-      - "deploy"
-      - "--token"
-      - "$FIREBASE_TOKEN"
-      - "--only"
-      - "hosting"
+      - "sh"
+      - "./scripts/deploy.sh"
 timeout: 1200s
