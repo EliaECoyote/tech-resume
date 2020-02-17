@@ -21,7 +21,7 @@ let make =
       ~onClick=?,
       ~href=?,
       ~title=?,
-      buttonRef,
+      forwardedRef,
     ) => {
     let (theme, _) = React.useContext(ThemeContext.context);
     let disabled = Belt.Option.isNone(href);
@@ -33,7 +33,7 @@ let make =
       disabled
       className={Styles.link(theme.colors, ~size?, ~disabled, ())}
       ref=?{
-        buttonRef
+        forwardedRef
         |> Js.Nullable.toOption
         |> Belt.Option.map(_, ReactDOMRe.Ref.domRef)
       }>
