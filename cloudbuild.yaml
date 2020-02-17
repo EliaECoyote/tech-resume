@@ -11,7 +11,7 @@ steps:
       [
         "build",
         "--build-arg",
-        "BS_PLATFORM_VERSION=7.0.1",
+        "BS_PLATFORM_VERSION=7.1.1",
         "--tag",
         "gcr.io/$PROJECT_ID/bs-node:$SHORT_SHA",
         "--tag",
