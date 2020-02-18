@@ -56,8 +56,12 @@ steps:
       - "./web/"
     timeout: 720s # 12 minutes
   # deploy
-  - name: "gcr.io/$PROJECT_ID/web:latest"
+  - name: "gcr.io/cloud-builders/docker"
     args:
+      - "run"
+      - "--env-file"
+      - ".env"
+      - "gcr.io/$PROJECT_ID/web:latest"
       - "sh"
       - "./deploy.sh"
 timeout: 1200s
