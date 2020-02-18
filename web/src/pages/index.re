@@ -55,10 +55,10 @@ let makeDownloadHref = state =>
 module PageContent = {
   [@react.component]
   let make = () => {
-    open AsyncTask;
     let editorTextRef = React.useRef("");
     let editorService = React.useContext(EditorContext.context);
-    let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
+    let (state, sendEvent) =
+      UseMachine.hook(~reducer=AsyncTask.reducer, ~initialValue=Idle);
     let (resumeDataState, _saveData) =
       React.useContext(ResumeDataContext.context);
 
@@ -132,11 +132,6 @@ module PageContent = {
           className=Styles.outputTool>
           {React.string("Refresh")}
         </Button>
-        // onClick={_ =>
-        //   if (state !== Fetching) {
-        //     sendEvent(LoadData);
-        //   }
-        // }
         <Button disabled={state == Fetching} className=Styles.outputTool>
           {React.string("Save")}
         </Button>
