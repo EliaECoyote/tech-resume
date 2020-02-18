@@ -118,8 +118,6 @@ module PageContent = {
         [|resumeDataState|],
       );
 
-    let href = makeDownloadHref(state);
-
     <main className=Styles.app>
       <div className=Styles.header>
         <Button
@@ -135,7 +133,9 @@ module PageContent = {
         <Button disabled={state == Fetching} className=Styles.outputTool>
           {React.string("Save")}
         </Button>
-        <Link download="resume" ?href> {React.string("Download")} </Link>
+        <Link download="resume" href=?{makeDownloadHref(state)}>
+          {React.string("Download")}
+        </Link>
       </div>
       <Resizer className=Styles.resizer>
         <Resizer.Container side=Resizer_container.Left>
