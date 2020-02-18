@@ -59,9 +59,9 @@ module Overrides = {
     headers,
   };
 
-  let make = (~url=?, ~method__=?, ~postData=?, ~headers=?, ()) => {
-    let method__ = method__->Belt.Option.map(method_ToJs);
-    t(~url?, ~method__?, ~postData?, ~headers?, ());
+  let make = (~url=?, ~method_=?, ~postData=?, ~headers=?, ()) => {
+    let method_ = method_->Belt.Option.map(method_ToJs);
+    t(~url?, ~method_?, ~postData?, ~headers?, ());
   };
 };
 
@@ -138,8 +138,7 @@ external makeRespondOptions:
     ~body: Js_typed_array.ArrayBuffer.t=?,
     unit
   ) =>
-  respondOptions =
-  "";
+  respondOptions;
 
 [@bs.send]
 external respond: (t, respondOptions) => Js.Promise.t(unit) = "respond";
