@@ -1,23 +1,25 @@
 module Styles = {
   open Css;
-  // TODO: check if transition is actually applied
-  // only after js evaluation! This is important in
-  // order to avoid triggering the color transition
-  // on page load
-  global(
-    "body",
-    [
-      transition(~duration=300, "color"),
-      transition(~duration=300, "background-color"),
-    ],
-  );
 
-  global(
-    ".firebaseui-container .firebaseui-idp-list, "
-    ++ ".firebaseui-container .firebaseui-idp-list>.firebaseui-list-item, "
-    ++ ".firebaseui-container .firebaseui-tenant-list>.firebaseui-list-item",
-    [margin(`zero)],
-  );
+  let applyGlobalStyles = (colors: ThemeContext.colors) => {
+    global(
+      "body",
+      [
+        margin(`zero),
+        color(colors.primary),
+        backgroundColor(colors.background),
+        fontFamily("'Montserrat', sans-serif"),
+      ],
+    );
+    global("*", [boxSizing(`borderBox)]);
+    // Firebase ui custom styles
+    global(
+      ".firebaseui-container .firebaseui-idp-list, "
+      ++ ".firebaseui-container .firebaseui-idp-list>.firebaseui-list-item, "
+      ++ ".firebaseui-container .firebaseui-tenant-list>.firebaseui-list-item",
+      [margin(`zero)],
+    );
+  };
 
   let app =
     style([
@@ -39,19 +41,9 @@ if (Config.isBrowser) {
 module AppContent = {
   [@react.component]
   let make = (~children) => {
-    let (state, _) = React.useContext(ThemeContext.context);
+    let (themeState, _) = React.useContext(ThemeContext.context);
     let (authStatus, signOut) = React.useContext(AuthContext.context);
-    let background = Css.Types.Color.toString(state.colors.background);
-    let primary = Css.Types.Color.toString(state.colors.primary);
-    let globalStyle = {j|
-      body {
-        margin: 0;
-        color: $primary;
-        background-color: $background;
-        font-family: 'Montserrat', sans-serif;
-      }
-      * { box-sizing: border-box; }
-    |j};
+    Styles.applyGlobalStyles(themeState.colors);
 
     <div className=Styles.app>
       <ReactHelmet>
@@ -64,7 +56,6 @@ module AppContent = {
           rel="stylesheet"
           href="https://www.gstatic.com/firebasejs/ui/4.3.0/firebase-ui-auth.css"
         />
-        <style> {ReasonReact.string(globalStyle)} </style>
       </ReactHelmet>
       <Header className=Styles.header>
         <AuthWidget authStatus signOut />
