@@ -36,6 +36,9 @@ module UI = {
   module type FirebaseUiType = {include (module type of Firebase_ui);};
 
   let importDinamically: unit => Js.Promise.t(module FirebaseUiType) = [%bs.raw
-    {| () => import("./Firebase_ui.bs.js") |}
+    {| () => import(
+      /* webpackChunkName: "firebase_ui" */
+      "./Firebase_ui.bs.js"
+    ) |}
   ];
 };

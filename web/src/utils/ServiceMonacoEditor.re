@@ -11,7 +11,10 @@ let make = (): monacoEditorServiceT => {
   let monaco = ref(None);
   let textChangeSubject = WonkaHelpers.Sources.makeReplaySubject(1);
   let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
-    {| () => import("../bindings/Monaco.bs.js") |}
+    {| () => import(
+      /* webpackChunkName: "monaco" */
+      "../bindings/Monaco.bs.js"
+    ) |}
   ];
   let dynamicImportMonaco = () =>
     dynamicImportMonaco() |> Wonka.fromPromise |> Wonka.take(1);
