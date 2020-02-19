@@ -57,8 +57,7 @@ module PageContent = {
   let make = () => {
     let editorTextRef = React.useRef("");
     let editorService = React.useContext(EditorContext.context);
-    let (state, sendEvent) =
-      UseMachine.hook(~reducer=AsyncTask.reducer, ~initialValue=Idle);
+    let (pdfDataState, fetchPdfData) = UsePDFData.hook();
     let (resumeDataState, _saveData) =
       React.useContext(ResumeDataContext.context);
 
@@ -72,34 +71,13 @@ module PageContent = {
       [|editorService.textChangeSource|],
     );
 
-    // md2pdf conversion api handling
-    React.useEffect2(
-      () =>
-        switch (state) {
-        | Fetching =>
-          editorTextRef
-          |> React.Ref.current
-          |> Apis.fetchPdfData(~md=_)
-          |> Wonka.subscribe((. value) =>
-               switch (value) {
-               | HttpClient.Ok(data) => sendEvent(LoadSuccess(data))
-               | HttpClient.Failure
-               | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
-               }
-             )
-          |> WonkaHelpers.getEffectCleanup
-        | _ => None
-        },
-      (state, sendEvent),
-    );
-
     // loads the pdf automatically, right after the
     // content has been loaded
     React.useEffect1(
       () =>
         switch (resumeDataState) {
-        | Success(_data) =>
-          sendEvent(LoadData);
+        | Success(data) =>
+          fetchPdfData(data.template);
           None;
         | _ => None
         },
@@ -122,18 +100,26 @@ module PageContent = {
       <div className=Styles.header>
         <Button
           onClick={_ =>
-            if (state !== Fetching) {
-              sendEvent(LoadData);
+            if (pdfDataState !== Fetching) {
+              let _ =
+                editorService.textChangeSource
+                |> Wonka.take(1)
+                |> Wonka.subscribe((. text) => {
+                     Js.log2("found text: ", text);
+                     fetchPdfData(text);
+                   });
+              ();
             }
           }
-          disabled={state == Fetching}
+          disabled={pdfDataState == Fetching}
           className=Styles.outputTool>
           {React.string("Refresh")}
         </Button>
-        <Button disabled={state == Fetching} className=Styles.outputTool>
+        <Button
+          disabled={pdfDataState == Fetching} className=Styles.outputTool>
           {React.string("Save")}
         </Button>
-        <Link download="resume" href=?{makeDownloadHref(state)}>
+        <Link download="resume" href=?{makeDownloadHref(pdfDataState)}>
           {React.string("Download")}
         </Link>
       </div>
@@ -143,7 +129,7 @@ module PageContent = {
         </Resizer.Container>
         <Resizer.Bar onResizeEnd={editorService.layout} />
         <Resizer.Container side=Resizer_container.Right>
-          <Output className=Styles.output requestState=state />
+          <Output className=Styles.output requestState=pdfDataState />
         </Resizer.Container>
       </Resizer>
     </main>;
