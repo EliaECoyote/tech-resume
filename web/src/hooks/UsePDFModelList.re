@@ -80,7 +80,7 @@ module PDFLoader = {
     Wonka.fromValue(pdfData)
     |> Wonka.map((. pdfData)
          // converts pdf typedArray to PDFjs source element
-         => PdfJSHelpers.toPDFjsSource(pdfData))
+         => PdfJSHelpers.toPdfJsSource(pdfData))
     |> Wonka.switchMap((. source)
          // uses PDFjs source to load the pdf data
          => loadDocument(source))

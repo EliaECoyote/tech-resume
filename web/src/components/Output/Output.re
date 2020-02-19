@@ -46,6 +46,8 @@ module Styles = {
   let fakePdf = style([paddingTop(`percent(141.0)), customBoxShadow]);
 };
 
+PdfJSHelpers.setPdfJsWorker();
+
 [@react.component]
 let make = (~className=?, ~requestState, ()) => {
   let modelState = UsePDFModelList.hook(~pdfRequestState=requestState);
