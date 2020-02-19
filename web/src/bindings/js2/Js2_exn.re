@@ -1,0 +1,1 @@
+[@bs.new] external makeError: string => Js.Exn.t = "Error";
