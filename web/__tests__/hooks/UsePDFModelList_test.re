@@ -5,12 +5,12 @@ module TestData = {
   external toTypedArray: Node.Buffer.t => Js_typed_array.Int8Array.t =
     "%identity";
   let invalidPdfSource =
-    Js_typed_array.Int8Array.make([|1, 2, 3|]) |> PdfJSHelpers.toPDFjsSource;
+    Js_typed_array.Int8Array.make([|1, 2, 3|]) |> PdfJSHelpers.toPdfJsSource;
   let validPdfSource =
     Node.Fs.readFileSync("__tests__/sample.pdf", `binary)
     |> Node.Buffer.fromStringWithEncoding(_, `binary)
     |> toTypedArray
-    |> PdfJSHelpers.toPDFjsSource;
+    |> PdfJSHelpers.toPdfJsSource;
 };
 
 beforeAll(
