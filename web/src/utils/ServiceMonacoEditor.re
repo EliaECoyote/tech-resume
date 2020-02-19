@@ -9,7 +9,7 @@ type monacoEditorServiceT = {
 
 let make = (): monacoEditorServiceT => {
   let monaco = ref(None);
-  let textChangeSubject = Wonka.makeSubject();
+  let textChangeSubject = WonkaHelpers.Sources.makeReplaySubject(1);
   let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
     {| () => import("../bindings/Monaco.bs.js") |}
   ];
