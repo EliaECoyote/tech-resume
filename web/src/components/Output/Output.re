@@ -46,28 +46,17 @@ module Styles = {
   let fakePdf = style([paddingTop(`percent(141.0)), customBoxShadow]);
 };
 
-let getPdf = requestState =>
-  switch (requestState) {
-  | AsyncTask.Success(data) => Some(data)
-  | _ => None
-  };
-
 [@react.component]
 let make = (~className=?, ~requestState, ()) => {
-  open UsePDFModelList.Types;
-  let modelState = UsePDFModelList.hook(~pdf=getPdf(requestState));
+  let modelState = UsePDFModelList.hook(~pdfRequestState=requestState);
   let (theme, _) = React.useContext(ThemeContext.context);
 
-  // TODO: combine request & model state in order to simplify this flow
   let outputContent =
-    switch (requestState, modelState) {
-    | (Error, _)
-    | (_, Error) => React.string @@ "error"
-    | (Fetching, _)
-    | (_, Fetching) => <SkeletonPulse className=Styles.skeleton />
-    | (Idle, _)
-    | (_, Idle) => React.null
-    | (Success(_), Success(modelArray)) =>
+    switch (modelState) {
+    | Error => React.string("error")
+    | Fetching => <SkeletonPulse className=Styles.skeleton />
+    | Idle => React.null
+    | Success(modelArray) =>
       modelArray |> Array.map(model => <Pdfpage model />) |> ReasonReact.array
     };
 

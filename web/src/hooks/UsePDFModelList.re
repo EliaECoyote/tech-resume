@@ -114,13 +114,20 @@ module PDFModel = {
     };
 };
 
-let hook = (~pdf: Types.pdf) => {
-  open AsyncTask;
-  let (state, sendEvent) = UseMachine.hook(~reducer, ~initialValue=Idle);
+let hook = (~pdfRequestState: AsyncTask.status(Js_typed_array.Int8Array.t)) => {
+  let (state, sendEvent) =
+    UseMachine.hook(~reducer=AsyncTask.reducer, ~initialValue=Idle);
   React.useEffect1(
     () =>
-      switch (pdf) {
-      | Some(pdf) =>
+      switch (pdfRequestState) {
+      | AsyncTask.Fetching =>
+        sendEvent(LoadData);
+        None;
+      | AsyncTask.Idle
+      | AsyncTask.Error =>
+        sendEvent(Reset);
+        None;
+      | AsyncTask.Success(pdf) =>
         Wonka.fromValue(pdf)
         |> Wonka.onStart((.) => sendEvent(LoadData))
         |> Wonka.switchMap((. pdf) => PDFLoader.load(pdf))
@@ -129,7 +136,7 @@ let hook = (~pdf: Types.pdf) => {
              | Belt.Result.Ok(pages) =>
                pages
                |> Array.map(PDFModel.get)
-               |> (models => LoadSuccess(models))
+               |> (models => AsyncTask.LoadSuccess(models))
                |> sendEvent
              | Belt.Result.Error(errorMsg) =>
                sendEvent(LoadFailed);
@@ -138,11 +145,8 @@ let hook = (~pdf: Types.pdf) => {
              }
            })
         |> WonkaHelpers.getEffectCleanup
-      | None =>
-        // TODO: add event to move to *idle* state here
-        None
       },
-    [|pdf|],
+    [|pdfRequestState|],
   );
   state;
 };
