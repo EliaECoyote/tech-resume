@@ -105,11 +105,19 @@ module Sources = {
       );
     };
 
+    let rebelPrepend = (array, value) =>
+      Rebel.Array.concat(Rebel.Array.make(1, value), array);
+
     let next = value =>
       if (!state.ended) {
-        let newValues = ref(Rebel.Array.append(state.values, value));
+        let newValues = ref(rebelPrepend(state.values, value));
         if (Rebel.Array.size(state.values) > bufferSize) {
-          newValues := Rebel.Array.removeInPlace(state.values, 0);
+          newValues :=
+            Rebel.Array.slice(
+              newValues^,
+              ~start=0,
+              ~end_=Rebel.Array.size(newValues^) - bufferSize,
+            );
         };
         state.values = newValues^;
         Rebel.Array.forEach(state.sinks, sink => sink(. Push(value)));
