@@ -21,6 +21,7 @@ services:
     volumes:
       - ./web/src:/home/node/app/src:delegated
       - ./web/scripts:/home/node/app/scripts:delegated
+      - ./web/__tests__:/home/node/app/__tests__:delegated
       - ./web/package.json:/home/node/app/package.json:delegated
       - ./web/yarn.lock:/home/node/app/yarn.lock:delegated
       - ./web/bsconfig.json:/home/node/app/bsconfig.json:delegated
@@ -45,6 +46,7 @@ services:
     volumes:
       - ./api/src:/home/node/app/src:delegated
       - ./api/scripts:/home/node/app/scripts:delegated
+      - ./api/__tests__:/home/node/app/__tests__:delegated
       - ./api/package.json:/home/node/app/package.json:delegated
       - ./api/yarn.lock:/home/node/app/yarn.lock:delegated
       - ./api/nodemon.json:/home/node/app/nodemon.json:delegated
