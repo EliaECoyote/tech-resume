@@ -56,3 +56,9 @@ There are 2 kind of cloudbuild pipeline [triggers](https://cloud.google.com/clou
 
 * **module-specific trigger**: when an update to a *specific module* is detected, the correlated *specific module pipeline* will trigger - no deploy pipeline will be triggered when no change is detected
 * **base-image trigger**: when an update to the [base Dockerfile](Dockerfile) is detected, the *build & push base image* pipeline will be triggered
+
+## Troubleshooting
+
+**The bsb compiler/gatsby is no longer working correctly and needs to be restarted**\
+In order to restart bsb, close vscode, stop the container through `docker container stop [CONTAINER_ID]`, and restart vscode through the [method described above](#Editor).\
+This will restart the container correctly, and will probably fix your issue.

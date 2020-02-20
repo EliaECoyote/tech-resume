@@ -5,7 +5,7 @@ module Styles = {
 };
 
 type editorDataT =
-  | Content(UseResumeData.resumeDataT)
+  | Content(ServiceResumeData.resumeDataT)
   | Error
   | Loading;
 

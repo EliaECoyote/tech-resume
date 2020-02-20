@@ -1,27 +1,17 @@
 module Styles = {
   open Css;
 
-  let applyGlobalStyles = (colors: ThemeContext.colors) => {
-    global(
-      "body",
-      [
-        margin(`zero),
-        color(colors.primary),
-        backgroundColor(colors.background),
-        fontFamily("'Montserrat', sans-serif"),
-      ],
-    );
-    global("*", [boxSizing(`borderBox)]);
-    // Firebase ui custom styles
-    global(
-      ".firebaseui-container .firebaseui-idp-list, "
-      ++ ".firebaseui-container .firebaseui-idp-list>.firebaseui-list-item, "
-      ++ ".firebaseui-container .firebaseui-tenant-list>.firebaseui-list-item",
-      [margin(`zero)],
-    );
-  };
+  global("body", [margin(`zero), fontFamily("'Montserrat', sans-serif")]);
+  global("*", [boxSizing(`borderBox)]);
+  // Firebase ui custom styles
+  global(
+    ".firebaseui-container .firebaseui-idp-list, "
+    ++ ".firebaseui-container .firebaseui-idp-list>.firebaseui-list-item, "
+    ++ ".firebaseui-container .firebaseui-tenant-list>.firebaseui-list-item",
+    [margin(`zero)],
+  );
 
-  let app =
+  let app = (colors: ThemeContext.colors) =>
     style([
       display(`grid),
       height(`vh(100.0)),
@@ -29,6 +19,8 @@ module Styles = {
       gridTemplateRows([`px(50), `fr(1.0)]),
       gridTemplateAreas(`areas(["header", "content"])),
       gridRowGap(`px(10)),
+      color(colors.primary),
+      backgroundColor(colors.background),
     ]);
   let header = style([gridArea(`ident("header"))]);
   let content = style([gridArea(`ident("content")), overflow(`hidden)]);
@@ -43,9 +35,8 @@ module AppContent = {
   let make = (~children) => {
     let (themeState, _) = React.useContext(ThemeContext.context);
     let (authStatus, signOut) = React.useContext(AuthContext.context);
-    Styles.applyGlobalStyles(themeState.colors);
 
-    <div className=Styles.app>
+    <div className={Styles.app(themeState.colors)}>
       <ReactHelmet>
         <link
           href="https://fonts.googleapis.com/css?family=Montserrat&display=swap"
@@ -60,7 +51,7 @@ module AppContent = {
       <Header className=Styles.header>
         <AuthWidget authStatus signOut />
       </Header>
-      <div className=Styles.content> children </div>
+      <main className=Styles.content> children </main>
     </div>;
   };
 };
