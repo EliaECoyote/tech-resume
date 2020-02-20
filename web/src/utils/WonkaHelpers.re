@@ -1,5 +1,3 @@
-external promiseErrorToJsExn: Js.Promise.error => Js.Exn.t = "%identity";
-
 /**
  * Converts a promise to a Wonka *result* source.
  * Upon promise resolution / rejection, the source
@@ -15,7 +13,7 @@ let fromPromise = (promise: Js.Promise.t('a)) => {
            Belt.Result.Ok(value) |> Js.Promise.resolve
          )
       |> Js.Promise.catch(error =>
-           promiseErrorToJsExn(error)
+           Js2.Exn.promiseExnToJsExn(error)
            |> (error => Belt.Result.Error(error))
            |> Js.Promise.resolve
          )
