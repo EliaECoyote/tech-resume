@@ -67,7 +67,7 @@ let hook = () => {
       () =>
         Firebase.Auth.make()
         |> Firebase.Auth.signOut
-        |> WonkaHelpers.fromPromise
+        |> WonkaHelpers.fromPromiseSafe
         |> Wonka.take(1)
         |> Wonka.onPush((. result) =>
              switch (result) {

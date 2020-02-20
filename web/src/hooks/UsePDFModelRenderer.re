@@ -12,7 +12,7 @@ let render = (model, canvasElement) => {
   );
   BsPdfjs.Page.render(model.page, ~canvasContext, ~viewport, ~transform=None)
   |> BsPdfjs.RenderTask.promise
-  |> WonkaHelpers.fromPromise
+  |> WonkaHelpers.fromPromiseSafe
   |> WonkaHelpers.Result.tapLogError(~message="[Pdf render]")
   |> Wonka.map((. result) =>
        switch (result) {

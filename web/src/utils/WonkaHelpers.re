@@ -3,7 +3,7 @@
  * Upon promise resolution / rejection, the source
  * will push *next* & *complete* events
  */
-let fromPromise = (promise: Js.Promise.t('a)) => {
+let fromPromiseSafe = (promise: Js.Promise.t('a)) => {
   Wonka.make(
     (. observer: Wonka.Types.observerT(Belt.Result.t('a, Js.Exn.t))) => {
     let cancelled = ref(false);

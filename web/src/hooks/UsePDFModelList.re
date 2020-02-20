@@ -39,12 +39,12 @@ module PDFLoader = {
     source
     |> BsPdfjs.Global.getDocument(_, BsPdfjs.Global.inst)
     |> BsPdfjs.Global.DocumentLoadingTask.promise
-    |> WonkaHelpers.fromPromise;
+    |> WonkaHelpers.fromPromiseSafe;
 
   let loadPage = (document, pageIndex) =>
     document
     |> BsPdfjs.Document.getPage(pageIndex)
-    |> WonkaHelpers.fromPromise
+    |> WonkaHelpers.fromPromiseSafe
     |> WonkaHelpers.Result.tapLogError(
          ~message={j|[Pdf page $pageIndex load]|j},
        )
