@@ -70,3 +70,9 @@ let base64ToString = b64 => {
 };
 
 [@bs.val] external devicePixelRatio: option(float) = "devicePixelRatio";
+
+/**
+ * displays an alert dialog with the optional specified content and an OK button.
+ */
+[@bs.val]
+external alert: string => unit = "alert";
