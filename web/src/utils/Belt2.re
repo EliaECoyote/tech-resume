@@ -1,0 +1,1 @@
+module React = Belt2_react;

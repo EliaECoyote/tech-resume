@@ -6,7 +6,8 @@ let hook = () => {
   open AsyncTask;
   let (authStatus, _) = React.useContext(AuthContext.context);
   let (state, send) = UseMachine.hook(~reducer, ~initialValue=Idle);
-  let resumeDataService = React.useContext(ResumeDataServiceContext.context);
+  let resumeDataService =
+    Belt2.React.useSafeContext(ResumeDataServiceContext.context);
 
   // loads resume data upon *authStatus* change
   React.useEffect1(

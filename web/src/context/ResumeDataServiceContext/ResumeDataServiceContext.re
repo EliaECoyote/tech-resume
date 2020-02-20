@@ -1,4 +1,4 @@
-let context = React.createContext(ServiceResumeData.make());
+let context = React.createContext(None);
 
 module Provider = {
   let makeProps = (~value, ~children, ()) => {
@@ -11,5 +11,5 @@ module Provider = {
 [@react.component]
 let make = (~children) => {
   let resumeDataService = UseLazyRef.hook(ServiceResumeData.make);
-  <Provider value=resumeDataService> children </Provider>;
+  <Provider value={Some(resumeDataService)}> children </Provider>;
 };

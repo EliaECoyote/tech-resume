@@ -60,7 +60,7 @@ module PageContent = {
     let (authStatus, _) = React.useContext(AuthContext.context);
     let editorService = React.useContext(EditorContext.context);
     let resumeDataService =
-      React.useContext(ResumeDataServiceContext.context);
+      Belt2.React.useSafeContext(ResumeDataServiceContext.context);
     let resumeTask = UseResumeFetchTask.hook();
     let disposeBag = UseDisposeBag.hook();
     let (pdfDataTask, fetchPdfData) = UsePDFData.hook();
