@@ -56,10 +56,14 @@ module PageContent = {
   [@react.component]
   let make = () => {
     let editorTextRef = React.useRef("");
+    let (isSaving, setIsSaving) = React.useState(() => false);
+    let (authStatus, _) = React.useContext(AuthContext.context);
     let editorService = React.useContext(EditorContext.context);
-    let (pdfDataState, fetchPdfData) = UsePDFData.hook();
-    let (resumeDataState, _saveData) =
-      React.useContext(ResumeDataContext.context);
+    let resumeDataService =
+      React.useContext(ResumeDataServiceContext.context);
+    let resumeTask = UseResumeFetchTask.hook();
+    let disposeBag = UseDisposeBag.hook();
+    let (pdfDataTask, fetchPdfData) = UsePDFData.hook();
 
     React.useEffect1(
       () =>
@@ -75,51 +79,82 @@ module PageContent = {
     // content has been loaded
     React.useEffect1(
       () =>
-        switch (resumeDataState) {
+        switch (resumeTask) {
         | Success(data) =>
           fetchPdfData(data.template);
           None;
         | _ => None
         },
-      [|resumeDataState|],
+      [|resumeTask|],
     );
 
     let editorData =
       React.useMemo1(
         () =>
-          switch (resumeDataState) {
+          switch (resumeTask) {
           | Idle
           | Fetching => Editor.Loading
           | Error => Editor.Error
           | Success(data) => Editor.Content(data)
           },
-        [|resumeDataState|],
+        [|resumeTask|],
+      );
+
+    let canSaveData =
+      !isSaving
+      && (
+        switch (authStatus, resumeTask) {
+        | (UseAuth.Anonymous | UseAuth.Logged(_), AsyncTask.Success(_)) =>
+          true
+        | (_, _) => false
+        }
       );
 
     <main className=Styles.app>
       <div className=Styles.header>
         <Button
           onClick={_ =>
-            if (pdfDataState !== Fetching) {
+            if (pdfDataTask !== Fetching) {
               let _ =
                 editorService.textChangeSource
                 |> Wonka.take(1)
-                |> Wonka.subscribe((. text) => {
-                     Js.log2("found text: ", text);
-                     fetchPdfData(text);
-                   });
+                |> Wonka.subscribe((. text) => fetchPdfData(text));
               ();
             }
           }
-          disabled={pdfDataState == Fetching}
+          disabled={pdfDataTask == Fetching}
           className=Styles.outputTool>
           {React.string("Refresh")}
         </Button>
         <Button
-          disabled={pdfDataState == Fetching} className=Styles.outputTool>
+          disabled={!canSaveData}
+          className=Styles.outputTool
+          onClick={_ =>
+            switch (resumeTask) {
+            | AsyncTask.Success(resume) =>
+              setIsSaving(_ => true);
+              let newResume: ServiceResumeData.resumeDataT = {
+                theme: resume.theme,
+                template: React.Ref.current(editorTextRef),
+              };
+              resumeDataService.saveResume(authStatus, newResume)
+              |> Wonka.subscribe((. result) => {
+                   setIsSaving(_ => false);
+                   switch (result) {
+                   | Belt.Result.Ok(_) =>
+                     Js2.Global.alert("save operation success")
+                   | Belt.Result.Error(error) =>
+                     Js.Console.error(error);
+                     Js2.Global.alert("save operation error");
+                   };
+                 })
+              |> disposeBag.add;
+            | _ => ()
+            }
+          }>
           {React.string("Save")}
         </Button>
-        <Link download="resume" href=?{makeDownloadHref(pdfDataState)}>
+        <Link download="resume" href=?{makeDownloadHref(pdfDataTask)}>
           {React.string("Download")}
         </Link>
       </div>
@@ -129,7 +164,7 @@ module PageContent = {
         </Resizer.Container>
         <Resizer.Bar onResizeEnd={editorService.layout} />
         <Resizer.Container side=Resizer_container.Right>
-          <Output className=Styles.output requestState=pdfDataState />
+          <Output className=Styles.output requestState=pdfDataTask />
         </Resizer.Container>
       </Resizer>
     </main>;
@@ -138,9 +173,9 @@ module PageContent = {
 
 [@react.component]
 let make = () => {
-  <ResumeDataContext>
+  <ResumeDataServiceContext>
     <EditorContext> <PageContent /> </EditorContext>
-  </ResumeDataContext>;
+  </ResumeDataServiceContext>;
 };
 
 let default = make;
