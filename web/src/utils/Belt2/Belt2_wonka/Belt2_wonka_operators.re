@@ -105,9 +105,11 @@ let shareReplay = (bufferSize: int, source: sourceT('a)): sourceT('a) => {
 
   let _subscription =
     source
-    |> onPush(state.replaySubject.next)
-    |> onEnd(state.replaySubject.complete)
-    |> Wonka.publish;
+    // TODO: emit complete on subject complete -
+    // looks like *onEnd* callback gets called even on unsubscribe
+    // which is not suitable for this case
+    // |> onEnd(state.replaySubject.complete)
+    |> Belt2_wonka_sinks.subscribe(state.replaySubject.next);
 
   state.replaySubject.source;
 };

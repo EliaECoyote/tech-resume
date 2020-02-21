@@ -43,7 +43,7 @@ module ResumeJson = {
 let firestoreModuleSource:
   Wonka.Types.sourceT(Belt.Result.t(module FirestoreType, Js.Exn.t)) =
   Belt2.Import.import("../../bindings/firebase/Firebase_firestore.bs.js")
-  |> Belt2_wonka.fromPromiseSafe
+  |> Belt2.Wonka.fromPromiseSafe
   |> Belt2.Wonka.shareReplay(1)
   |> Belt2.Wonka.tap(Js.Console.error);
 
