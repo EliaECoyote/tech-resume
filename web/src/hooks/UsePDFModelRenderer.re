@@ -12,9 +12,9 @@ let render = (model, canvasElement) => {
   );
   BsPdfjs.Page.render(model.page, ~canvasContext, ~viewport, ~transform=None)
   |> BsPdfjs.RenderTask.promise
-  |> Belt2.Wonka.fromPromiseSafe
-  |> Belt2.Wonka.tapLogError(~message="[Pdf render]")
-  |> Wonka.map((. result) =>
+  |> XWonka.fromPromiseSafe
+  |> XWonka.tapLogError(~message="[Pdf render]")
+  |> XWonka.map(result =>
        switch (result) {
        | Belt.Result.Error(_error) =>
          Belt.Result.Error("Something went wrong during PDF page render")
@@ -32,8 +32,8 @@ let hook =
         DocumentRe.getElementById(model.id, Webapi.Dom.document)
         |> Belt.Option.flatMap(_, canvasElement =>
              render(model, canvasElement)
-             |> Wonka.publish
-             |> Belt2.Wonka.getEffectCleanup
+             |> XWonka.publish
+             |> XWonka.getEffectCleanup
            )
       | Belt.Result.Error(_) => None
       },

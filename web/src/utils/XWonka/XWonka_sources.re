@@ -1,5 +1,15 @@
 open Wonka.Types;
 include Wonka_sources;
+include WonkaJs;
+
+/**
+ * uncurried make
+ */
+let make = callback =>
+  make((. observer) => {
+    let teardown = callback(observer);
+    (.) => teardown();
+  });
 
 /**
  * Converts a promise to a Wonka *result* source.

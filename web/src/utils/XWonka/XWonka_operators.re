@@ -12,6 +12,11 @@ let filter = callback => Wonka.filter((. value) => callback(value));
 let debounce = callback => Wonka.debounce((. value) => callback(value));
 
 /**
+ * uncurried throttle
+ */
+let throttle = callback => Wonka.throttle((. value) => callback(value));
+
+/**
  * uncurried concatMap
  */
 let concatMap = callback => Wonka.concatMap((. value) => callback(value));
@@ -99,9 +104,7 @@ type shareReplayStateT('a) = {replaySubject: subjectT('a)};
  * share source and replay specified number of emissions on subscription
  */
 let shareReplay = (bufferSize: int, source: sourceT('a)): sourceT('a) => {
-  let state = {
-    replaySubject: Belt2_wonka_sources.makeReplaySubject(bufferSize),
-  };
+  let state = {replaySubject: XWonka_sources.makeReplaySubject(bufferSize)};
 
   let _subscription =
     source
@@ -109,7 +112,7 @@ let shareReplay = (bufferSize: int, source: sourceT('a)): sourceT('a) => {
     // looks like *onEnd* callback gets called even on unsubscribe
     // which is not suitable for this case
     // |> onEnd(state.replaySubject.complete)
-    |> Belt2_wonka_sinks.subscribe(state.replaySubject.next);
+    |> XWonka_sinks.subscribe(state.replaySubject.next);
 
   state.replaySubject.source;
 };

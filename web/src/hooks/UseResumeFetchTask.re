@@ -17,7 +17,7 @@ let hook = () => {
       | Logged(_) =>
         send(LoadData);
         resumeDataService.loadResume(authStatus)
-        |> Wonka.subscribe((. result) =>
+        |> XWonka.subscribe(result =>
              switch (result) {
              | Belt.Result.Ok(data) => send(LoadSuccess(data))
              | Belt.Result.Error(error) =>
@@ -25,7 +25,7 @@ let hook = () => {
                send(LoadFailed);
              }
            )
-        |> Belt2.Wonka.getEffectCleanup;
+        |> XWonka.getEffectCleanup;
       | Idle => None
       },
     [|authStatus|],

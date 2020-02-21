@@ -45,7 +45,7 @@ let make = (~authStatus: UseAuth.status, ~signOut: unit => unit) => {
     () => {
       switch (authStatus) {
       | UseAuth.Anonymous =>
-        firebaseUiService.startFirebaseUi() |> Belt2.Wonka.getEffectCleanup
+        firebaseUiService.startFirebaseUi() |> XWonka.getEffectCleanup
       | _ => None
       }
     },

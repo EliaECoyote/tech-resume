@@ -12,14 +12,14 @@ let hook = () => {
         data => {
           sendEvent(LoadData);
           Apis.fetchPdfData(~md=data.template)
-          |> Wonka.subscribe((. value) =>
+          |> XWonka.subscribe(value =>
                switch (value) {
                | HttpClient.Ok(data) => sendEvent(LoadSuccess(data))
                | HttpClient.Failure
                | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
                }
              )
-          |> Belt2.Wonka.getEffectCleanup;
+          |> XWonka.getEffectCleanup;
         },
       ),
     [|data|],

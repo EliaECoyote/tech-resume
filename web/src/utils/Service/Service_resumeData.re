@@ -41,11 +41,10 @@ module ResumeJson = {
  * shared source that emits the firebase module
  */
 let firestoreModuleSource:
-  Wonka.Types.sourceT(Belt.Result.t(module FirestoreType, Js.Exn.t)) =
+  XWonka.Types.sourceT(Belt.Result.t(module FirestoreType, Js.Exn.t)) =
   Belt2.Import.import("../../bindings/firebase/Firebase_firestore.bs.js")
-  |> Belt2.Wonka.fromPromiseSafe
-  |> Belt2.Wonka.shareReplay(1)
-  |> Belt2.Wonka.tap(Js.Console.error);
+  |> XWonka.fromPromiseSafe
+  |> XWonka.shareReplay(1);
 
 module FirestoreResume = {
   /**
@@ -53,7 +52,7 @@ module FirestoreResume = {
    */
   let getDocumentRef = (db, user: Firebase.Auth.User.t) =>
     firestoreModuleSource
-    |> Belt2.Wonka.switchMapOk((module Firestore: FirestoreType) => {
+    |> XWonka.switchMapOk((module Firestore: FirestoreType) => {
          let uid = user.uid;
          let collectionPath = {j|users/$uid/resumesDetails|j};
          let resumesDetailsRef = Firestore.collection(db, ~collectionPath);
@@ -61,20 +60,20 @@ module FirestoreResume = {
            Firestore.CollectionReference.asQuery(resumesDetailsRef);
          Firestore.Query.limit(resumesDetailsQuery, ~limit=1)
          |> Firestore.Query.get
-         |> Belt2.Wonka.fromPromiseSafe
-         |> Belt2.Wonka.switchMapOk(snapshot =>
+         |> XWonka.fromPromiseSafe
+         |> XWonka.switchMapOk(snapshot =>
               Firestore.QuerySnapshot.get_empty(snapshot)
                 // when no resumesDetails can be found, create one on the fly
                 ? Firestore.CollectionReference.add(
                     resumesDetailsRef,
                     ~data=ResumeJson.encode(initialResumeData),
                   )
-                  |> Belt2.Wonka.fromPromiseSafe
+                  |> XWonka.fromPromiseSafe
                 // otherwise just return the existing one snapshot
                 : Firestore.QuerySnapshot.get_docs(snapshot)
                   |> Array.get(_, 0)
-                  |> Wonka.fromValue
-                  |> Wonka.map((. snapshot) =>
+                  |> XWonka.fromValue
+                  |> XWonka.map(snapshot =>
                        snapshot
                        |> Firestore.QueryDocumentSnapshot.toDocumentSnapshot
                        |> Firestore.DocumentSnapshot.get_ref
@@ -88,7 +87,7 @@ module FirestoreResume = {
    */
   let getData = snapshot =>
     firestoreModuleSource
-    |> Belt2.Wonka.mapOk((module Firestore: FirestoreType) => {
+    |> XWonka.mapOk((module Firestore: FirestoreType) => {
          // retrieve data from documentRef's snapshot
          let resume =
            Firestore.DocumentSnapshot.data(snapshot)
@@ -121,12 +120,12 @@ let make = (): resumeDataServiceT => {
    */
   let dbSource =
     firestoreModuleSource
-    |> Belt2.Wonka.map(result =>
+    |> XWonka.map(result =>
          Belt.Result.map(result, (module Firestore: FirestoreType) =>
            Firestore.make()
          )
        )
-    |> Belt2.Wonka.shareReplay(1);
+    |> XWonka.shareReplay(1);
 
   let resumeDocumentRef = ref(None);
 
@@ -135,8 +134,8 @@ let make = (): resumeDataServiceT => {
    */
   let loadStorageResume = () =>
     firestoreModuleSource
-    |> Wonka.take(1)
-    |> Belt2.Wonka.switchMapOk((module Firestore: FirestoreType) => {
+    |> XWonka.take(1)
+    |> XWonka.switchMapOk((module Firestore: FirestoreType) => {
          let template =
            Dom.Storage.localStorage |> Dom.Storage.getItem("template");
          let theme = Dom.Storage.localStorage |> Dom.Storage.getItem("theme");
@@ -151,7 +150,7 @@ let make = (): resumeDataServiceT => {
              |> Dom.Storage.setItem("theme", initialResumeData.theme);
              Belt.Result.Ok(initialResumeData);
            };
-         Wonka.fromValue(result);
+         XWonka.fromValue(result);
        });
 
   /**
@@ -160,22 +159,22 @@ let make = (): resumeDataServiceT => {
   let loadFirestoreResume = user => {
     let sharedResumeDocRefSource =
       dbSource
-      |> Belt2.Wonka.switchMapOk(FirestoreResume.getDocumentRef(_, user))
-      |> Belt2.Wonka.shareReplay(1);
+      |> XWonka.switchMapOk(FirestoreResume.getDocumentRef(_, user))
+      |> XWonka.shareReplay(1);
 
     let resumeDataSource =
-      Wonka.combine(firestoreModuleSource, sharedResumeDocRefSource)
-      |> Belt2.Wonka.switchMapOk2(
+      XWonka.combine(firestoreModuleSource, sharedResumeDocRefSource)
+      |> XWonka.switchMapOk2(
            ((module Firestore: FirestoreType, documentRef)) =>
            Firestore.DocumentReference.get(documentRef)
-           |> Belt2.Wonka.fromPromiseSafe
-           |> Belt2.Wonka.tap(value => Js.log(value))
-           |> Belt2.Wonka.switchMapOk(FirestoreResume.getData)
+           |> XWonka.fromPromiseSafe
+           |> XWonka.tap(value => Js.log(value))
+           |> XWonka.switchMapOk(FirestoreResume.getData)
          );
 
     let docRefSubscription =
       sharedResumeDocRefSource
-      |> Wonka.subscribe((. documentRef) =>
+      |> XWonka.subscribe(documentRef =>
            switch (documentRef) {
            | Belt.Result.Ok(documentRef) =>
              resumeDocumentRef := Some(documentRef)
@@ -185,7 +184,7 @@ let make = (): resumeDataServiceT => {
            }
          );
 
-    resumeDataSource |> Belt2.Wonka.onEnd(docRefSubscription.unsubscribe);
+    resumeDataSource |> XWonka.onEnd(docRefSubscription.unsubscribe);
   };
 
   /**
@@ -195,14 +194,14 @@ let make = (): resumeDataServiceT => {
     switch (resumeDocumentRef^) {
     | Some(documentRef) =>
       firestoreModuleSource
-      |> Belt2.Wonka.switchMapOk((module Firestore: FirestoreType) =>
+      |> XWonka.switchMapOk((module Firestore: FirestoreType) =>
            ResumeJson.encode(data)
            |> Firestore.DocumentReference.set(documentRef, ~value=_)
-           |> Belt2.Wonka.fromPromiseSafe
+           |> XWonka.fromPromiseSafe
          )
     | None =>
       let error = Js2.Exn.makeError("documentRef not available");
-      Wonka.fromValue(Belt.Result.Error(error));
+      XWonka.fromValue(Belt.Result.Error(error));
     };
 
   /**
@@ -211,7 +210,7 @@ let make = (): resumeDataServiceT => {
   let saveStorageResume = (data: resumeDataT) => {
     Dom.Storage.localStorage |> Dom.Storage.setItem("template", data.template);
     Dom.Storage.localStorage |> Dom.Storage.setItem("theme", data.theme);
-    Wonka.fromValue @@ Belt.Result.Ok();
+    XWonka.fromValue @@ Belt.Result.Ok();
   };
 
   /**
@@ -223,7 +222,7 @@ let make = (): resumeDataServiceT => {
     | UseAuth.Logged(_user) => saveFirestoreResume(data)
     | UseAuth.Anonymous => saveStorageResume(data)
     | UseAuth.Idle =>
-      Wonka.fromValue @@
+      XWonka.fromValue @@
       Belt.Result.Error(Js2.Exn.makeError("Cannot save: user not found"))
     };
 
@@ -236,7 +235,7 @@ let make = (): resumeDataServiceT => {
     | UseAuth.Logged(user) => loadFirestoreResume(user)
     | UseAuth.Anonymous => loadStorageResume()
     | UseAuth.Idle =>
-      Wonka.fromValue @@
+      XWonka.fromValue @@
       Belt.Result.Error(Js2.Exn.makeError("Cannot load: user not found"))
     };
 

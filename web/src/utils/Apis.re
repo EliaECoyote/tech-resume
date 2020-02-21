@@ -11,4 +11,4 @@ let fetchPdfData = (~md) =>
        ~headers=
          Fetch.HeadersInit.makeWithArray([|("Content-Type", "text/plain")|]),
      )
-  |> Wonka.mergeMap((. value) => HttpClient.toArrayBuffer(value));
+  |> XWonka.mergeMap(HttpClient.toArrayBuffer);
