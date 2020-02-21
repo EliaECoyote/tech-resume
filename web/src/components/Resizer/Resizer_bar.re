@@ -43,40 +43,40 @@ let make = (~onResizeEnd=() => ()) => {
     let barElement = React.Ref.current(barRef) |> Js.Nullable.toOption;
     barElement
     |> Belt.Option.map(_, element =>
-         Wonka.merge([|
-           Wonka.fromDomEvent(element, "mousedown"),
-           Wonka.fromDomEvent(element, "touchstart"),
+         XWonka.merge([|
+           XWonka.fromDomEvent(element, "mousedown"),
+           XWonka.fromDomEvent(element, "touchstart"),
          |])
        )
-    |> Belt.Option.getWithDefault(_, Wonka.never)
-    |> Wonka.onPush((. event) => {
+    |> Belt.Option.getWithDefault(_, XWonka.never)
+    |> XWonka.onPush(event => {
          Webapi.Dom.Event.preventDefault(event);
          dispatch(Resizer_context.StartResizing);
        })
-    |> Wonka.switchMap((. _) =>
-         Wonka.merge([|
-           Wonka.fromDomEvent(windowElement, "mousemove"),
-           Wonka.fromDomEvent(windowElement, "touchmove"),
+    |> XWonka.switchMap(_ =>
+         XWonka.merge([|
+           XWonka.fromDomEvent(windowElement, "mousemove"),
+           XWonka.fromDomEvent(windowElement, "touchmove"),
          |])
-         |> Wonka.takeUntil(
-              Wonka.merge([|
-                Wonka.fromDomEvent(windowElement, "mouseup"),
-                Wonka.fromDomEvent(windowElement, "touchend"),
-                Wonka.fromDomEvent(windowElement, "touchcancel"),
+         |> XWonka.takeUntil(
+              XWonka.merge([|
+                XWonka.fromDomEvent(windowElement, "mouseup"),
+                XWonka.fromDomEvent(windowElement, "touchend"),
+                XWonka.fromDomEvent(windowElement, "touchcancel"),
               |])
-              |> Wonka.take(1)
-              |> Wonka.onPush((. _event) => {
+              |> XWonka.take(1)
+              |> XWonka.onPush(_ => {
                    React.Ref.current(onResizeEndRef, ());
                    dispatch(Resizer_context.EndResizing);
                  }),
             )
        )
-    |> Wonka.map((. event) =>
+    |> XWonka.map(event =>
          DomHelpers.asMouseEvent(event)
          |> Webapi.Dom.MouseEvent.clientX
          |> Js.Int.toFloat
        )
-    |> Wonka.subscribe((. x) => {
+    |> XWonka.subscribe(x => {
          let (width, offset) = (
            React.Ref.current(widthRef),
            React.Ref.current(offsetRef),
@@ -98,7 +98,7 @@ let make = (~onResizeEnd=() => ()) => {
          dispatch(Resizer_context.UpdateSectionsFlexGrow(sizes));
          ();
        })
-    |> WonkaHelpers.getEffectCleanup;
+    |> XWonka.getEffectCleanup;
   });
 
   <div className=Styles.bar ref={ReactDOMRe.Ref.domRef(barRef)}>

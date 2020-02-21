@@ -10,8 +10,8 @@ let make = (elementId: string): firebaseUiServiceT => {
 
   let startFirebaseUi = () =>
     Firebase.UI.importDinamically()
-    |> Wonka.fromPromise
-    |> Wonka.subscribe((. module FirebaseUI: Firebase.UI.FirebaseUiType) => {
+    |> XWonka.fromPromise
+    |> XWonka.subscribe((module FirebaseUI: Firebase.UI.FirebaseUiType) => {
          let callbacks: FirebaseUI.callbacks = {
            // signInSuccessWithAuthResult callback returns false in
            // order to avoid redirects after a successful login as

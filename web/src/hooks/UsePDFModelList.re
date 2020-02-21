@@ -39,16 +39,14 @@ module PDFLoader = {
     source
     |> BsPdfjs.Global.getDocument(_, BsPdfjs.Global.inst)
     |> BsPdfjs.Global.DocumentLoadingTask.promise
-    |> WonkaHelpers.fromPromiseSafe;
+    |> XWonka.fromPromiseSafe;
 
   let loadPage = (document, pageIndex) =>
     document
     |> BsPdfjs.Document.getPage(pageIndex)
-    |> WonkaHelpers.fromPromiseSafe
-    |> WonkaHelpers.Result.tapLogError(
-         ~message={j|[Pdf page $pageIndex load]|j},
-       )
-    |> Wonka.map((. result) =>
+    |> XWonka.fromPromiseSafe
+    |> XWonka.tapLogError(~message={j|[Pdf page $pageIndex load]|j})
+    |> XWonka.map(result =>
          switch (result) {
          | Belt.Result.Ok(data) => Belt.Result.Ok(data)
          | Belt.Result.Error(_error) =>
@@ -63,30 +61,27 @@ module PDFLoader = {
       |> BsPdfjs.Document.getNumPages
       |> Array.make(_, 0)
       |> Array.mapi((index, _) => index + 1)
-      |> Wonka.fromValue
-      |> Wonka.switchMap((. pagesIndexes) =>
+      |> XWonka.fromValue
+      |> XWonka.switchMap(pagesIndexes =>
            pagesIndexes
            |> Array.map(loadPage(document))
-           |> WonkaHelpers.combineArray
-           |> Wonka.map((. array) => Belt.Result.Ok(array))
+           |> XWonka.combineArray
+           |> XWonka.map(array => Belt.Result.Ok(array))
          )
-      |> Wonka.take(1)
+      |> XWonka.take(1)
     | Belt.Result.Error(_error) =>
       Belt.Result.Error("Something went wrong during PDF document loading")
-      |> Wonka.fromValue
+      |> XWonka.fromValue
     };
 
   let load = pdfData =>
-    Wonka.fromValue(pdfData)
-    |> Wonka.map((. pdfData)
-         // converts pdf typedArray to PDFjs source element
-         => PdfJSHelpers.toPdfJsSource(pdfData))
-    |> Wonka.switchMap((. source)
-         // uses PDFjs source to load the pdf data
-         => loadDocument(source))
-    |> Wonka.switchMap((. documentResult)
-         // loads pdf page from documentResult
-         => loadPages(documentResult));
+    XWonka.fromValue(pdfData)
+    // converts pdf typedArray to PDFjs source element
+    |> XWonka.map(Belt2.PdfJs.toPdfJsSource)
+    // uses PDFjs source to load the pdf data
+    |> XWonka.switchMap(loadDocument)
+    // loads pdf page from documentResult
+    |> XWonka.switchMap(loadPages);
 };
 
 module PDFModel = {
@@ -128,10 +123,10 @@ let hook = (~pdfRequestState: AsyncTask.status(Js_typed_array.Int8Array.t)) => {
         sendEvent(Reset);
         None;
       | AsyncTask.Success(pdf) =>
-        Wonka.fromValue(pdf)
-        |> Wonka.onStart((.) => sendEvent(LoadData))
-        |> Wonka.switchMap((. pdf) => PDFLoader.load(pdf))
-        |> Wonka.subscribe((. result) => {
+        XWonka.fromValue(pdf)
+        |> XWonka.onStart(() => sendEvent(LoadData))
+        |> XWonka.switchMap(PDFLoader.load)
+        |> XWonka.subscribe(result =>
              switch (result) {
              | Belt.Result.Ok(pages) =>
                pages
@@ -143,8 +138,8 @@ let hook = (~pdfRequestState: AsyncTask.status(Js_typed_array.Int8Array.t)) => {
                Js.Console.error(errorMsg);
                ();
              }
-           })
-        |> WonkaHelpers.getEffectCleanup
+           )
+        |> XWonka.getEffectCleanup
       },
     [|pdfRequestState|],
   );

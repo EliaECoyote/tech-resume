@@ -68,10 +68,8 @@ module PageContent = {
     React.useEffect1(
       () =>
         editorService.textChangeSource
-        |> Wonka.subscribe((. text) =>
-             React.Ref.setCurrent(editorTextRef, text)
-           )
-        |> WonkaHelpers.getEffectCleanup,
+        |> XWonka.subscribe(React.Ref.setCurrent(editorTextRef))
+        |> XWonka.getEffectCleanup,
       [|editorService.textChangeSource|],
     );
 
@@ -106,7 +104,7 @@ module PageContent = {
         switch (authStatus, resumeTask) {
         | (UseAuth.Anonymous | UseAuth.Logged(_), AsyncTask.Success(_)) =>
           true
-        | (_, _) => false
+        | _ => false
         }
       );
 
@@ -117,8 +115,8 @@ module PageContent = {
             if (pdfDataTask !== Fetching) {
               let _ =
                 editorService.textChangeSource
-                |> Wonka.take(1)
-                |> Wonka.subscribe((. text) => fetchPdfData(text));
+                |> XWonka.take(1)
+                |> XWonka.subscribe(fetchPdfData);
               ();
             }
           }
@@ -133,12 +131,12 @@ module PageContent = {
             switch (resumeTask) {
             | AsyncTask.Success(resume) =>
               setIsSaving(_ => true);
-              let newResume: ServiceResumeData.resumeDataT = {
+              let newResume: Service.ResumeData.resumeDataT = {
                 theme: resume.theme,
                 template: React.Ref.current(editorTextRef),
               };
               resumeDataService.saveResume(authStatus, newResume)
-              |> Wonka.subscribe((. result) => {
+              |> XWonka.subscribe(result => {
                    setIsSaving(_ => false);
                    switch (result) {
                    | Belt.Result.Ok(_) =>

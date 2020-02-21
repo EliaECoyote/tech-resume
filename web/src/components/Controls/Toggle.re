@@ -89,24 +89,22 @@ let make =
     React.Ref.current(trackRef)
     |> Js.Nullable.toOption
     |> Belt.Option.flatMap(_, element =>
-         Wonka.merge([|
-           Wonka.fromDomEvent(element, "mousedown"),
-           Wonka.fromDomEvent(element, "touchstart"),
+         XWonka.merge([|
+           XWonka.fromDomEvent(element, "mousedown"),
+           XWonka.fromDomEvent(element, "touchstart"),
          |])
-         |> Wonka.onPush((. event) =>
-              Webapi.Dom.Event.preventDefault(event)
-            )
-         |> Wonka.switchMap((. hadFocusOnTouchStart) =>
-              Wonka.merge([|
-                Wonka.fromDomEvent(windowElement, "mouseup"),
-                Wonka.fromDomEvent(windowElement, "touchend"),
-                Wonka.fromDomEvent(windowElement, "touchcancel"),
+         |> XWonka.onPush(Webapi.Dom.Event.preventDefault)
+         |> XWonka.switchMap(hadFocusOnTouchStart =>
+              XWonka.merge([|
+                XWonka.fromDomEvent(windowElement, "mouseup"),
+                XWonka.fromDomEvent(windowElement, "touchend"),
+                XWonka.fromDomEvent(windowElement, "touchcancel"),
               |])
-              |> Wonka.take(1)
-              |> Wonka.map((. _) => hadFocusOnTouchStart)
+              |> XWonka.take(1)
+              |> XWonka.map(_ => hadFocusOnTouchStart)
             )
-         |> Wonka.publish
-         |> WonkaHelpers.getEffectCleanup
+         |> XWonka.publish
+         |> XWonka.getEffectCleanup
        );
   });
 
@@ -114,13 +112,13 @@ let make =
     React.Ref.current(inputRef)
     |> Js.Nullable.toOption
     |> Belt.Option.flatMap(_, element =>
-         Wonka.fromDomEvent(element, "focus")
-         |> Wonka.onPush((. _event) => setHasFocus(_prev => true))
-         |> Wonka.switchMap((. _event) =>
-              Wonka.fromDomEvent(element, "blur") |> Wonka.take(1)
+         XWonka.fromDomEvent(element, "focus")
+         |> XWonka.onPush(_event => setHasFocus(_prev => true))
+         |> XWonka.switchMap(_event =>
+              XWonka.fromDomEvent(element, "blur") |> XWonka.take(1)
             )
-         |> Wonka.subscribe((. _event) => {setHasFocus(_prev => false)})
-         |> WonkaHelpers.getEffectCleanup
+         |> XWonka.subscribe(_event => {setHasFocus(_prev => false)})
+         |> XWonka.getEffectCleanup
        )
   });
 

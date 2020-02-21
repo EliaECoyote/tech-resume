@@ -12,4 +12,5 @@ let firebaseOptions: Firebase.firebaseOptions = {
   appId: Some("1:588623468101:web:389a78e5de59b71eea752c"),
   measurementId: Some("G-NX8T2211M9"),
 };
+
 let init = () => Firebase.initializeApp(~firebaseOptions);

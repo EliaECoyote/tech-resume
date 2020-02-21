@@ -39,7 +39,7 @@ module Styles = {
 let make = (~className=?) => {
   let (themeState, _) = React.useContext(ThemeContext.context);
   let className =
-    CssHelpers.combine([
+    Belt2.Css.combine([
       Some(Styles.skeletonPulse(themeState.colors)),
       className,
     ]);

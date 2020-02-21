@@ -20,16 +20,14 @@ let getAuthEventFromUser = (user: Js.Nullable.t(Firebase.Auth.User.t)) =>
   };
 
 let makeAuthStateChangeSource = auth =>
-  Wonka.make((. observer: Wonka.Types.observerT(events)) => {
-    let unsubscribe =
-      Firebase.Auth.onAuthStateChanged(
-        auth,
-        ~nextOrObserver=user => getAuthEventFromUser(user) |> observer.next,
-        ~error=error => UserLoginFailed(error) |> observer.next,
-        (),
-      );
-    (.) => unsubscribe();
-  });
+  XWonka.make((observer: XWonka.Types.observerT(events)) =>
+    Firebase.Auth.onAuthStateChanged(
+      auth,
+      ~nextOrObserver=user => getAuthEventFromUser(user) |> observer.next,
+      ~error=error => UserLoginFailed(error) |> observer.next,
+      (),
+    )
+  );
 
 let reducer = (~state, ~event) =>
   switch (state, event) {
@@ -56,8 +54,8 @@ let hook = () => {
       let _provider = Firebase.Auth.GithubAuthProvider.make();
       Firebase.Auth.make()
       |> makeAuthStateChangeSource
-      |> Wonka.subscribe((. event) => sendEvent(event))
-      |> WonkaHelpers.getEffectCleanup;
+      |> XWonka.subscribe(sendEvent)
+      |> XWonka.getEffectCleanup;
     },
     [|sendEvent|],
   );
@@ -67,9 +65,9 @@ let hook = () => {
       () =>
         Firebase.Auth.make()
         |> Firebase.Auth.signOut
-        |> WonkaHelpers.fromPromiseSafe
-        |> Wonka.take(1)
-        |> Wonka.onPush((. result) =>
+        |> XWonka.fromPromiseSafe
+        |> XWonka.take(1)
+        |> XWonka.onPush(result =>
              switch (result) {
              | Belt.Result.Ok(_) => ()
              | Belt.Result.Error(error) =>
@@ -77,7 +75,7 @@ let hook = () => {
                sendEvent(AnonymousLogin);
              }
            )
-        |> Wonka.publish
+        |> XWonka.publish
         |> (_ => ()),
       [|sendEvent|],
     );

@@ -1,5 +1,5 @@
 type disposeBagT = {
-  add: React.callback(Wonka.Types.subscriptionT, unit),
+  add: React.callback(XWonka.Types.subscriptionT, unit),
   dispose: React.callback(unit, unit),
 };
 
@@ -7,7 +7,7 @@ type disposeBagT = {
  * react hook that allows aggregating multiple wonka subscriptions,
  * and triggers automatic disposal upon *dispose fn* calls or *hook unmount*.
  * Useful to trigger async operations inside, for example, *react onClick*
- * callback props, without checking manually inside *Wonka.subscribe* if
+ * callback props, without checking manually inside *XWonka.subscribe* if
  * the component is still alive or not.
  * Usage:
  * ```
@@ -15,8 +15,8 @@ type disposeBagT = {
  *
  *  <button onClick={_ =>
  *      saveAsyncData(data)
- *      |> Wonka.fromPromise
- *      |> Wonka.subscribe((. result) => {
+ *      |> XWonka.fromPromise
+ *      |> XWonka.subscribe(result => {
  *           safelySetState(_ => true);
  *         })
  *      |> disposeBag.add
@@ -26,7 +26,7 @@ type disposeBagT = {
 
  */
 let hook = () => {
-  let subscriptionList: React.Ref.t(list(Wonka.Types.subscriptionT)) =
+  let subscriptionList: React.Ref.t(list(XWonka.Types.subscriptionT)) =
     React.useRef([]);
 
   /**

@@ -12,7 +12,7 @@ let make =
     ) => {
     let (theme, _) = React.useContext(ThemeContext.context);
     let className =
-      CssHelpers.combine([
+      Belt2.Css.combine([
         Some(Controls.Styles.cta(theme.colors, ~size?, ())),
         className,
       ]);

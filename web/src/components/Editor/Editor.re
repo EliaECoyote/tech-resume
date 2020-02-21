@@ -5,7 +5,7 @@ module Styles = {
 };
 
 type editorDataT =
-  | Content(ServiceResumeData.resumeDataT)
+  | Content(Service.ResumeData.resumeDataT)
   | Error
   | Loading;
 
@@ -20,9 +20,9 @@ let make = (~editorData) => {
     () =>
       Webapi.Dom.window
       |> DomHelpers.windowElement
-      |> Wonka.fromDomEvent(_, "resize")
-      |> Wonka.subscribe((. _event) => editorService.layout())
-      |> WonkaHelpers.getEffectCleanup,
+      |> XWonka.fromDomEvent(_, "resize")
+      |> XWonka.subscribe(_ => editorService.layout())
+      |> XWonka.getEffectCleanup,
     [|editorService.layout|],
   );
 

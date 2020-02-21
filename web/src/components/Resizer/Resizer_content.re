@@ -40,13 +40,13 @@ let make = (~children, ~className=?, ()) => {
 
     Webapi.Dom.window
     |> DomHelpers.windowElement
-    |> Wonka.fromDomEvent(_, "resize")
-    |> Wonka.throttle((. _event) => 100)
-    |> Wonka.subscribe((. _event) => updateContextDimensions())
-    |> WonkaHelpers.getEffectCleanup;
+    |> XWonka.fromDomEvent(_, "resize")
+    |> XWonka.throttle(_ => 100)
+    |> XWonka.subscribe(_ => updateContextDimensions())
+    |> XWonka.getEffectCleanup;
   });
 
-  let className = CssHelpers.combine([Some(Styles.resizer), className]);
+  let className = Belt2.Css.combine([Some(Styles.resizer), className]);
 
   <div className ref={ReactDOMRe.Ref.domRef(resizerRef)}> children </div>;
 };

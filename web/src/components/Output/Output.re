@@ -46,7 +46,7 @@ module Styles = {
   let fakePdf = style([paddingTop(`percent(141.0)), customBoxShadow]);
 };
 
-PdfJSHelpers.setPdfJsWorker();
+Belt2.PdfJs.setPdfJsWorker();
 
 [@react.component]
 let make = (~className=?, ~requestState, ()) => {
@@ -62,7 +62,7 @@ let make = (~className=?, ~requestState, ()) => {
       modelArray |> Array.map(model => <Pdfpage model />) |> ReasonReact.array
     };
 
-  <div className={CssHelpers.combine([Some(Styles.output), className])}>
+  <div className={Belt2.Css.combine([Some(Styles.output), className])}>
     <div className={Styles.absoluteCanvasList(theme.colors)}>
       <div className=Styles.canvasContainer> outputContent </div>
     </div>

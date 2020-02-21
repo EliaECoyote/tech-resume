@@ -5,12 +5,12 @@ module TestData = {
   external toTypedArray: Node.Buffer.t => Js_typed_array.Int8Array.t =
     "%identity";
   let invalidPdfSource =
-    Js_typed_array.Int8Array.make([|1, 2, 3|]) |> PdfJSHelpers.toPdfJsSource;
+    Js_typed_array.Int8Array.make([|1, 2, 3|]) |> Belt2.PdfJs.toPdfJsSource;
   let validPdfSource =
     Node.Fs.readFileSync("__tests__/sample.pdf", `binary)
     |> Node.Buffer.fromStringWithEncoding(_, `binary)
     |> toTypedArray
-    |> PdfJSHelpers.toPdfJsSource;
+    |> Belt2.PdfJs.toPdfJsSource;
 };
 
 beforeAll(
@@ -42,11 +42,9 @@ describe("pdf document loading", () => {
     ~timeout=100,
     done_ => {
       let _ =
-        Wonka.fromValue(TestData.invalidPdfSource)
-        |> Wonka.switchMap((. invalidPdf) =>
-             UsePDFModelList.PDFLoader.loadDocument(invalidPdf)
-           )
-        |> Wonka.subscribe((. document) => {
+        XWonka.fromValue(TestData.invalidPdfSource)
+        |> XWonka.switchMap(UsePDFModelList.PDFLoader.loadDocument)
+        |> XWonka.subscribe(document => {
              let assertion =
                Belt.Result.isOk(document)
                  ? fail("source should be invalid") : pass;
@@ -60,11 +58,9 @@ describe("pdf document loading", () => {
     ~timeout=100,
     done_ => {
       let _ =
-        Wonka.fromValue(TestData.validPdfSource)
-        |> Wonka.switchMap((. validPdf) =>
-             UsePDFModelList.PDFLoader.loadDocument(validPdf)
-           )
-        |> Wonka.subscribe((. document) => {
+        XWonka.fromValue(TestData.validPdfSource)
+        |> XWonka.switchMap(UsePDFModelList.PDFLoader.loadDocument)
+        |> XWonka.subscribe(document => {
              let assertion =
                switch (document) {
                | Belt.Result.Ok(_value) => pass

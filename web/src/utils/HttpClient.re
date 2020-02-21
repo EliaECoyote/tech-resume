@@ -94,7 +94,7 @@ let fetchWrapper = (~resource: string, ~requestInit: Fetch.requestInit) => {
 
   // manually creating a wonka source, in order to handle correctly
   // the Fetch result promise errors
-  Wonka.make((. observer: Wonka.Types.observerT(t)) => {
+  XWonka.make(observer => {
     // utils fns used to avoid invoking *next* and *complete
     // observer methods when the subscription gets cancelled
     let observerNext = value =>
@@ -132,7 +132,7 @@ let fetchWrapper = (~resource: string, ~requestInit: Fetch.requestInit) => {
            Js.Promise.resolve();
          });
 
-    (.) => cancelled := true;
+    () => cancelled := true;
   });
 };
 
@@ -172,15 +172,12 @@ let delete = (~resource: string) => {
 
 let baseConverter =
     (converter: Fetch.response => Js.Promise.t('kind), result: t)
-    : Wonka.Types.sourceT(result('kind)) =>
+    : XWonka.Types.sourceT(result('kind)) =>
   switch (result) {
   | Ok(res) =>
-    res
-    |> converter
-    |> Wonka.fromPromise
-    |> Wonka.map((. value) => Ok(value))
-  | FailureCode(code) => Wonka.fromValue(FailureCode(code))
-  | Failure => Wonka.fromValue(Failure)
+    res |> converter |> XWonka.fromPromise |> XWonka.map(value => Ok(value))
+  | FailureCode(code) => XWonka.fromValue(FailureCode(code))
+  | Failure => XWonka.fromValue(Failure)
   };
 
 let toJson = baseConverter(Fetch.Response.json);
@@ -188,7 +185,7 @@ let toText = baseConverter(Fetch.Response.text);
 let toArrayBuffer = response =>
   response
   |> baseConverter(Fetch.Response.arrayBuffer)
-  |> Wonka.map((. result) => {
+  |> XWonka.map(result =>
        switch (result) {
        | Ok(value) =>
          let typedArray = Convert.toTypedArray(value);
@@ -196,4 +193,4 @@ let toArrayBuffer = response =>
        | FailureCode(status) => FailureCode(status)
        | Failure => Failure
        }
-     });
+     );
