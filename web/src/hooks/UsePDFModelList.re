@@ -45,9 +45,7 @@ module PDFLoader = {
     document
     |> BsPdfjs.Document.getPage(pageIndex)
     |> Belt2.Wonka.fromPromiseSafe
-    |> Belt2.Wonka.Result.tapLogError(
-         ~message={j|[Pdf page $pageIndex load]|j},
-       )
+    |> Belt2.Wonka.tapLogError(~message={j|[Pdf page $pageIndex load]|j})
     |> Wonka.map((. result) =>
          switch (result) {
          | Belt.Result.Ok(data) => Belt.Result.Ok(data)

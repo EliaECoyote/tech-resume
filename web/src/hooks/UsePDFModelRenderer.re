@@ -13,7 +13,7 @@ let render = (model, canvasElement) => {
   BsPdfjs.Page.render(model.page, ~canvasContext, ~viewport, ~transform=None)
   |> BsPdfjs.RenderTask.promise
   |> Belt2.Wonka.fromPromiseSafe
-  |> Belt2.Wonka.Result.tapLogError(~message="[Pdf render]")
+  |> Belt2.Wonka.tapLogError(~message="[Pdf render]")
   |> Wonka.map((. result) =>
        switch (result) {
        | Belt.Result.Error(_error) =>

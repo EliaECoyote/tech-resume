@@ -321,6 +321,7 @@ module CollectionReference = {
 };
 
 [@bs.module "firebase/app"] external make: unit => firestoreT = "firestore";
+let make = make;
 
 [@bs.send]
 external collection:
