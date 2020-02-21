@@ -38,7 +38,7 @@ module Styles = {
       ),
     );
 
-  let thumb = (colors: ThemeContext.colors, ~checked: bool, ~hasFocus: bool) => {
+  let thumb = (~checked: bool, ~hasFocus: bool) => {
     let addFocusStylesIfNeeded = rules =>
       hasFocus ? List.append(rules, [smallShadowStyles]) : rules;
     style(
@@ -141,7 +141,7 @@ let make =
     ref={ReactDOMRe.Ref.domRef(trackRef)}>
     {renderUnchecked()}
     {renderChecked()}
-    <div className={Styles.thumb(theme.colors, ~checked, ~hasFocus)} />
+    <div className={Styles.thumb(~checked, ~hasFocus)} />
     <input
       type_="checkbox"
       ariaLabel="Switch between Dark and Light mode"
