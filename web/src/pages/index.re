@@ -71,7 +71,7 @@ module PageContent = {
         |> Wonka.subscribe((. text) =>
              React.Ref.setCurrent(editorTextRef, text)
            )
-        |> WonkaHelpers.getEffectCleanup,
+        |> Belt2.Wonka.getEffectCleanup,
       [|editorService.textChangeSource|],
     );
 
@@ -106,7 +106,7 @@ module PageContent = {
         switch (authStatus, resumeTask) {
         | (UseAuth.Anonymous | UseAuth.Logged(_), AsyncTask.Success(_)) =>
           true
-        | (_, _) => false
+        | _ => false
         }
       );
 
@@ -133,7 +133,7 @@ module PageContent = {
             switch (resumeTask) {
             | AsyncTask.Success(resume) =>
               setIsSaving(_ => true);
-              let newResume: ServiceResumeData.resumeDataT = {
+              let newResume: Service.ResumeData.resumeDataT = {
                 theme: resume.theme,
                 template: React.Ref.current(editorTextRef),
               };

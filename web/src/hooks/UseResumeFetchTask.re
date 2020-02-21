@@ -25,7 +25,7 @@ let hook = () => {
                send(LoadFailed);
              }
            )
-        |> WonkaHelpers.getEffectCleanup;
+        |> Belt2.Wonka.getEffectCleanup;
       | Idle => None
       },
     [|authStatus|],

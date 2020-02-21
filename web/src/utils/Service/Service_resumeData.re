@@ -51,7 +51,7 @@ module FirestoreResume = {
       Firebase.Firestore.CollectionReference.asQuery(resumesDetailsRef);
     Firebase.Firestore.Query.limit(resumesDetailsQuery, ~limit=1)
     |> Firebase.Firestore.Query.get
-    |> WonkaHelpers.fromPromiseSafe
+    |> Belt2.Wonka.fromPromiseSafe
     |> Wonka.switchMap((. snapshot) =>
          switch (snapshot) {
          | Belt.Result.Ok(snapshot) =>
@@ -61,7 +61,7 @@ module FirestoreResume = {
                  resumesDetailsRef,
                  ~data=ResumeJson.encode(initialResumeData),
                )
-               |> WonkaHelpers.fromPromiseSafe
+               |> Belt2.Wonka.fromPromiseSafe
              // otherwise just return the existing one snapshot
              : Firebase.Firestore.QuerySnapshot.get_docs(snapshot)
                |> Array.get(_, 0)
@@ -141,7 +141,7 @@ let make = (): resumeDataServiceT => {
   let loadFirestoreResume = user => {
     let sharedResumeDocRefSource =
       FirestoreResume.getDocumentRef(db, user)
-      |> WonkaHelpers.Operators.shareReplay(1);
+      |> Belt2.Wonka.Operators.shareReplay(1);
 
     let resumeDataSource =
       sharedResumeDocRefSource
@@ -150,7 +150,7 @@ let make = (): resumeDataServiceT => {
            | Belt.Result.Ok(documentRef) =>
              // retrieve snapshot from documentRef
              Firebase.Firestore.DocumentReference.get(documentRef)
-             |> WonkaHelpers.fromPromiseSafe
+             |> Belt2.Wonka.fromPromiseSafe
              |> Wonka.map((. snapshot) => FirestoreResume.getData(snapshot))
            | Belt.Result.Error(error) =>
              Wonka.fromValue(Belt.Result.Error(error))
@@ -180,7 +180,7 @@ let make = (): resumeDataServiceT => {
     | Some(documentRef) =>
       ResumeJson.encode(data)
       |> Firebase.Firestore.DocumentReference.set(documentRef, ~value=_)
-      |> WonkaHelpers.fromPromiseSafe
+      |> Belt2.Wonka.fromPromiseSafe
     | None =>
       let error = Js2.Exn.makeError("documentRef not available");
       Wonka.fromValue(Belt.Result.Error(error));

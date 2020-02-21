@@ -1,4 +1,4 @@
-open BeltHelpers;
+open Belt2_option;
 
 [@bs.get]
 external get_webkitBackingStorePixelRatio:

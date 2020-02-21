@@ -39,13 +39,13 @@ let firebaseUiElementId = "auth";
 [@react.component]
 let make = (~authStatus: UseAuth.status, ~signOut: unit => unit) => {
   let firebaseUiService =
-    UseLazyRef.hook(() => ServiceFirebaseUi.make(firebaseUiElementId));
+    UseLazyRef.hook(() => Service.FirebaseUi.make(firebaseUiElementId));
 
   React.useEffect2(
     () => {
       switch (authStatus) {
       | UseAuth.Anonymous =>
-        firebaseUiService.startFirebaseUi() |> WonkaHelpers.getEffectCleanup
+        firebaseUiService.startFirebaseUi() |> Belt2.Wonka.getEffectCleanup
       | _ => None
       }
     },

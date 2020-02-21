@@ -57,7 +57,7 @@ let hook = () => {
       Firebase.Auth.make()
       |> makeAuthStateChangeSource
       |> Wonka.subscribe((. event) => sendEvent(event))
-      |> WonkaHelpers.getEffectCleanup;
+      |> Belt2.Wonka.getEffectCleanup;
     },
     [|sendEvent|],
   );
@@ -67,7 +67,7 @@ let hook = () => {
       () =>
         Firebase.Auth.make()
         |> Firebase.Auth.signOut
-        |> WonkaHelpers.fromPromiseSafe
+        |> Belt2.Wonka.fromPromiseSafe
         |> Wonka.take(1)
         |> Wonka.onPush((. result) =>
              switch (result) {

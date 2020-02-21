@@ -19,7 +19,7 @@ let hook = () => {
                | HttpClient.FailureCode(_) => sendEvent(LoadFailed)
                }
              )
-          |> WonkaHelpers.getEffectCleanup;
+          |> Belt2.Wonka.getEffectCleanup;
         },
       ),
     [|data|],

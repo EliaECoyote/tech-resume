@@ -106,7 +106,7 @@ let make =
               |> Wonka.map((. _) => hadFocusOnTouchStart)
             )
          |> Wonka.publish
-         |> WonkaHelpers.getEffectCleanup
+         |> Belt2.Wonka.getEffectCleanup
        );
   });
 
@@ -120,7 +120,7 @@ let make =
               Wonka.fromDomEvent(element, "blur") |> Wonka.take(1)
             )
          |> Wonka.subscribe((. _event) => {setHasFocus(_prev => false)})
-         |> WonkaHelpers.getEffectCleanup
+         |> Belt2.Wonka.getEffectCleanup
        )
   });
 

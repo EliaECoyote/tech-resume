@@ -12,8 +12,8 @@ let render = (model, canvasElement) => {
   );
   BsPdfjs.Page.render(model.page, ~canvasContext, ~viewport, ~transform=None)
   |> BsPdfjs.RenderTask.promise
-  |> WonkaHelpers.fromPromiseSafe
-  |> WonkaHelpers.Result.tapLogError(~message="[Pdf render]")
+  |> Belt2.Wonka.fromPromiseSafe
+  |> Belt2.Wonka.Result.tapLogError(~message="[Pdf render]")
   |> Wonka.map((. result) =>
        switch (result) {
        | Belt.Result.Error(_error) =>
@@ -33,7 +33,7 @@ let hook =
         |> Belt.Option.flatMap(_, canvasElement =>
              render(model, canvasElement)
              |> Wonka.publish
-             |> WonkaHelpers.getEffectCleanup
+             |> Belt2.Wonka.getEffectCleanup
            )
       | Belt.Result.Error(_) => None
       },

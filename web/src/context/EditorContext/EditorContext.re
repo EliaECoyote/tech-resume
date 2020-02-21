@@ -1,6 +1,6 @@
-type state = ServiceMonacoEditor.monacoEditorServiceT;
+type state = Service.MonacoEditor.monacoEditorServiceT;
 
-let context = React.createContext(ServiceMonacoEditor.make());
+let context = React.createContext(Service.MonacoEditor.make());
 
 module Provider = {
   let makeProps = (~value, ~children, ()) => {
@@ -13,7 +13,7 @@ module Provider = {
 [@react.component]
 let make = (~children) => {
   let (themeState, _) = React.useContext(ThemeContext.context);
-  let monacoEditorService = UseLazyRef.hook(ServiceMonacoEditor.make);
+  let monacoEditorService = UseLazyRef.hook(Service.MonacoEditor.make);
 
   // reacts to *theme* change by updating Monaco editor theme
   React.useEffect2(

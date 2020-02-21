@@ -43,10 +43,10 @@ let make = (~children, ~className=?, ()) => {
     |> Wonka.fromDomEvent(_, "resize")
     |> Wonka.throttle((. _event) => 100)
     |> Wonka.subscribe((. _event) => updateContextDimensions())
-    |> WonkaHelpers.getEffectCleanup;
+    |> Belt2.Wonka.getEffectCleanup;
   });
 
-  let className = CssHelpers.combine([Some(Styles.resizer), className]);
+  let className = Belt2.Css.combine([Some(Styles.resizer), className]);
 
   <div className ref={ReactDOMRe.Ref.domRef(resizerRef)}> children </div>;
 };

@@ -5,7 +5,7 @@ module Styles = {
 };
 
 type editorDataT =
-  | Content(ServiceResumeData.resumeDataT)
+  | Content(Service.ResumeData.resumeDataT)
   | Error
   | Loading;
 
@@ -22,7 +22,7 @@ let make = (~editorData) => {
       |> DomHelpers.windowElement
       |> Wonka.fromDomEvent(_, "resize")
       |> Wonka.subscribe((. _event) => editorService.layout())
-      |> WonkaHelpers.getEffectCleanup,
+      |> Belt2.Wonka.getEffectCleanup,
     [|editorService.layout|],
   );
 

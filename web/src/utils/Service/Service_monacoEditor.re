@@ -9,11 +9,11 @@ type monacoEditorServiceT = {
 
 let make = (): monacoEditorServiceT => {
   let monaco = ref(None);
-  let textChangeSubject = WonkaHelpers.Sources.makeReplaySubject(1);
+  let textChangeSubject = Belt2.Wonka.Sources.makeReplaySubject(1);
   let dynamicImportMonaco: unit => Js.Promise.t(module MonacoType) = [%bs.raw
     {| () => import(
       /* webpackChunkName: "monaco" */
-      "../bindings/Monaco.bs.js"
+      "../../bindings/Monaco.bs.js"
     ) |}
   ];
   let dynamicImportMonaco = () =>
@@ -78,7 +78,7 @@ let make = (): monacoEditorServiceT => {
              })
              // *shareReplay* makes sure that the first *observer.next*
              // invocation is received by the subscriber
-             |> WonkaHelpers.Operators.shareReplay(1)
+             |> Belt2.Wonka.Operators.shareReplay(1)
            | None => Wonka.never
            }
          )

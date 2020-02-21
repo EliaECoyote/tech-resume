@@ -27,7 +27,7 @@ module Styles = {
 };
 
 if (Config.isBrowser) {
-  InitializeFirebase.init();
+  Belt2.Firebase.init();
 };
 
 module AppContent = {

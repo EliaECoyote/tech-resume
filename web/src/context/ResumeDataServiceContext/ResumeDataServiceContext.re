@@ -10,6 +10,6 @@ module Provider = {
 
 [@react.component]
 let make = (~children) => {
-  let resumeDataService = UseLazyRef.hook(ServiceResumeData.make);
+  let resumeDataService = UseLazyRef.hook(Service.ResumeData.make);
   <Provider value={Some(resumeDataService)}> children </Provider>;
 };

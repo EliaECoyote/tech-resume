@@ -98,7 +98,7 @@ let make = (~onResizeEnd=() => ()) => {
          dispatch(Resizer_context.UpdateSectionsFlexGrow(sizes));
          ();
        })
-    |> WonkaHelpers.getEffectCleanup;
+    |> Belt2.Wonka.getEffectCleanup;
   });
 
   <div className=Styles.bar ref={ReactDOMRe.Ref.domRef(barRef)}>

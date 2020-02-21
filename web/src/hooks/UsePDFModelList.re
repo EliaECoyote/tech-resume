@@ -39,13 +39,13 @@ module PDFLoader = {
     source
     |> BsPdfjs.Global.getDocument(_, BsPdfjs.Global.inst)
     |> BsPdfjs.Global.DocumentLoadingTask.promise
-    |> WonkaHelpers.fromPromiseSafe;
+    |> Belt2.Wonka.fromPromiseSafe;
 
   let loadPage = (document, pageIndex) =>
     document
     |> BsPdfjs.Document.getPage(pageIndex)
-    |> WonkaHelpers.fromPromiseSafe
-    |> WonkaHelpers.Result.tapLogError(
+    |> Belt2.Wonka.fromPromiseSafe
+    |> Belt2.Wonka.Result.tapLogError(
          ~message={j|[Pdf page $pageIndex load]|j},
        )
     |> Wonka.map((. result) =>
@@ -67,7 +67,7 @@ module PDFLoader = {
       |> Wonka.switchMap((. pagesIndexes) =>
            pagesIndexes
            |> Array.map(loadPage(document))
-           |> WonkaHelpers.combineArray
+           |> Belt2.Wonka.combineArray
            |> Wonka.map((. array) => Belt.Result.Ok(array))
          )
       |> Wonka.take(1)
@@ -80,7 +80,7 @@ module PDFLoader = {
     Wonka.fromValue(pdfData)
     |> Wonka.map((. pdfData)
          // converts pdf typedArray to PDFjs source element
-         => PdfJSHelpers.toPdfJsSource(pdfData))
+         => Belt2.PdfJs.toPdfJsSource(pdfData))
     |> Wonka.switchMap((. source)
          // uses PDFjs source to load the pdf data
          => loadDocument(source))
@@ -144,7 +144,7 @@ let hook = (~pdfRequestState: AsyncTask.status(Js_typed_array.Int8Array.t)) => {
                ();
              }
            })
-        |> WonkaHelpers.getEffectCleanup
+        |> Belt2.Wonka.getEffectCleanup
       },
     [|pdfRequestState|],
   );
