@@ -1,8 +1,0 @@
-version: "3.7"
-
-services:
-  web_production:
-    image: gcr.io/tech-resume/web
-    env_file:
-      - .env.production
-    command: firebase deploy

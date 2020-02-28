@@ -1,4 +1,4 @@
-FROM gcr.io/tech-resume/bs-node:latest
+FROM eliaecoyote/alpine-bucklescript:7
 
 # ******************************
 # Inspired by *Running puppeteer on alpine* section in the puppeter docs: 
@@ -9,6 +9,9 @@ ENV PORT=8080
 ENV APPDIR=/home/node/app
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+# Adds file watcher package, necessary for live reloading feature
+RUN apk add --no-cache inotify-tools
 
 # Installs latest Chromium (77) package
 RUN apk add --no-cache \

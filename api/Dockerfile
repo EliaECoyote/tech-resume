@@ -1,7 +1,10 @@
-FROM gcr.io/tech-resume/bs-node:latest
+FROM eliaecoyote/alpine-bucklescript:7
 
 ENV PORT=8080
 ENV APPDIR=/home/node/app
+
+# Adds file watcher package, necessary for live reloading feature
+RUN apk add --no-cache inotify-tools
 
 WORKDIR ${APPDIR}
 COPY package.json yarn.lock ./

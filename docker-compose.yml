@@ -1,12 +1,6 @@
 version: "3.7"
 
 services:
-  bs-node:
-    image: gcr.io/tech-resume/bs-node
-    build:
-      context: .
-      args:
-        BS_PLATFORM_VERSION: 7.1.1
   web:
     # truthy *tty* is necessary in order to get colored bsb output
     tty: true
