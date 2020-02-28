@@ -1,4 +1,4 @@
-FROM gcr.io/tech-resume/bs-node:latest as builder
+FROM eliaecoyote/alpine-bucklescript:7 as builder
 
 ARG GATSBY_API_SCHEME
 ARG GATSBY_API_HOST
@@ -11,6 +11,8 @@ ENV APPDIR=/home/node/app
 # setting CI=true as an environment variable will tailor output for dumb terminals
 ENV CI=true
 
+# Adds file watcher package, necessary for live reloading feature
+RUN apk add --no-cache inotify-tools
 
 WORKDIR ${APPDIR}
 # Installs gatsby dependencies
