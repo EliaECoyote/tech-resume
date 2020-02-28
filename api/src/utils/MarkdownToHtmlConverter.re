@@ -31,9 +31,15 @@ let getTemplateStyle = template => {
         h1 {
           color: #626262;
           text-align: center;
+          margin: 4px;
+        }
+        blockquote {
+          text-align: center;
+          margin: 8px;
         }
         h2 {
           color: #2d6139;
+          margin: 6px;
         }
         h2::before {
           content: '';
@@ -43,8 +49,14 @@ let getTemplateStyle = template => {
           width: 16%;
           display: inline-block;
         }
-        blockquote {
-          text-align: center;
+        p {
+          margin: 4px
+        }
+        ul {
+          margin: 8px;
+        }
+        li {
+          line-height: 1.35rem
         }
         a {
           color: #2d6139;
