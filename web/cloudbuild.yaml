@@ -1,3 +1,7 @@
+substitutions:
+  _GATSBY_API_SCHEME: unset
+  _GATSBY_API_HOST: unset
+
 steps:
   # pull cached image
   - name: "gcr.io/cloud-builders/docker"
@@ -8,13 +12,13 @@ steps:
   # decrypt kms encrypted env
   - name: gcr.io/cloud-builders/gcloud
     args:
-    - kms
-    - decrypt
-    - --ciphertext-file=.env.enc
-    - --plaintext-file=.env
-    - --location=global
-    - --keyring=tech-resume
-    - --key=cloudbuild-env
+      - kms
+      - decrypt
+      - --ciphertext-file=.env.enc
+      - --plaintext-file=.env
+      - --location=global
+      - --keyring=tech-resume
+      - --key=cloudbuild-env
   # build *builder* image
   - name: "gcr.io/cloud-builders/docker"
     args:
@@ -24,9 +28,9 @@ steps:
       - "--target"
       - "builder"
       - "--build-arg"
-      - "GATSBY_API_SCHEME=https"
+      - "GATSBY_API_SCHEME=$_GATSBY_API_SCHEME"
       - "--build-arg"
-      - "GATSBY_API_HOST=api-europe-west1-67xb7jfyla-ew.a.run.app"
+      - "GATSBY_API_HOST=$_GATSBY_API_HOST"
       - "--tag"
       - "gcr.io/$PROJECT_ID/web-builder:latest"
       - "./web/"

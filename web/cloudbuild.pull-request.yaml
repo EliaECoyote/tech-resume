@@ -1,0 +1,35 @@
+substitutions:
+  _GATSBY_API_SCHEME: unset
+  _GATSBY_API_HOST: unset
+
+steps:
+  # pull cached image
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "docker pull gcr.io/$PROJECT_ID/web:latest || exit 0"
+  # build *builder* image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "--cache-from"
+      - "gcr.io/$PROJECT_ID/web:latest"
+      - "--target"
+      - "builder"
+      - "--build-arg"
+      - "GATSBY_API_SCHEME=$_GATSBY_API_SCHEME"
+      - "--build-arg"
+      - "GATSBY_API_HOST=$_GATSBY_API_HOST"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/web-builder:latest"
+      - "./web/"
+    timeout: 720s # 12 minutes
+  # test
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "run"
+      - "gcr.io/$PROJECT_ID/web-builder:latest"
+      - "sh"
+      - "./scripts/test.sh"
+    timeout: 300s
