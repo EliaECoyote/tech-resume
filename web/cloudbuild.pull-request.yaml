@@ -33,3 +33,4 @@ steps:
       - "sh"
       - "./scripts/test.sh"
     timeout: 300s
+timeout: 1200s
