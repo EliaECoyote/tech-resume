@@ -1,0 +1,22 @@
+steps:
+  # pull cached image
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "docker pull gcr.io/$PROJECT_ID/pdfgen:latest || exit 0"
+  # build image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "--cache-from"
+      - "gcr.io/$PROJECT_ID/pdfgen:latest"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/pdfgen:$SHORT_SHA"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/pdfgen:latest"
+      - "./pdfgen/"
+    timeout: 300s
+images:
+  - "gcr.io/$PROJECT_ID/pdfgen:latest"
+  - "gcr.io/$PROJECT_ID/pdfgen:$SHORT_SHA"
