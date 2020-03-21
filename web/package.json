@@ -29,6 +29,7 @@
     "gatsby"
   ],
   "scripts": {
+    "lighthouse": "npx lighthouse https://tech-resume.web.app/ --view",
     "clean": "yarn bsb -clean-world && yarn gatsby clean"
   },
   "repository": {
