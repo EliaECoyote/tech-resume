@@ -1,6 +1,3 @@
-substitutions:
-  _ENDPOINT_PDFGEN: unset
-
 steps:
   # pull cached image
   - name: "gcr.io/cloud-builders/docker"
@@ -28,21 +25,3 @@ steps:
       - "sh"
       - "./scripts/test.sh"
     timeout: 300s
-  # deploy
-  - name: "gcr.io/cloud-builders/gcloud"
-    args:
-      - "run"
-      - "deploy"
-      - "api-europe-west1"
-      - "--image"
-      - "gcr.io/tech-resume/api"
-      - "--region"
-      - "europe-west1"
-      - "--platform"
-      - "managed"
-      - "--allow-unauthenticated"
-      - "--update-env-vars"
-      - "ENDPOINT_PDFGEN=$_ENDPOINT_PDFGEN"
-images:
-  - "gcr.io/$PROJECT_ID/api:latest"
-  - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
