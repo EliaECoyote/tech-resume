@@ -13,7 +13,7 @@
     "gatsby": "^2.18.10",
     "gatsby-image": "^2.2.25",
     "gatsby-plugin-manifest": "^2.3.1",
-    "gatsby-plugin-offline": "^3.0.13",
+    "gatsby-plugin-offline": "^3.1.0",
     "gatsby-plugin-react-helmet": "^3.1.11",
     "gatsby-source-filesystem": "^2.1.31",
     "monaco-editor": "^0.18.1",
