@@ -1,0 +1,1 @@
+[@bs.module] external format: Unified.Types.plugin = "rehype-format";

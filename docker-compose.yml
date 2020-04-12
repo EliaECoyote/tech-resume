@@ -29,10 +29,7 @@ services:
   api:
     tty: true
     environment:
-      # note: Networked service-to-service communication use the CONTAINER_PORT
-      - ENDPOINT_PDFGEN=http://pdfgen:4000
-    depends_on:
-      - pdfgen
+      - PORT=6000
     command: sh ./scripts/startup.sh
     container_name: api
     build:
@@ -46,8 +43,27 @@ services:
       - ./api/nodemon.json:/home/node/app/nodemon.json:delegated
       - ./api/bsconfig.json:/home/node/app/bsconfig.json:delegated
     ports:
-      - "3000:8080"
-      - "3001:9229"
+      - "6000:6000"
+      - "9229:6001"
+  htmlgen:
+    tty: true
+    environment:
+      - PORT=5000
+    command: sh ./scripts/startup.sh
+    container_name: htmlgen
+    build:
+      context: ./htmlgen
+    volumes:
+      - ./htmlgen/src:/home/node/app/src:delegated
+      - ./htmlgen/scripts:/home/node/app/scripts:delegated
+      - ./htmlgen/__tests__:/home/node/app/__tests__:delegated
+      - ./htmlgen/package.json:/home/node/app/package.json:delegated
+      - ./htmlgen/yarn.lock:/home/node/app/yarn.lock:delegated
+      - ./htmlgen/nodemon.json:/home/node/app/nodemon.json:delegated
+      - ./htmlgen/bsconfig.json:/home/node/app/bsconfig.json:delegated
+    ports:
+      - "5000:5000"
+      - "3001:5001"
   pdfgen:
     tty: true
     privileged: true

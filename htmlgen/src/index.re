@@ -19,11 +19,11 @@ let startupBackend = () => {
 
   Express.App.postWithMany(
     app,
-    ~path="/resumes",
+    ~path="/convert",
     [|
       CorsMiddleware.middlewareFactory(),
       BodyParser.textWithOptions(bodyParserOptions),
-      ResumesMiddleware.middleware,
+      Md2HtmlConverterMiddleware.middleware,
       ErrorMiddleware.middleware,
     |],
   );

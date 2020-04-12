@@ -1,0 +1,43 @@
+steps:
+  # pull cached image
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "docker pull gcr.io/$PROJECT_ID/api:latest || exit 0"
+  # build image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "--cache-from"
+      - "gcr.io/$PROJECT_ID/api:latest"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
+      - "--tag"
+      - "gcr.io/$PROJECT_ID/api:latest"
+      - "./api/"
+    timeout: 300s
+  # test
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "run"
+      - "gcr.io/$PROJECT_ID/api:latest"
+      - "sh"
+      - "./scripts/test.sh"
+    timeout: 300s
+  # deploy
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "api-europe-west1"
+      - "--image"
+      - "gcr.io/tech-resume/api"
+      - "--region"
+      - "europe-west1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+images:
+  - "gcr.io/$PROJECT_ID/api:latest"
+  - "gcr.io/$PROJECT_ID/api:$SHORT_SHA"
