@@ -1,1 +1,0 @@
-[@bs.module] external remark2rehype: Unified.Types.plugin = "remark-rehype";

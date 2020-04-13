@@ -1,1 +1,0 @@
-[@bs.module] external html: Unified.Types.plugin = "rehype-stringify";
