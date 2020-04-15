@@ -59,10 +59,8 @@ let rec consume_stream = stream =>
       >>= (
         x => {
           let Ok(x) | Error(x) = x;
-          Printf.eprintf(
-            "stream response: '%s'\n%!",
-            Yojson.Basic.to_string(x),
-          );
+          let streamResponse = Yojson.Basic.to_string(x);
+          Console.log({j|stream response $streamResponse |j});
           if (Lwt_stream.is_closed(stream)) {
             Lwt.return_unit;
           } else {
@@ -160,24 +158,18 @@ module Graphql_cohttp_lwt =
   );
 
 let start = () => {
-  Console.log("start");
-  open Printf;
   let on_exn =
     fun
-    | [@implicit_arity] Unix.Unix_error(error, func, arg) =>
-      printf(
-        "Client connection error %s: %s(%S)",
-        Unix.error_message(error),
-        func,
-        arg,
-      )
-    | exn => printf("Unhandled exception: %s\n%!", Printexc.to_string(exn));
+    | [@implicit_arity] Unix.Unix_error(error, func, arg) => {
+      let message = Unix.error_message(error);
+      Console.error("Client connection error " ++ message ++ ": " ++ func ++ "(" ++ arg ++ ")");
+    }
+    | exn => Console.error(("Unhandled exception", exn));
 
   let callback = Graphql_cohttp_lwt.make_callback(_req => (), schema);
   let server = Cohttp_lwt_unix.Server.make_response_action(~callback, ());
   let port = 8080;
   let mode = `TCP(`Port(port));
-  printf("listening on http://localhost:%d/graphql\n%!", port);
+  Console.log("listening on http://localhost:" ++ string_of_int(port) ++ "/graphql!");
   Cohttp_lwt_unix.Server.create(~on_exn, ~mode, server) |> Lwt_main.run;
 };
-Console.log("test");

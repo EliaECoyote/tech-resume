@@ -24,7 +24,8 @@
         "console.lib",
         "cohttp-lwt-unix",
         "graphql-lwt",
-        "graphql-cohttp"
+        "graphql-cohttp",
+        "yojson"
       ],
       "name": "api.lib",
       "namespace": "Api"
@@ -47,6 +48,7 @@
     "@opam/dune": ">=1.6.0",
     "@opam/graphql-cohttp": "0.13.0",
     "@opam/graphql-lwt": "0.13.0",
+    "@opam/yojson": "1.7.0",
     "@reason-native/console": "^0.1.0",
     "ocaml": "^4.4.0"
   },

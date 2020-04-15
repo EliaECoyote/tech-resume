@@ -1,5 +1,5 @@
 {
-  "checksum": "4e00675c89283278eb68b2e5a8e1011d",
+  "checksum": "ca7377c9d5cd15c74debabeda3c19490",
   "root": "api@link-dev:./package.json",
   "node": {
     "refmterr@3.3.0@d41d8cd9": {
@@ -62,6 +62,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.7.1004@d41d8cd9", "@reason-native/console@0.1.0@d41d8cd9",
+        "@opam/yojson@opam:1.7.0@7056d985",
         "@opam/graphql-lwt@opam:0.13.0@f0341fa7",
         "@opam/graphql-cohttp@opam:0.13.0@b193e862",
         "@opam/dune@opam:1.11.4@a7ccb7ae",
