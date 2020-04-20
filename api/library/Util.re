@@ -60,7 +60,7 @@ let rec consume_stream = stream =>
         x => {
           let Ok(x) | Error(x) = x;
           let streamResponse = Yojson.Basic.to_string(x);
-          Console.log({j|stream response $streamResponse |j});
+          Console.log(("stream response", streamResponse));
           if (Lwt_stream.is_closed(stream)) {
             Lwt.return_unit;
           } else {
@@ -168,7 +168,7 @@ let start = () => {
 
   let callback = Graphql_cohttp_lwt.make_callback(_req => (), schema);
   let server = Cohttp_lwt_unix.Server.make_response_action(~callback, ());
-  let port = 8080;
+  let port = int_of_string(Sys.getenv("PORT"));
   let mode = `TCP(`Port(port));
   Console.log("listening on http://localhost:" ++ string_of_int(port) ++ "/graphql!");
   Cohttp_lwt_unix.Server.create(~on_exn, ~mode, server) |> Lwt_main.run;

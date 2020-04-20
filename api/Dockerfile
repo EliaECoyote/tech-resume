@@ -21,7 +21,7 @@ ENV PATH=/esy/bin:$PATH
 
 FROM esy-alpine as builder
 ENV PORT=8080
-ENV APPDIR=/home/node/app
+ENV APPDIR=/home/app
 # Adds file watcher package, necessary for live reloading feature, & opam
 RUN apk add --no-cache inotify-tools opam
 WORKDIR ${APPDIR}
@@ -39,7 +39,7 @@ CMD esy x ApiApp.exe
 
 FROM alpine
 ENV PORT=8080
-ENV APPDIR=/home/node/app
+ENV APPDIR=/home/app
 WORKDIR ${APPDIR}
 COPY --from=esy-alpine ./_esy/default/build/default/executable/ApiApp.exe /ApiApp.exe
 CMD ./ApiApp.exe

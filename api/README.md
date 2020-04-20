@@ -1,12 +1,8 @@
 # api
 
-
-[![CircleCI](https://circleci.com/gh/yourgithubhandle/api/tree/master.svg?style=svg)](https://circleci.com/gh/yourgithubhandle/api/tree/master)
-
-
 **Contains the following libraries and executables:**
 
-```
+```txt
 api@0.0.0
 │
 ├─test/
@@ -25,26 +21,26 @@ api@0.0.0
     require: api.lib
 ```
 
-## Developing:
+## Developing
 
-```
+```sh
 npm install -g esy
 git clone <this-repo>
 esy install
 esy build
 ```
 
-## Running Binary:
+## Running Binary
 
 After building the project, you can run the main binary that is produced.
 
-```
-esy x ApiApp.exe 
+```sh
+esy x ApiApp.exe
 ```
 
-## Running Tests:
+## Running Tests
 
-```
+```sh
 # Runs the "test" command in `package.json`.
 esy test
 ```
