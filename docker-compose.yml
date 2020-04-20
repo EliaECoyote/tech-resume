@@ -29,22 +29,21 @@ services:
   api:
     tty: true
     environment:
-      - PORT=6000
-    command: sh ./scripts/startup.sh
+      - PORT=8080
     container_name: api
     build:
       context: ./api
     volumes:
-      - ./api/src:/home/node/app/src:delegated
-      - ./api/scripts:/home/node/app/scripts:delegated
-      - ./api/__tests__:/home/node/app/__tests__:delegated
-      - ./api/package.json:/home/node/app/package.json:delegated
-      - ./api/yarn.lock:/home/node/app/yarn.lock:delegated
-      - ./api/nodemon.json:/home/node/app/nodemon.json:delegated
-      - ./api/bsconfig.json:/home/node/app/bsconfig.json:delegated
+      - ./api/esy.lock:/home/app/esy.lock:delegated
+      - ./api/executable:/home/app/executable:delegated
+      - ./api/library:/home/app/library:delegated
+      - ./api/test:/home/app/test:delegated
+      - ./api/scripts:/home/app/scripts:delegated
+      - ./api/package.json:/home/app/package.json:delegated
+      - ./api/api.opam:/home/app/api.opam:delegated
+      - ./api/.devcontainer.json:/home/app/.devcontainer.json:delegated
     ports:
-      - "6000:6000"
-      - "9229:6001"
+      - "8080:8080"
   db:
     image: postgres
     restart: always
