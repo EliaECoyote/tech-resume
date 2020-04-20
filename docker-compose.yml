@@ -45,6 +45,11 @@ services:
     ports:
       - "6000:6000"
       - "9229:6001"
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
   htmlgen:
     tty: true
     environment:
