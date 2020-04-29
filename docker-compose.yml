@@ -30,9 +30,14 @@ services:
     tty: true
     environment:
       - PORT=8080
+      - PGHOST=http://localhost
+      - PGPORT=5432
+      - PGUSER=postgres
+      - PGPASSWORD=example
     container_name: api
     build:
       context: ./api
+      target: builder
     volumes:
       - ./api/esy.lock:/home/app/esy.lock:delegated
       - ./api/executable:/home/app/executable:delegated
@@ -49,6 +54,10 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: example
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   htmlgen:
     tty: true
     environment:

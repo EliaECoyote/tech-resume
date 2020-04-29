@@ -11,6 +11,9 @@ lib
 .merlin
 .bsb.lock
 
+# Db data
+postgres-data/
+
 # Dependency directories
 node_modules/
 

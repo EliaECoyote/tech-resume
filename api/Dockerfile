@@ -23,7 +23,11 @@ FROM esy-alpine as builder
 ENV PORT=8080
 ENV APPDIR=/home/app
 # Adds file watcher package, necessary for live reloading feature, & opam
-RUN apk add --no-cache inotify-tools opam
+RUN apk add --no-cache inotify-tools \
+  # Installs esy build deps
+  opam \
+  # Adds tput package, required by esy
+  ncurses
 WORKDIR ${APPDIR}
 COPY ./esy.lock ./esy.lock
 COPY api.opam dune dune-project package.json ./
