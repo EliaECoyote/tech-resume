@@ -28,6 +28,8 @@ services:
       - "8000:8000"
   api:
     tty: true
+    depends_on:
+      - db
     environment:
       - PORT=8080
       - PGHOST=http://localhost
