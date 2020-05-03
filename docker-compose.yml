@@ -30,34 +30,36 @@ services:
     tty: true
     depends_on:
       - db
+    command: yarn start
     environment:
-      - PORT=8080
-      - PGHOST=http://localhost
-      - PGPORT=5432
-      - PGUSER=postgres
-      - PGPASSWORD=example
+      - PORT=4000
+      - TYPEORM_HOST=db
+      - TYPEORM_PORT=5432
+      - TYPEORM_CONNECTION=postgres
+      - TYPEORM_USERNAME=postgres
+      - TYPEORM_PASSWORD=postgres
+      - TYPEORM_LOGGING=true
     container_name: api
     build:
       context: ./api
       target: builder
     volumes:
-      - ./api/esy.lock:/home/app/esy.lock:delegated
-      - ./api/executable:/home/app/executable:delegated
-      - ./api/library:/home/app/library:delegated
-      - ./api/test:/home/app/test:delegated
-      - ./api/scripts:/home/app/scripts:delegated
-      - ./api/package.json:/home/app/package.json:delegated
-      - ./api/api.opam:/home/app/api.opam:delegated
-      - ./api/.devcontainer.json:/home/app/.devcontainer.json:delegated
+      - ./api/src:/home/node/app/src:delegated
+      - ./api/scripts:/home/node/app/scripts:delegated
+      - ./api/nodemon.json:/home/node/app/nodemon.json:delegated
+      - ./api/ormconfig.yml:/home/node/app/ormconfig.yml:delegated
+      - ./api/package.json:/home/node/app/package.json:delegated
+      - ./api/yarn.lock:/home/node/app/yarn.lock:delegated
+      - ./api/tsconfig.json:/home/node/app/tsconfig.json:delegated
     ports:
-      - "8080:8080"
+      - "4000:4000"
   db:
     image: postgres:alpine
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: postgres
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - ./.pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
   htmlgen:

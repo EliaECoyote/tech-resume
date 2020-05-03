@@ -20,9 +20,17 @@
 		"editor.formatOnSave": true,
 		"search.exclude": {
 			"**/node_modules": true,
-			"**/lib": true
+			"**/dist": true
 		},
-		"reason_language_server.autoRebuild": false
+		"typescript.validate.enable": true,
+		"javascript.validate.enable": true,
+		"typescript.suggest.autoImports": true,
+		"eslint.validate": [
+			"javascript",
+			"typescript",
+		],
+		"eslint.enable": true,
+		"typescript.tsdk": "node_modules/typescript/lib"
 	},
 	// Uncomment the next line to have VS Code connect as an existing non-root user in the container. See
 	// https://aka.ms/vscode-remote/containers/non-root for details on adding a non-root user if none exist.
@@ -35,6 +43,7 @@
 	"postCreateCommand": "/bin/sh scripts/postCreateCommand.sh",
 	// Add the IDs of extensions you want installed when the container is created in the array below.
 	"extensions": [
-		"jaredly.reason-vscode"
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode"
 	]
 }

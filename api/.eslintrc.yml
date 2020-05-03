@@ -1,0 +1,23 @@
+root: true
+env:
+  node: true
+plugins:
+  - "prettier"
+  - "@typescript-eslint"
+extends:
+  - "plugin:prettier/recommended"
+parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: module
+  parser: "@typescript-eslint/parser"
+rules:
+  no-console: "off"
+  no-debugger: error
+  prettier/prettier: error
+  comma-dangle: 
+    - error
+    - only-multiline
+  # conflicts with ts switches without a default
+  array-callback-return: "off"
+  prefer-const: error

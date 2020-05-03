@@ -12,7 +12,7 @@ lib
 .bsb.lock
 
 # Db data
-postgres-data/
+.pgdata/
 
 # Dependency directories
 node_modules/
