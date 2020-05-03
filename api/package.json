@@ -26,8 +26,7 @@
         "graphql-lwt",
         "graphql-cohttp",
         "yojson",
-        "pgocaml",
-        "pgocaml_ppx"
+        "pgocaml"
       ],
       "name": "api.lib",
       "namespace": "Api"
@@ -51,7 +50,6 @@
     "@opam/graphql-cohttp": "0.13.0",
     "@opam/graphql-lwt": "0.13.0",
     "@opam/pgocaml": "4.0",
-    "@opam/pgocaml_ppx": "4.0",
     "@opam/yojson": "1.7.0",
     "@reason-native/console": "^0.1.0",
     "ocaml": "^4.4.0"

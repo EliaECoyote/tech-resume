@@ -1,8 +1,6 @@
 open Lwt.Infix;
 open Graphql_lwt;
 
-// let dbHandle: PGOCaml.monad(PGOCaml.t(string)) = PGOCaml.connect();
-
 type role =
   | User
   | Admin;
