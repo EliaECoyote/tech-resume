@@ -1,6 +1,7 @@
 {
   "name": "tech-resume-api",
   "version": "0.0.1",
+  "license": "GPL-3.0",
   "description": "tech-resume graphql api service",
   "devDependencies": {
     "@types/express": "^4.17.2",

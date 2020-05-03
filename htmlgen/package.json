@@ -1,6 +1,7 @@
 {
   "name": "tech-resume-htmlgen",
   "version": "0.0.1",
+  "license": "GPL-3.0",
   "description": "tech-resume htmlgen service",
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "scripts": {

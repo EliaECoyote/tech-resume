@@ -1,6 +1,7 @@
 {
   "name": "tech-resume-pdfgen",
   "version": "0.0.1",
+  "license": "GPL-3.0",
   "description": "tech-resume pdf generator service",
   "author": "Elia Camposilvan <elia.camposilvan@gmail.com>",
   "scripts": {
