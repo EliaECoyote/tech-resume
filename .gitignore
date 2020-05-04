@@ -2,10 +2,6 @@
 *.log
 yarn-debug.log*
 
-# .env files
-.env
-.env.production
-
 # Bsb & reasonML compilation
 lib
 .merlin
