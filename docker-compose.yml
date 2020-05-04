@@ -51,6 +51,7 @@ services:
       - ./api/package.json:/home/node/app/package.json:delegated
       - ./api/yarn.lock:/home/node/app/yarn.lock:delegated
       - ./api/tsconfig.json:/home/node/app/tsconfig.json:delegated
+      - ./api/.gitignore:/home/node/app/.gitignore:delegated
     ports:
       - "4000:4000"
   db:
