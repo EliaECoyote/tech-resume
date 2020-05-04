@@ -46,11 +46,13 @@ services:
     volumes:
       - ./api/src:/home/node/app/src:delegated
       - ./api/scripts:/home/node/app/scripts:delegated
-      - ./api/nodemon.json:/home/node/app/nodemon.json:delegated
-      - ./api/ormconfig.yml:/home/node/app/ormconfig.yml:delegated
       - ./api/package.json:/home/node/app/package.json:delegated
       - ./api/yarn.lock:/home/node/app/yarn.lock:delegated
+      - ./api/nodemon.json:/home/node/app/nodemon.json:delegated
+      - ./api/ormconfig.yml:/home/node/app/ormconfig.yml:delegated
       - ./api/tsconfig.json:/home/node/app/tsconfig.json:delegated
+      - ./api/.prettierrc.yaml:/home/node/app/.prettierrc.yaml:delegated
+      - ./api/.eslintrc.yml:/home/node/app/.eslintrc.yml:delegated
       - ./api/.gitignore:/home/node/app/.gitignore:delegated
     ports:
       - "4000:4000"
