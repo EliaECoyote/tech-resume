@@ -28,6 +28,7 @@
   },
   "scripts": {
     "start": "yarn nodemon --exec ts-node src/index.ts --inspect",
+    "build": "NODE_ENV=production yarn tsc",
     "lint": "eslint ./src --ext .ts"
   }
 }
