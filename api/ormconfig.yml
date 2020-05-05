@@ -1,15 +1,8 @@
 default:
   type: postgres
   database: postgres
-  synchronize: true
-  logging: true
-  entities:
-    - src/entity/**/*.ts
-  migrations:
-    - src/migration/**/*.ts
-  subscribers:
-    - src/subscriber/**/*.ts
+  synchronize: false
   cli:
-    entitiesDir: src/entity
-    migrationsDir": src/migration
-    subscribersDir": src/subscriber
+    entitiesDir: src/entities
+    migrationsDir: src/migrations
+    subscribersDir: src/subscribers
