@@ -10,7 +10,7 @@ WORKDIR ${APPDIR}
 COPY package.json yarn.lock ./
 # Installs deps
 RUN yarn install --frozen-lockfile
-COPY nodemon.json ormconfig.yml tsconfig.json ./
+COPY nodemon.json ormconfig.yml tsconfig.json .eslintrc.yml .prettierrc.yaml ./
 COPY ./src ./src/
 RUN yarn tsc
 USER node
@@ -20,6 +20,7 @@ CMD node dist/index.js
 FROM node:lts-alpine
 ENV PORT=8080
 ENV APPDIR=/home/node/app
+ENV NODE_ENV=production
 WORKDIR ${APPDIR}
 COPY package.json yarn.lock ./
 RUN yarn install --production
