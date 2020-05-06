@@ -38,6 +38,12 @@ services:
       - TYPEORM_USERNAME=postgres
       - TYPEORM_PASSWORD=postgres
       - TYPEORM_LOGGING=true
+      - TYPEORM_ENTITIES=src/entities/**/*
+      - TYPEORM_MIGRATIONS=src/migrations/**/*
+      - TYPEORM_SUBSCRIBERS=src/subscribers/**/*
+      - TYPEORM_ENTITIES_DIR=src/entities
+      - TYPEORM_MIGRATIONS_DIR=src/migrations
+      - TYPEORM_SUBSCRIBERS_DIR=src/subscribers
     container_name: api
     build:
       context: ./api
