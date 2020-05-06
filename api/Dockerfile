@@ -13,7 +13,6 @@ RUN yarn install --frozen-lockfile
 COPY nodemon.json ormconfig.yml tsconfig.json .eslintrc.yml .prettierrc.yaml ./
 COPY ./src ./src/
 RUN yarn tsc
-USER node
 CMD node dist/index.js
 
 
@@ -25,6 +24,6 @@ WORKDIR ${APPDIR}
 COPY package.json yarn.lock ./
 RUN yarn install --production
 COPY ormconfig.yml ./
-COPY --from=builder ${APPDIR}/dist ${APPDIR}/dist/
+COPY --from=builder ${APPDIR}/dist ${APPDIR}/src/
 USER node
-CMD node dist/index.js
+CMD node src/index.js
