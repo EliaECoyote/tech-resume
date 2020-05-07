@@ -47,7 +47,7 @@ services:
     container_name: api
     build:
       context: ./api
-      target: builder
+      target: dev-builder
     volumes:
       - ./api/src:/home/node/app/src:delegated
       - ./api/scripts:/home/node/app/scripts:delegated
