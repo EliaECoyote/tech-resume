@@ -6,6 +6,5 @@
     "**/lib": true,
     "**/public": true
   },
-  "eslint.enable": false,
   "reason_language_server.autoRebuild": false
 }
