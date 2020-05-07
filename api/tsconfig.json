@@ -25,7 +25,21 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@entities/*": [
+        "src/entities/*"
+      ],
+      "@resolvers/*": [
+        "src/resolvers/*"
+      ],
+      "@migrations/*": [
+        "src/migrations/*"
+      ],
+      "@helpers/*": [
+        "src/helpers/*"
+      ]
+    }
   },
   "exclude": [
     "node_modules"
