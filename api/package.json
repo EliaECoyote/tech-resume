@@ -30,6 +30,8 @@
     "start": "yarn nodemon --exec ts-node src/index.ts --inspect",
     "build": "NODE_ENV=production yarn tsc",
     "lint": "eslint ./src --ext .ts",
-    "migration:gen": "TYPEORM_CONNECTION=postgres yarn ts-node ./node_modules/typeorm/cli.js migration:generate"
+    "typeorm": "TYPEORM_CONNECTION=postgres yarn ts-node ./node_modules/typeorm/cli.js",
+    "migration:generate": "yarn typeorm migration:generate",
+    "schema:drop": "yarn typeorm schema:drop"
   }
 }
