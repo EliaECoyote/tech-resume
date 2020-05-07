@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import { createConnection, getConnectionOptions } from "typeorm"
+import { createConnection, getConnectionOptions, getRepository } from "typeorm"
 import express from "express"
 import { ApolloServer } from "apollo-server-express"
 import { buildSchema } from "type-graphql"
@@ -7,6 +7,9 @@ import { HelloWorldResolver } from "./resolvers/HelloWorldResolver"
 import { MovieResolver } from "./resolvers/MovieResolver"
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions"
 import { LoggerOptions } from "typeorm/logger/LoggerOptions"
+import { ResumeTheme } from "./entities/ResumeTheme"
+import { resumeThemesTemplate } from "./helpers/resumeThemesTemplate"
+import { ResumeThemeResolver } from "./resolvers/ResumeThemeResolver"
 
 startServer()
 
@@ -30,17 +33,18 @@ async function startServer() {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloWorldResolver, MovieResolver],
+      resolvers: [ResumeThemeResolver, HelloWorldResolver, MovieResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
   })
 
   apolloServer.applyMiddleware({ app, cors: false })
 
-  // const resumeThemesRepository = getRepository(ResumeTheme)
-  // for (const template of resumeThemesTemplate) {
-  //   resumeThemesRepository.save(template)
-  // }
+  const resumeThemesRepository = getRepository(ResumeTheme)
+  for (const template of resumeThemesTemplate) {
+    console.log("persisting resumeTemplate:", template)
+    resumeThemesRepository.save(template)
+  }
 
   app.listen(process.env.PORT, () => {
     console.log("express server started")
