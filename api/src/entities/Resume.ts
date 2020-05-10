@@ -1,14 +1,14 @@
+import { Field, ObjectType } from "type-graphql"
 import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
   BaseEntity,
-  ManyToOne,
+  Column,
   CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm"
 import { ResumeTheme } from "./ResumeTheme"
-import { ObjectType, Field } from "type-graphql"
 
 @ObjectType()
 @Entity("resumes")

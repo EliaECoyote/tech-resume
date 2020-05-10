@@ -1,5 +1,5 @@
-import { Resolver, Query, Mutation, Arg, InputType, Field } from "type-graphql"
 import { Resume } from "@entities/Resume"
+import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql"
 
 @InputType()
 class ResumeInput {
