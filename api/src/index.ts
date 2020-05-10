@@ -1,15 +1,16 @@
-import "reflect-metadata"
-import { createConnection, getConnectionOptions, getRepository } from "typeorm"
-import express from "express"
+import { ResumeTheme } from "@entities/ResumeTheme"
+import { resumeThemesTemplate } from "@helpers/resumeThemesTemplate"
+import { HelloWorldResolver } from "@resolvers/HelloWorldResolver"
+import { MovieResolver } from "@resolvers/MovieResolver"
+import { ResumeResolver } from "@resolvers/ResumeResolver"
+import { ResumeThemeResolver } from "@resolvers/ResumeThemeResolver"
 import { ApolloServer } from "apollo-server-express"
+import express from "express"
+import "reflect-metadata"
 import { buildSchema } from "type-graphql"
-import { HelloWorldResolver } from "./resolvers/HelloWorldResolver"
-import { MovieResolver } from "./resolvers/MovieResolver"
+import { createConnection, getConnectionOptions, getRepository } from "typeorm"
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions"
 import { LoggerOptions } from "typeorm/logger/LoggerOptions"
-import { ResumeTheme } from "./entities/ResumeTheme"
-import { resumeThemesTemplate } from "./helpers/resumeThemesTemplate"
-import { ResumeThemeResolver } from "./resolvers/ResumeThemeResolver"
 
 startServer()
 
@@ -33,7 +34,12 @@ async function startServer() {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [ResumeThemeResolver, HelloWorldResolver, MovieResolver],
+      resolvers: [
+        ResumeThemeResolver,
+        ResumeResolver,
+        HelloWorldResolver,
+        MovieResolver,
+      ],
     }),
     context: ({ req, res }) => ({ req, res }),
   })
