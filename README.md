@@ -1,3 +1,7 @@
+> ⚠️ Warning: Project archived! Due to lack of time, I was not able to continue working on this project 😔\
+It served mainly as a playground to test ReasonML both on the FE & BE, but ultimately it was taking too much time and I'd like to shift my focus on different stuff.\
+Feel free to ping me if you think the development should resume.
+
 # Tech resume
 
 ## Getting started
